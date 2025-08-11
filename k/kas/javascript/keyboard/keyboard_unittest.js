@@ -1,0 +1,477 @@
+// Copyright Google, Inc., 2006
+// @author Vlad Patryshev (vpatryshev@google.com)
+//
+// Unittest for keyboard.js
+// Requires keyboard_unittest.hmtl
+//
+var layout1 = new GKBD.Layout({
+  id:'RU_LATN,Ru:Russian (Translit)',
+  titleProvider : function() { return "this is a title";},
+  shortTitle: "keyboard is disabled",
+  mappings: {
+    'sl':{'\u00c0':'\u044a','1':'!','2':'@','3':'"','4':'$','5':'%','6':'^',
+          '7':'&','8':'*','9':'(','0':')','m':'_','=':'\u044c' ,
+          'Q':'\u044f','W':'\u0436','E':'\u0435','R':'\u0440','T':'\u0442',
+          'Y':'\u044b','U':'\u0443','I':'\u0438','O':'\u043e','P':'\u043f',
+          '\u00db':'\u0448','\u00dd':'\u0449','\u00dc':'\u044d' ,
+          'A':'\u0430','S':'\u0441','D':'\u0434','F':'\u0444','G':'\u0433',
+          'H':'\u0447','J':'\u0439','K':'\u043a','L':'\u043b',';':':',
+          '\u00de':'"' ,
+          'Z':'\u0437','X':'\u0445','C':'\u0446','V':'\u0432','B':'\u0431',
+          'N':'\u043d','M':'\u043c','\u00bc':'<','\u00be':'>','\u00bf':'?'
+         },
+    'l': {'\u00c0':'\u042a','1':'1','2':'2','3':'3','4':'4','5':'5','6':'6',
+          '7':'7','8':'8','9':'9','0':'0','m':'-','=':'\u042c' ,
+          'Q':'\u042f','W':'\u0416','E':'\u0415','R':'\u0420','T':'\u0422',
+          'Y':'\u042b','U':'\u0423','I':'\u0418','O':'\u041e','P':'\u041f',
+          '\u00db':'\u0428','\u00dd':'\u0429','\u00dc':'\u042d' ,
+          'A':'\u0410','S':'\u0421','D':'\u0414','F':'\u0424','G':'\u0413',
+          'H':'\u0427','J':'\u0419','K':'\u041a','L':'\u041b',';':';',
+          '\u00de':'\'' ,
+          'Z':'\u0417','X':'\u0425','C':'\u0426','V':'\u0412','B':'\u0411',
+          'N':'\u041d','M':'\u041c','\u00bc':',','\u00be':'.','\u00bf':'/'
+         },
+    's': {'\u00c0':'\u042a','1':'!','2':'@','3':'"','4':'$','5':'%','6':'^',
+          '7':'&','8':'*','9':'(','0':')','m':'_','=':'\u042c' ,
+          'Q':'\u042f','W':'\u0416','E':'\u0415','R':'\u0420','T':'\u0422',
+          'Y':'\u042b','U':'\u0423','I':'\u0418','O':'\u041e','P':'\u041f',
+          '\u00db':'\u0428','\u00dd':'\u0429','\u00dc':'\u042d',
+          'A':'\u0410','S':'\u0421','D':'\u0414','F':'\u0424','G':'\u0413',
+          'H':'\u0427','J':'\u0419','K':'\u041a','L':'\u041b',';':':',
+          '\u00de':'"' ,
+          'Z':'\u0417','X':'\u0425','C':'\u0426','V':'\u0412','B':'\u0411',
+          'N':'\u041d','M':'\u041c','\u00bc':'<','\u00be':'>','\u00bf':'?'
+         },
+    '':  {'\u00c0':'\u044a','1':'1','2':'2','3':'3','4':'4','5':'5','6':'6',
+          '7':'7','8':'8','9':'9','0':'0','m':'-','=':'\u044c' ,
+          'Q':'\u044f','W':'\u0436','E':'\u0435','R':'\u0440','T':'\u0442',
+          'Y':'\u044b','U':'\u0443','I':'\u0438','O':'\u043e','P':'\u043f',
+          '\u00db':'\u0448','\u00dd':'\u0449','\u00dc':'\u044d',
+          'A':'\u0430','S':'\u0441','D':'\u0434','F':'\u0444','G':'\u0433',
+          'H':'\u0447','J':'\u0439','K':'\u043a','L':'\u043b',';':';',
+          '\u00de':'\'',
+          'Z':'\u0437','X':'\u0445','C':'\u0446','V':'\u0432','B':'\u0431',
+          'N':'\u043d','M':'\u043c','\u00bc':',','\u00be':'.','\u00bf':'/'
+         },
+    'sc':{'=':'+', 'O':'\u0405', 'B':'\u0406', 'Q':'\u0407', 'J':'\u0460',
+          'K':'\u047e','\u00c0':'\u0462','T':'\u0464','Z':'\u0466',
+          'X':'\u0468','E':'\u046a','R':'\u046c','P':'\u046e','S':'\u0470',
+          'A':'\u0472','N':'\u0474','M':'\u0476','W':'\u0478','L':'\u047a',
+          ';':'\u047c','\u00db':'{','\u00dd':'}','\u00dc':'|'
+         },
+    'cl':{'=':'+','O':'\u0405','B':'\u0406','Q':'\u0407','J':'\u0460',
+         'K':'\u047e','\u00c0':'\u0462','T':'\u0464','Z':'\u0466',
+         'X':'\u0468','E':'\u046a','R':'\u046c','P':'\u046e','S':'\u0470',
+         'A':'\u0472','N':'\u0474','M':'\u0476','W':'\u0478','L':'\u047a',
+         ';':'\u047c','\u00db':'[','\u00dd':']','\u00dc':'\\'
+        },
+    'c': {'=':'=','O':'\u0455','B':'\u0456','Q':'\u0457','J':'\u0461',
+          'K':'\u047f','\u00c0':'\u0463','T':'\u0465','Z':'\u0467',
+          'X':'\u0469','E':'\u046b','R':'\u046d','P':'\u046f','S':'\u0471',
+          'A':'\u0473','N':'\u0475','M':'\u0477','W':'\u0479','L':'\u047b',
+          ';':'\u047d','\u00db':'[','\u00dd':']','\u00dc':'\\'
+         },
+    'scl':{'=':'=','O':'\u0455','B':'\u0456','Q':'\u0457','J':'\u0461',
+           'K':'\u047f','\u00c0':'\u0463','T':'\u0465','Z':'\u0467',
+           'X':'\u0469','E':'\u046b','R':'\u046d','P':'\u046f','S':'\u0471',
+           'A':'\u0473','N':'\u0475','M':'\u0477','W':'\u0479','L':'\u047b',
+           ';':'\u047d','\u00db':'{','\u00dd':'}','\u00dc':'|'
+          }
+    },
+    transform: {
+      //           jo                      ju
+      '\u0439\u043e':'\u0451','\u0439\u0443':'\u044e',
+      '\u0419\u041e':'\u0401','\u0419\u0423':'\u042e',
+      //           yo                      yu
+      '\u044b\u043e':'\u0451','\u044b\u0443':'\u044e',
+      '\u042b\u041e':'\u0401','\u042b\u0423':'\u042e'
+    }
+});
+
+var layout2 =   new GKBD.Layout({id:'RU',name:'Russian',
+  mappings: {
+    'sl': {'\u00c0':'\u0451','1':'!','2':'\"','3':'\u2116','4':';','5':'%',
+           '6':':','7':'?','8':'*','9':'(','0':')','m':'_','=':'+' ,
+           'Q':'\u0439','W':'\u0446','E':'\u0443','R':'\u043a','T':'\u0435',
+           'Y':'\u043d','U':'\u0433','I':'\u0448','O':'\u0449','P':'\u0437',
+           '\u00db':'\u0445','\u00dd':'\u044a','\u00dc':'/',
+           'A':'\u0444','S':'\u044b','D':'\u0432','F':'\u0430','G':'\u043f',
+           'H':'\u0440','J':'\u043e','K':'\u043b','L':'\u0434',';':'\u0436',
+           '\u00de':'\u044d' ,
+           'Z':'\u044f','X':'\u0447','C':'\u0441','V':'\u043c','B':'\u0438',
+           'N':'\u0442','M':'\u044c','\u00bc':'\u0431','\u00be':'\u044e',
+           '\u00bf':',' },
+    'l':  {'\u00c0':'\u0401','1':'1','2':'2','3':'3','4':'4','5':'5','6':'6',
+           '7':'7','8':'8','9':'9','0':'0','m':'-','=':'=' ,
+           'Q':'\u0419','W':'\u0426','E':'\u0423','R':'\u041a','T':'\u0415',
+           'Y':'\u041d','U':'\u0413','I':'\u0428','O':'\u0429','P':'\u0417',
+           '\u00db':'\u0425','\u00dd':'\u042a','\u00dc':'\\',
+           'A':'\u0424','S':'\u042b','D':'\u0412','F':'\u0410','G':'\u041f',
+           'H':'\u0420','J':'\u041e','K':'\u041b','L':'\u0414',';':'\u0416',
+           '\u00de':'\u042d' ,
+           'Z':'\u042f','X':'\u0427','C':'\u0421','V':'\u041c','B':'\u0418',
+           'N':'\u0422','M':'\u042c','\u00bc':'\u0411','\u00be':'\u042e',
+           '\u00bf':'.'
+          },
+    's':  {'\u00c0':'\u0401','1':'!','2':'\"','3':'\u2116','4':';','5':'%',
+           '6':':','7':'?','8':'*','9':'(','0':')','m':'_','=':'+' ,
+           'Q':'\u0419','W':'\u0426','E':'\u0423','R':'\u041a','T':'\u0415',
+           'Y':'\u041d','U':'\u0413','I':'\u0428','O':'\u0429','P':'\u0417',
+           '\u00db':'\u0425','\u00dd':'\u042a','\u00dc':'/',
+           'A':'\u0424','S':'\u042b','D':'\u0412','F':'\u0410','G':'\u041f',
+           'H':'\u0420','J':'\u041e','K':'\u041b','L':'\u0414',';':'\u0416',
+           '\u00de':'\u042d',
+           'Z':'\u042f','X':'\u0427','C':'\u0421','V':'\u041c','B':'\u0418',
+           'N':'\u0422','M':'\u042c','\u00bc':'\u0411','\u00be':'\u042e',
+           '\u00bf':',' },
+    '':   {'\u00c0':'\u0451','1':'1','2':'2','3':'3','4':'4','5':'5','6':'6',
+           '7':'7','8':'8','9':'9','0':'0','m':'-','=':'=' ,
+           'Q':'\u0439','W':'\u0446','E':'\u0443','R':'\u043a','T':'\u0435',
+           'Y':'\u043d','U':'\u0433','I':'\u0448','O':'\u0449','P':'\u0437',
+           '\u00db':'\u0445','\u00dd':'\u044a','\u00dc':'\\' ,
+           'A':'\u0444','S':'\u044b','D':'\u0432','F':'\u0430','G':'\u043f',
+           'H':'\u0440','J':'\u043e','K':'\u043b','L':'\u0434',';':'\u0436',
+           '\u00de':'\u044d' ,
+           'Z':'\u044f','X':'\u0447','C':'\u0441','V':'\u043c','B':'\u0438',
+           'N':'\u0442','M':'\u044c','\u00bc':'\u0431','\u00be':'\u044e',
+           '\u00bf':'.'
+          },
+    'sc,cl':{'P':'\u0405','B':'\u0406','Q':'\u0407','J':'\u0460','K':'\u047e',
+             '\u00c0':'\u0462','T':'\u0464','Z':'\u0466','X':'\u0468',
+             'E':'\u046a','R':'\u046c','\u00db':'\u046e','S':'\u0470',
+             'A':'\u0472','N':'\u0474','M':'\u0476','W':'\u0478','L':'\u047a',
+             ';':'\u047c'
+            },
+    'c,scl':{'P':'\u0455','B':'\u0456','Q':'\u0457','J':'\u0461','K':'\u047f',
+             '\u00c0':'\u0463','T':'\u0465','Z':'\u0467','X':'\u0469',
+             'E':'\u046b','R':'\u046d','\u00db':'\u046f','S':'\u0471',
+             'A':'\u0473','N':'\u0475','M':'\u0477','W':'\u0479','L':'\u047b',
+             ';':'\u047d'
+            }
+}});
+
+var layout3 =   new GKBD.Layout({id:'xx',name:'Russian',
+  mappings: {
+    'l':  {'Q':'q3l','W':'w3l','E':'e3l'
+          },
+    '':   {'Q':'q3','W':'w3','E':'e3'
+          }
+}});
+
+var renderedSample1 = [
+    '<form style="margin-bottom:0" action="">',
+    '<table style="table-layout:fixed;margin-left:auto;margin-right:auto;',
+    'empty-cells:show;border-collapse:collapse" border="0" width="100%" ',
+    'cellspacing="0" cellpadding="0"><tr align="left" style="height:15px">',
+    '<td style="width:0px"/><td style="margin:0; width:27px">',
+    '<input type="button" class="kbdButton" id="K192" name="K192" value="&#192;" ',
+    'style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px"><input type="button" ',
+    'class="kbdButton" id="K49" name="K49" value="1" ' +
+    'style="width:100%;height:30px"/>',
+    '</td><td style="margin:0; width:27px">',
+    '<input type="button" class="kbdButton" id="K50" name="K50" value="2" ',
+    'style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px"><input type="button" ',
+    'class="kbdButton" id="K51" name="K51" value="3" ',
+    'style="width:100%;height:30px"/></td><td style="margin:0; width:27px">',
+    '<input type="button" class="kbdButton" id="K52" name="K52" value="4" ',
+    'style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px"><input type="button" class="kbdButton" ',
+    'id="K53" name="K53" value="5" style="width:100%;height:30px"/>',
+    '</td><td style="margin:0; width:27px"><input type="button" class="kbdButton" ',
+    'id="K54" name="K54" value="6" style="width:100%;height:30px"/>',
+    '</td><td style="margin:0; width:27px"><input type="button" class="kbdButton" ',
+    'id="K55" name="K55" value="7" style="width:100%;height:30px"/>',
+    '</td><td style="margin:0; width:27px"><input type="button" class="kbdButton" ',
+    'id="K56" name="K56" value="8" style="width:100%;height:30px"/>',
+    '</td><td style="margin:0; width:27px"><input type="button" class="kbdButton" ',
+    'id="K57" name="K57" value="9" style="width:100%;height:30px"/>',
+    '</td><td style="margin:0; width:27px"><input type="button" class="kbdButton" ',
+    'id="K48" name="K48" value="0" style="width:100%;height:30px"/>',
+    '</td><td style="margin:0; width:27px">',
+    '<input type="button" class="kbdButton" id="K109" name="K109" value="m" ',
+    'style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px"><input type="button" class="kbdButton" ',
+    'id="K61" name="K61" value="=" style="width:100%;height:30px"/>',
+    '</td><td style="margin:0; width:66px"><input type="button" class="kbdButton" ',
+    'id="K8" name="K8" value="Backspace" style="width:100%;height:30px"/>',
+    '</td><td style="width:0px"/></tr></table>\n',
+    '<table style="table-layout:fixed;margin-left:auto;margin-right:auto;',
+    'empty-cells:show;border-collapse:collapse" border="0" width="100%" ',
+    'cellspacing="0" cellpadding="0"><tr align="left" style="height:15px">',
+    '<td style="width:36px"/><td style="margin:0; width:27px">',
+    '<input type="button" class="kbdButton" id="K81" name="K81" value="Q" ',
+    'style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px"><input type="button" class="kbdButton" ',
+    'id="K87" name="K87" value="W" style="width:100%;height:30px"/>',
+    '</td><td style="margin:0; width:27px"><input type="button" class="kbdButton" ',
+    'id="K69" name="K69" value="E" style="width:100%;height:30px"/>',
+    '</td><td style="margin:0; width:27px"><input type="button" class="kbdButton" ',
+    'id="K82" name="K82" value="R" style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px"><input type="button" class="kbdButton" ',
+    'id="K84" name="K84" value="T" style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px"><input type="button" class="kbdButton" ',
+    'id="K89" name="K89" value="Y" style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px"><input type="button" class="kbdButton" ',
+    'id="K85" name="K85" value="U" style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px"><input type="button" class="kbdButton" ',
+    'id="K73" name="K73" value="I" style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px"><input type="button" class="kbdButton" ',
+    'id="K79" name="K79" value="O" style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px"><input type="button" class="kbdButton" ',
+    'id="K80" name="K80" value="P" style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px">',
+    '<input type="button" class="kbdButton" id="K219" name="K219" value="&#219;" ',
+    'style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px">',
+    '<input type="button" class="kbdButton" id="K221" name="K221" value="&#221;" ',
+    'style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:57px"><input type="button" ',
+    'class="kbdButton" id="K220" name="K220" value="&#220;" ',
+    'style="width:100%;height:30px"/></td>',
+    '<td style="width:0px"/></tr></table>\n',
+    '<table style="table-layout:fixed;margin-left:auto;margin-right:auto;',
+    'empty-cells:show;border-collapse:collapse" border="0" width="100%" ',
+    'cellspacing="0" cellpadding="0"><tr align="left" style="height:15px">',
+    '<td style="width:0px"/><td style="margin:0; width:50px">',
+    '<input type="button" class="kbdButton" id="K20" name="K20" value="C/Lk" ',
+    'style="width:100%;height:30px"/></td><td style="margin:0; width:27px">',
+    '<input type="button" class="kbdButton" id="K65" name="K65" value="A" ',
+    'style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px">',
+    '<input type="button" class="kbdButton" id="K83" name="K83" value="S" ',
+    'style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px">',
+    '<input type="button" class="kbdButton" id="K68" name="K68" value="D" ',
+    'style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px"><input type="button" class="kbdButton" ',
+    'id="K70" name="K70" value="F" style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px"><input type="button" class="kbdButton" ',
+    'id="K71" name="K71" value="G" style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px"><input type="button" class="kbdButton" ',
+    'id="K72" name="K72" value="H" style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px"><input type="button" class="kbdButton" ',
+    'id="K74" name="K74" value="J" style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px"><input type="button" class="kbdButton" ',
+    'id="K75" name="K75" value="K" style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px"><input type="button" class="kbdButton" ',
+    'id="K76" name="K76" value="L" style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px"><input type="button" class="kbdButton" ',
+    'id="K59" name="K59" value=";" style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px">',
+    '<input type="button" class="kbdButton" id="K222" name="K222" value="&#222;" ',
+    'style="width:100%;height:30px"/></td>',
+    '<td style="width:66px"/></tr></table>\n',
+    '<table style="table-layout:fixed;margin-left:auto;margin-right:auto;',
+    'empty-cells:show;border-collapse:collapse" border="0" width="100%" ',
+    'cellspacing="0" cellpadding="0"><tr align="left" style="height:15px">',
+    '<td style="width:0px"/><td style="margin:0; width:67px">',
+    '<input type="button" class="kbdButton" id="K16" name="K16" value="Shift" ',
+    'style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px">',
+    '<input type="button" class="kbdButton" id="K90" name="K90" value="Z" ',
+    'style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px"><input type="button" ',
+    'class="kbdButton" id="K88" name="K88" value="X" ',
+    'style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px"><input type="button" class="kbdButton" ',
+    'id="K67" name="K67" value="C" style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px"><input type="button" class="kbdButton" ',
+    'id="K86" name="K86" value="V" style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px"><input type="button" class="kbdButton" ',
+    'id="K66" name="K66" value="B" style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px"><input type="button" class="kbdButton" ',
+    'id="K78" name="K78" value="N" style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px"><input type="button" class="kbdButton" ',
+    'id="K77" name="K77" value="M" style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px"><input type="button" ',
+    'class="kbdButton" id="K188" name="K188" value="&#188;" ',
+    'style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:27px"><input type="button" ',
+    'class="kbdButton" id="K190" name="K190" value="&#190;" ',
+    'style="width:100%;height:30px"/></td><td style="margin:0; width:27px">',
+    '<input type="button" class="kbdButton" id="K191" name="K191" ',
+    'value="&#191;" style="width:100%;height:30px"/></td>',
+    '<td style="margin:0; width:84px"><input type="button" class="kbdButton" ',
+    'id="K273" name="K273" value="Alt+Ctrl" ',
+    'style="width:100%;height:30px"/>',
+    '</td><td style="width:0px"/></tr></table>\n</form>'].join('');
+
+var keyBuffer;
+
+var mockLayer = {
+  processChar_:   function(keys) { keyBuffer += keys; },
+  redirectFocus_: function(){},
+  setTitle_:      function(){},
+  historySize_:   1
+};
+
+var keyboard;
+
+function buildEvent(key, shift) {
+  return {which:    key.charCodeAt(0),
+          shiftKey: shift};
+}
+
+function pressAndRelease(key, shift) {
+  var event = buildEvent(key, shift);
+
+  if (document.onkeydown) {
+    document.onkeydown(event);
+  }
+  if (document.onkeyup) {
+    document.onkeyup(event);
+  }
+}
+
+var clicked = '';
+
+function clickme(code) {
+  clicked = String.fromCharCode(code);
+}
+
+var KBD_document;
+var KBD_document_body;
+
+function setUp() {
+  KBD_document = document;
+  KBD_document_body = KBD_document.body;
+  keyboard = new GKBD.Keyboard(mockLayer, [],
+      {'Ru': layout1, 'RU': layout2, 'xx': layout3}, layout3);
+
+  keyboard.setListeners_();
+  for (i = 1; i < 256; i++) {
+    var x = i;
+    keyboard.keys_[i] = {value:   String.fromCharCode(i),
+                         code: i,
+                         onclick: function() { clickme(this.code);}
+                        };
+  }
+  keyboard.setDefaultLayout_(layout3);
+  keyboard.setLayout_(layout3);
+}
+
+function testHtmlEncode1() {
+  assertEquals('x', htmlEncode('x'));
+}
+
+function testHtmlEncode2() {
+  assertEquals('&#4660;', htmlEncode('\u1234'));
+}
+
+function testHtmlEncode3() {
+  assertEquals('&#18;', htmlEncode('\u0012'));
+}
+
+function testDrawKeyboard() {
+  keyboard.drawKeyboard_();
+  var actual = keyboard.content_.replace(/;font-size:\d+px/g, "");
+  expectEqual(renderedSample1, actual);
+}
+
+function testSetLayout() {
+  assertEquals("xx", keyboard.layout_.getId_());
+  keyboard.setLayout_(layout1);
+  assertEquals("Ru", keyboard.layout_.getId_());
+  keyboard.setLayout_(layout2);
+  assertEquals("RU", keyboard.layout_.getId_());
+}
+
+function testSwitchTo() {
+  assertEquals("0xx", keyboard.serialize_());
+  keyboard.switchTo_('Ru');
+  assertEquals("0Ru", keyboard.serialize_());
+  keyboard.switchTo_("RU");
+  assertEquals("0RU", keyboard.serialize_());
+}
+
+function testSerialize1() {
+  keyboard.setLayout_(layout1);
+  keyboard.deserialize_();
+  assertEquals("0xx", keyboard.serialize_());
+}
+
+function testSerialize2() {
+  assertEquals('Ru', layout1.getId_());
+  keyboard.setLayout_(layout1);
+  keyboard.deserialize_('0Ru');
+  assertEquals("0Ru", keyboard.serialize_());
+}
+
+function testSerialize3() {
+  keyboard.setLayout_(layout1);
+  keyboard.deserialize_('0RU');
+  assertEquals("0RU", keyboard.serialize_());
+}
+
+function testSerialize4() {
+  keyboard.setLayout_(layout1);
+  keyboard.deserialize_('0zz');
+  assertEquals("0xx", keyboard.serialize_());
+}
+
+function testSetDefaultLayout() {
+  keyboard.setLayout_(layout1);
+  keyboard.setDefaultLayout_(layout2);
+  keyboard.deserialize_('0zz');
+  assertEquals("0RU", keyboard.serialize_());
+}
+
+function testStartListening1() {
+  var callcount = 0;
+  function tryme() {
+    callcount++;
+  }
+  document.onkeydown = document.onkeyup = document.onkeypress = tryme;
+
+  pressAndRelease(":", false);
+  assertEquals(2, callcount);
+  keyboard.startListening_();
+  pressAndRelease("A", false);
+  assertEquals(2, callcount);
+  pressAndRelease("B", false);
+  assertEquals(2, callcount);
+  keyboard.startListening_();
+  pressAndRelease("A", false);
+  assertEquals(2, callcount);
+  pressAndRelease("B", false);
+  assertEquals(2, callcount);
+}
+
+function clickAndTest(key, expected) {
+  clicked = '';
+  pressAndRelease(key, false);
+  assertEquals(expected, clicked);
+  clicked = '';
+}
+/*
+ * After changing the listening behavior, it is not obvious 
+ * how to deal with these three tests - will fix later.
+ *
+function testGetEventCode() {
+  keyboard.startListening_();
+  clickAndTest('A', 'A');
+  clickAndTest('C', 'C');
+  clickAndTest('\u00bd', 'm');
+}
+
+function testRemapFrench() {
+  keyboard.startListening_();
+  keyboard.oemId_ = 'fr';
+  clickAndTest('A', 'Q');
+  clickAndTest('C', 'C');
+  clickAndTest('Z', 'W');
+  clickAndTest('M', ';');
+}
+
+function testRemapGerman() {
+  keyboard.startListening_();
+  keyboard.oemId_ = 'de';
+  clickAndTest('A', 'A');
+  clickAndTest('Z', 'Y');
+  clickAndTest('Y', 'Z');
+  clickAndTest('\u00dd', '=');
+  clickAndTest('\u00cc', ';');
+}
+*/

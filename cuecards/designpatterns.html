@@ -1,0 +1,192 @@
+<html>
+<head>
+  <meta name="author" content="GoF; Vlad Patryshev"/>
+  <meta name="description" content="Design Pattern Cue Card">
+  <meta name="keywords" content="Design Patterns, Java, GoF">
+  <title>Design Patterns</title>
+  <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+    _uacct = "UA-81536-1";
+    urchinTracker();
+  </script>
+</head>
+<body>
+<b>Index</b>:
+<a href="#AbstractFactory">AbstractFactory</a>
+<a href="#Adapter">Adapter</a>
+<a href="#Command">Action</a>
+<a href="#Behavioral">Behavioral</a>
+<a href="#Bridge">Bridge</a>
+<a href="#Builder">Builder</a>
+<a href="#ChainOfResponsibility">Chain of Responsibility</a>
+<a href="#Command">Command</a>
+<a href="#Composite">Composite</a>
+<a href="#Creational">Creational</a>
+<a href="#Iterator">Cursor</a>
+<a href="#Decorator">Decorator</a>
+<a href="#Observer">Dependents</a>
+<a href="#Facade">Facade</a>
+<a href="#FactoryMethod">Factory Method</a>
+<a href="#Flyweight">Flyweight</a>
+<a href="#Bridge">Handle/Body</a>
+<a href="#Interpreter">Interpreter</a>
+<a href="#Iterator">Iterator</a>
+<a href="#AbstractFactory">Kit</a>
+<a href="#Mediator">Mediator</a>
+<a href="#Memento">Memento</a>
+<a href="#State">Objects for States</a>
+<a href="#Observer">Observer</a>
+<a href="#Prototype">Prototype</a>
+<a href="#Proxy">Proxy</a>
+<a href="#Observer">Publish/Subscribe</a>
+<a href="#Singleton">Singleton</a>
+<a href="#State">State</a>
+<a href="#Structural">Structural</a>
+<a href="#Proxy">Surrogate</a>
+<a href="#Template">Template</a>
+<a href="#Memento">Token</a>
+<a href="#Command">Transaction</a>
+<a href="#FactoryMethod">Virtual Constructor</a>
+<a href="#Visitor">Visitor</a>
+<a href="#Adapter">Wrapper</a>
+<br>
+<table>
+<tr valign="top"><td colspan="3" align="center"><font size="+1"><b>
+<a name="Creational">
+Creational</a></b></font>
+</td>
+<tr valign="top">
+<td><a name="AbstractFactory"><b>AbstractFactory</b> aka <b>Kit</b></a></td>
+<td>&nbsp;</td>
+<td>Instantiates a class that is determined at runtime
+</td>
+</tr>
+<tr valign="top">
+<td><a name="FactoryMethod"><b>FactoryMethod</b> aka <b>Virtual Constructor</b></a></td>
+<td>&nbsp;</td>
+<td>Lets subclasses do object creation: constructor does not help if you do not know the concrete class
+</td>
+</tr>
+<tr valign="top">
+<td><a name="Builder"><b>Builder</b></a></td>
+<td>&nbsp;</td>
+<td>A class that is called to build another class, e.g. document with SAX
+</td>
+</tr>
+<tr valign="top">
+<td><a name="Prototype"><b>Prototype</b></a></td>
+<td>&nbsp;</td>
+<td>"Prototypical instance" that is used to make new objects by copying
+</td>
+</tr>
+<tr valign="top">
+<td><a name="Singleton"><b>Singleton</b></a></td>
+<td>&nbsp;</td>
+<td>Ensures having one instance per class; <i>get</i>, <i>find</i>, or <i>create</i> returns the same object; constructor is private
+</td>
+</tr>
+<tr><td colspan="3" align="center"><font size="+1"><b>
+<a name="Structural">
+Structural</a></b></font>
+</td>
+<tr valign="top">
+<td><a name="Adapter"><b>Adapter</b> aka <b>Wrapper</b></a></td>
+<td>&nbsp;</td>
+<td>Converts one interface to another
+</td>
+</tr>
+<tr valign="top">
+<td><a name="Bridge"><b>Bridge</b> aka <b>Handle/Body</b></a></td>
+<td>&nbsp;</td>
+<td>Separates multiiple implementations; cf. abstract factory + adapter
+</td>
+</tr>
+<tr valign="top">
+<td><a name="Composite"><b>Composite</b></a></td>
+<td>&nbsp;</td>
+<td>Represents "part-whole" hierarchy
+</td>
+</tr>
+<tr valign="top">
+<td><a name="Decorator"><b>Decorator</b> aka <b>Wrapper</b></a></td>
+<td>&nbsp;</td>
+<td>Adds functionality to an existing class
+</td>
+</tr>
+<tr valign="top">
+<td><a name="Facade"><b>Facade</b></a></td>
+<td>&nbsp;</td>
+<td>Unified interface to a set of interfaces; provides simple inteface to complex subsystems; decouples subsystems from clients; use for layering
+</td>
+</tr>
+<tr valign="top">
+<td><a name="Flyweight"><b>Flyweight</b></a></td>
+<td>&nbsp;</td>
+<td>Use it for sharing to support large numbers of objects
+</td>
+</tr>
+<tr valign="top">
+<td><a name="Proxy"><b>Proxy</b> aka <b>Surrogate</b></a></td>
+<td>&nbsp;</td>
+<td>Use to control access to another object
+</td>
+</tr>
+<tr><td colspan="3" align="center"><font size="+1"><b>
+<a name="Behavioral">
+Behavioral</a></b></font>
+</td>
+<tr valign="top">
+<td><a name="ChainOfResponsibility"><b>Chain of Responsibility</b></a></td>
+<td>&nbsp;</td>
+<td>Decouples sender from receiver; use when the actual request handler may not be know in advance
+</td>
+</tr>
+<tr valign="top">
+<td><a name="Command"><b>Command</b> aka <b>Action</b>, <b>Transaction</b></a></td>
+<td>&nbsp;</td>
+<td>Encapsulates request arguments as an object; good for parameterized actions, undo, queue requests, logging, transactions
+</td>
+</tr>
+<tr valign="top">
+<td><a name="Interpreter"><b>Interpreter</b></a></td>
+<td>&nbsp;</td>
+<td>Intereprets a language
+</td>
+</tr>
+<tr valign="top">
+<td><a name="Iterator"><b>Iterator</b> aka <b>Cursor</b></a></td>
+<td>&nbsp;</td>
+<td>Provides sequential access to elements of an aggregate object
+</td>
+</tr>
+<tr valign="top">
+<td><a name="Mediator"><b>Mediator</b></a></td>
+<td>&nbsp;</td>
+<td>Redirects messages, like a PBX. Use it when a distributed behavior should be customizable without subclassing
+</td>
+</tr>
+<tr valign="top">
+<td><a name="Memento"><b>Memento</b> aka <b>Token</b></a></td>
+<td>&nbsp;</td>
+<td>A snapshot of a state; good for undo and when a direct interface for object state whould break encapsulation
+</td>
+</tr>
+<tr valign="top">
+<td><a name="Observer"><b>Observer</b> aka <b>Dependent</b>, <b>Publish/Subscribe</b></a></td>
+<td>&nbsp;</td>
+<td>Good when a change in one object requires changes in others, which need to be notified
+</td>
+</tr>
+<tr valign="top">
+<td><a name="State"><b>State</b> aka <b>Objects for States</b></a></td>
+<td>&nbsp;</td>
+<td>Encapsulates changing behavior to avoid switch; use when behavior depends on states, e.g. with large, multipart conditionals
+</td>
+</tr>
+</table>
+<hr>
+This card is based on <a href="http://www.amazon.com/exec/obidos/ASIN/0201633612/qid=1104804126/sr=2-1/ref=pd_ka_b_2_1/102-4303668-0717704">Design Patterns</a> by
+Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides.
+</body>
+</html>

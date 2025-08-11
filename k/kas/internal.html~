@@ -1,0 +1,41 @@
+<html><head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+<title>Keyboard Main Page</title>
+</head>
+
+<body>
+<font size="-1"><a href="javascript:KBD_toggle();">keyboard</a>&nbsp;
+[<a href="http://wiki.corp.google.com/twiki/bin/view/Main/VirtualKeyboard">wiki</a>]</font>
+<form action="">
+
+<table>
+<tr>
+    <td>
+      <textarea rows="20" cols="30" id="debug">(select keyboard layout, type here)</textarea>
+    </td>
+  </tr>
+</table>
+</form>
+
+<script type="text/javascript" src="Google_files/debug.js"></script>
+<script type="text/javascript" src="Google_files/javascript/common.js"></script>
+<script type="text/javascript" src="Google_files/javascript/lang.js"></script>
+<script type="text/javascript" src="Google_files/menu.js"></script>
+<script type="text/javascript" src="Google_files/keyboard.js"></script>
+<script type="text/javascript" src="Google_files/kbdlayer.js"></script>
+<script type="text/javascript" src="Google_files/kbdlayerdrag.js"></script>
+<script type="text/javascript" src="Google_files/kbdicons.js"></script>
+<script type="text/javascript" src="Google_files/kbdlayout.js"></script>
+<script type="text/javascript" src="Google_files/kbdlayoutloader.js"></script>
+<script type="text/javascript" src="Google_files/kbdmenu.js"></script>
+<script type="text/javascript" src="Google_files/kbd.js"></script>
+<script type="text/javascript">
+  GKBD.KBDl_.configure( {
+    bgColor_ : '#ffccff',
+    frameColor_ : '#ff66ff'});
+//try {
+//  alert(describe(window));
+//  alert(window)
+//} catch(e) { alert(e)}
+</script>
+</body></html>

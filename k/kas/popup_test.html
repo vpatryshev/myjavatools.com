@@ -1,0 +1,220 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  Copyright 2006 Google Inc.
+  All Rights Reserved
+  Author: jonp@google.com (Jon Perlow)
+  FOR INTERNAL USE ONLY
+
+  File for testing menu. Not a unit test unfortunatey because there's no good
+  way yet to unit test DHTML.
+-->
+<html>
+<head>
+<title>Popup Test</title>
+<!-- Following URL is for development inside google3 -->
+<script type="text/javascript" src="javascript/closure/base.js"></script>
+<script type="text/javascript">
+  if (typeof goog == 'undefined') {
+    alert('Closure failed to load');
+  } else {
+    goog.require('goog.ui.Popup');
+  }
+</script>
+
+<style>
+
+.popup {
+  position:absolute;
+  background-color:#e0ecff;
+  color:black;
+  visibility:hidden;
+  width:140px;
+  height:80px;
+  font-size: 80%;
+  border:solid red 1px;
+  -moz-outline:0;
+  outline:0;
+}
+
+button {
+  border: solid black 1px;
+
+}
+
+</style>
+
+
+</head>
+<body>
+  <div id='popup' class='popup' tabindex="0">
+  </div>
+<table border="0">
+  <tr>
+    <td>
+      <h3>Positioning relative to an anchor element</h3>
+      <form>
+      <div>Parent Corner</div>
+      <input type="radio" name="button_corner" value="tl"/>Top Left<br/>
+      <input type="radio" name="button_corner" value="tr" checked/>Top Right<br/>
+      <input type="radio" name="button_corner" value="bl"/>Bottom Left<br/>
+      <input type="radio" name="button_corner" value="br"/>Bottom Right<br/>
+      <br/>
+
+      <div>Child Corner</div>
+      <input type="radio" name="menu_corner" value="tl" checked/>Top Left<br/>
+      <input type="radio" name="menu_corner" value="tr"/>Top Right<br/>
+      <input type="radio" name="menu_corner" value="bl"/>Bottom Left<br/>
+      <input type="radio" name="menu_corner" value="br"/>Bottom Right<br/>
+      <br/>
+      Margin:
+      Top: <input id="margin_top" size=2 value="15"/>
+      Right: <input id="margin_right" size=2 value="0"/>
+      Bottom: <input id="margin_bottom" size=2 value="0"/>
+      Left: <input id="margin_left" size=2 value="0"/>
+      <br/>
+      <br/>
+      <br/>
+      </form>
+      <button id="btn" onclick="showPopup()">
+        Show single popup
+      </button>
+    </td>
+    <td>
+      <h3>Positioning at coordinates</h3>
+      <div id="abs_box" style="width:200px;height:200px;border:solid black 2px;">
+
+      </div>
+    </td>
+  </tr>
+  <tr><td>
+    <button id="btn" onclick="showNestedPopups()">
+      Show nested popups
+    </button>
+
+  </td></tr>
+</table>
+
+<div id='popup1' class='popup' tabindex="0">Popup #1, root</div>
+<div id='popup2' class='popup' tabindex="1">Popup #2, son of #1</div>
+<div id='popup3' class='popup' tabindex="1">Popup #3, daughter of #1</div>
+<div id='popup4' class='popup' tabindex="1">Popup #4, son of #2</div>
+<div id='popup5' class='popup' tabindex="1">Popup #5, son of #3</div>
+<div id='popup6' class='popup' tabindex="1">Popup #6, daughter of #3</div>
+
+
+  <script>
+    var popupElt = document.getElementById('popup');
+    var popup = new goog.ui.Popup(popupElt);
+    popup.setAutoHide(true);
+    var showingBecauseOfBox = false;
+
+
+    goog.events.listen(document, goog.events.types.MOUSEMOVE, onMouseMove);
+    //goog.events.listen(absBox, goog.events.types.MOUSEOUT, onAbsBoxMouseOut);
+
+    function showPopup() {
+      var btn = document.getElementById('btn');
+      var buttonCorner = toCorner(
+          getCheckedValue(document.forms[0].elements['button_corner']));
+      var menuCorner = toCorner(
+          getCheckedValue(document.forms[0].elements['menu_corner']));
+
+      var t = parseInt(document.getElementById('margin_top').value);
+      var r = parseInt(document.getElementById('margin_right').value);
+      var b = parseInt(document.getElementById('margin_bottom').value);
+      var l = parseInt(document.getElementById('margin_left').value);
+      var margin = new goog.math.Box(t, r, b, l);
+
+      popup.setPinnedCorner(menuCorner);
+      popup.setMargin(margin);
+      popup.setPosition(new goog.ui.Popup.AnchoredPosition(btn, buttonCorner));
+      popup.setVisible(true);
+    }
+
+    function onMouseMove(e) {
+      var absBox = document.getElementById('abs_box');
+      var viewPortElt = goog.style.getClientViewportElement();
+      var size = goog.style.getSize(absBox);
+
+      var boxPagePosition = goog.style.getPageOffset(absBox);
+      var viewPortPagePosition =  goog.style.getPageOffset(viewPortElt);
+      var boxClientPosition = new goog.math.Coordinate(
+          boxPagePosition.x - viewPortElt.scrollLeft,
+          boxPagePosition.y - viewPortElt.scrollTop);
+
+      if (e.clientX >= boxClientPosition.x &&
+          e.clientX < (boxClientPosition.x + size.width) &&
+          e.clientY >= boxClientPosition.y &&
+          e.clientY < (boxClientPosition.y + size.height)) {
+        popup.setPinnedCorner(goog.ui.Popup.Corner.TOP_LEFT);
+        popup.setPosition(new goog.ui.Popup.ClientPosition(
+            e.clientX, e.clientY));
+        popup.setVisible(true);
+        showingBecauseOfBox = true;
+      } else if (showingBecauseOfBox) {
+        popup.setVisible(false);
+        showingBecauseOfBox = false;
+      }
+    }
+
+    function getCheckedValue(radioObj) {
+      for (var i = 0; i < radioObj.length; i++) {
+        if (radioObj[i].checked) {
+          return radioObj[i].value;
+        }
+      }
+    }
+
+    function toCorner(val) {
+      switch (val) {
+        case "tl":
+          return goog.ui.Popup.Corner.TOP_LEFT;
+        case "tr":
+          return goog.ui.Popup.Corner.TOP_RIGHT;
+        case "bl":
+          return goog.ui.Popup.Corner.BOTTOM_LEFT;
+        case "br":
+          return goog.ui.Popup.Corner.BOTTOM_RIGHT;
+      }
+    }
+
+    function elem(i) {
+      return document.getElementById('popup' + i);
+    }
+
+    function showNestedPopups() {
+      var btn = document.getElementById('btn');
+      var buttonCorner = toCorner(
+          getCheckedValue(document.forms[0].elements['button_corner']));
+      var menuCorner = toCorner(
+          getCheckedValue(document.forms[0].elements['menu_corner']));
+
+      var t = parseInt(document.getElementById('margin_top').value);
+      var r = parseInt(document.getElementById('margin_right').value);
+      var b = parseInt(document.getElementById('margin_bottom').value);
+      var l = parseInt(document.getElementById('margin_left').value);
+
+      function mkPopup(elnum, reference, level, ord, parent) {
+        var el = elem(elnum);
+        var p = new goog.ui.Popup(el);
+        p.setParent(parent);
+        p.setPinnedCorner(menuCorner);
+        var margin = new goog.math.Box(t * (level + ord + 1), 0, 0, l * (level + 1));
+        p.setMargin(margin);
+        p.setPosition(new goog.ui.Popup.AnchoredPosition(reference, buttonCorner));
+        p.setVisible(true);
+        return p;
+      }
+
+      var popup1 = mkPopup(1, btn, 0, 0);
+      var popup2 = mkPopup(2, elem(1), 1, 0, popup1);
+      var popup3 = mkPopup(3, elem(1), 1, 1, popup1);
+      var popup4 = mkPopup(4, elem(2), 2, 0, popup2);
+      var popup5 = mkPopup(5, elem(3), 2, 0, popup3);
+      var popup6 = mkPopup(6, elem(3), 2, 1, popup3);
+    }
+
+  </script>
+</body>
+</html>
+

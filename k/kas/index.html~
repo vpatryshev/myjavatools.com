@@ -1,0 +1,275 @@
+<html><head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+<title>Keyboard Main Page</title>
+
+  <script type="text/javascript" src="javascript/closure/base.js"></script>
+
+  <script type="text/javascript">
+    if (typeof goog == 'undefined') {
+      alert('Closure failed to load');
+    } else {
+      goog.require('goog.ui.Popup'); // something weird happens if this line is commented out - vpatryshev 09/30/2006
+      goog.require('goog.ui.NestedPopup'); // something weird happens if this line is commented out - vpatryshev 09/30/2006
+      goog.require('goog.ui.AttachableMenu');
+      goog.require('goog.ui.NestedMenu');
+    }
+  </script>
+
+</head>
+
+<body>
+<font size="-1"><a href="javascript:_kbdToggle();">keyboard</a>&nbsp;
+[<a href="http://wiki.corp.google.com/twiki/bin/view/Main/VirtualKeyboard">wiki</a>]</font><br>
+
+  <script type="text/javascript">
+    document.write("your browser is: " + navigator.userAgent);
+
+    function runTest(name) {
+      var splitPath = document.location.toString().split("/");
+      if (splitPath[0] == "http:") {
+        alert("Sorry, JSUnit cannot run tests from the server. Please open this page as a file, if you can.");
+      } 
+      
+      var jsunitPath = splitPath.slice(0, -2).join("/") +
+                     "/third_party/java/jsunit/jsunit2.2/testRunner.html";
+      var testPath = splitPath.slice(0, -1).join("/") + "/" + name;
+      var url = jsunitPath + "?testPage=" + testPath + "&autoRun=true";
+      window.open(url, "keyboard_unittest");
+      return true;
+    }
+  </script>
+  <table>
+    <tr>
+      <td>
+        <abbr title="check out pdb, actually">What's new.</abbr>
+        <ul>
+          <li>9/29/7: Configurable: size, color, title visibility</li>
+          <li>10/15/7: Added Special Characters (Math, arrows)</li>
+          <li>10/31/7: Added Dvorak</li>
+          <li>11/10/7: Added 60+ gadgets(beta) and greasemonkeys (even beta)</li>
+          <li>12/01/7: Arabic gadget for igoogle.com</li>
+          <li>03/01/8: Greasemonkeys for all keyboards</li>
+          <li>07/10/8: Bugfix binaries release</li>
+          <li>08/03/8: Added bookmarklets; new Malayalam layout</li>
+          <li>08/13/8: Added <a href="Google_ru_kiosk_src.html">Russian Kiosk version</a></li>
+        </ul>
+      </td>
+      <td>
+        <form action="http://www.google.com/search" name="f">
+        <textarea rows="13" cols="37" id="debug" name="q"></textarea><br/>
+        <input type="button" value="clear" onclick="getElementById('debug').value = '';">
+        <input name="btnG" value="Google search" type="submit">
+      </form>
+      </td>
+    </tr>
+  </table>
+  <p>
+  </p>
+  <h3>Sample pages</h3>
+  <a href="Google.htm">Google.htm</a> main page with all layouts and full functionality<br>
+  <a href="language_tools_src.html">language_tools_src.html</a> - language tools page<br>
+
+<table>
+<tr>
+  <td valign="top">
+  <font size="-1">
+    <table border=1>
+      <tr>
+        <th>Language/Country</th>
+        <th>Sample</th>
+        <th>Download</th>
+        <th>Gadget</th>
+        <th>Greasemonkey(<a href="#whatisgreasemonkey"><abbr title="What is greasemonkey?"><sup>*</sup></abbr></a>)</th>
+        <th>Bookmarklet</th>
+      </tr>
+      <script type="text/javascript">
+        function _(var_args) {
+          for (var i = 0; i < arguments.length; i++) {
+            document.write(arguments[i]);
+          }
+        }
+        var gadgetDo = true;
+        var monkeyDo = true;
+
+        var data = {
+          "sq": {title:"Albanian", bin:true},
+          'ar': {title:'Arabic', explanation:'\u0627\u0644\u0639\u0631\u0628\u064a\u0629', page:'google.com', bin:true, tryit:'AR'},
+          "hy": {title:"Armenian", bin:true},
+          "az": {title:"Azeri", bin:true},
+          "be": {title:"Belarussian", bin:true},
+          "bn": {title:"Bengali", bin:true},
+          "bg": {title:"Bulgarian", bin:true},
+          "hr": {title:"Croatian", bin:true},
+          "cs": {title:"Czech", bin:true},
+          'dvorak': {title:'Dvorak', page:'google.com', bin:true},
+          "et": {title:"Estonian", bin:true},
+          "fo": {title:"Faroese", bin:true},
+          "fa": {title:"Farsi", bin:true},
+          "fi": {title:"Finnish", bin:true},
+          'fr': {title:'French', explanation:'Français', tryit:'FR'},
+          "cy": {title:"Gaelic", bin:true},
+          "ka": {title:"Georgian", bin:true},
+          'el': {title:'Greek', explanation: '\u0395\u03bb\u03bb\u03b7\u03bd\u03b9\u03ba\u03ac', tryit:'EL'},
+          "gu": {title:"Gujarati", bin:true},
+          "he": {title:"Hebrew", bin:true},
+          'hi': {title:'Hindi', explanation: '\u0939\u093f\u0928\u094d\u0926\u0940', tryit:'HI', page:'google.in', bin:true},
+          'hu': {title:'Hungarian', page:'google.hu', bin:true},
+          'il': {title:'Israel(Ar,En,He,Ru)', page:'google.il', bin:true},
+          "is": {title:"Icelandic", bin:true},
+          'ja': {title:'Japanese', explanation:'&#x65E5;&#x672C;&#x8A9E;', tryit:'Ja'},
+          "kn": {title:"Kannada", bin:true},
+          "kk": {title:"Kazakh", bin:true},
+          "km": {title:"Khmer", bin:true},
+          "lv": {title:"Latvian", bin:true},
+          "lt": {title:"Lithuanian", bin:true},
+          "mk": {title:"Macedonian", bin:true},
+          'ml': {title:'Malayalam', explanation:'\u0d2e\u0d32\u0d2f\u0d3e\u0d33\u0d02', page:'google.com', bin:true, tryit:'ML'},
+          "mt": {title:"Maltese", bin:true},
+          "mr": {title:"Marathi", bin:true},
+          "mn": {title:"Mongolian", bin:true},
+          "ne": {title:"Nepalese", bin:true},
+          "no": {title:"Norwegian", bin:true},
+          "or": {title:"Oriya", bin:true},
+          "ps": {title:"Pashto", bin:true},
+          "pl": {title:"Polish", bin:true},
+          "pa": {title:"Punjabi", bin:true},
+          "ro": {title:"Romanian", bin:true},
+          'ru': {title:'Russian', explanation:'&#x0420;&#x0443;&#x0441;&#x0441;&#x043a;&#x0438;&#x0439; (with &#1123;, &#1139;, &#1141; etc.)', page:'google.ru', bin:true, tryit:'RU'},
+          "sr": {title:"Serbian", bin:true},
+          "si": {title:"Sinhalese", bin:true},
+          "sk": {title:"Slovak", bin:true},
+          "es": {title:"Spanish", bin:true},
+          'spec':{title:'Special (Arrows etc)', page:'google.com', bin:true},
+          "tg": {title:"Tajik", bin:true},
+          "ta": {title:"Tamil", bin:true},
+          "tt": {title:"Tatar", bin:true},
+          "te": {title:"Telugu", bin:true},
+          "th": {title:"Thai", bin:true},
+          'tr': {title:'Turkish', page:'google.tr', bin:true},
+          "tk": {title:"Turkmen", bin:true},
+          "ug": {title:"Uighur", bin:true},
+          'ua': {title:'Ukraine (Ua,Ru)', page:'google.ua', bin:true},
+          "ur": {title:"Urdu", bin:true},
+          "uz": {title:"Uzbek", bin:true}
+        };
+
+        for (var locale in data) {
+          var entry = data[locale];
+          if (entry.bin) {
+            var dName = 'd_' + locale + '_002.js';
+            var fName = 'f_' + locale + '_002.js';
+            var gadgetName = 'kbd_' + locale + '_gadget.xml';
+            var greasemonkeyName = 'keyboard_' + locale + '.user.js';
+            var binPage = entry.page ? ('Google_' + locale + '.html') :
+                          ('Google.html?nl=' + locale);
+            var srcPage = entry.page ? ('Google_' + locale + '_src.html') :
+                          ('Google_src.html?nl=' + locale);
+            _('<tr><td>', entry.title, '<br></td>');
+            _('<td align="center"><a href="', binPage, '">');
+            _("try", '</a> ');
+            _('<a style="font-size:60%" href="#"');
+            _('onclick=\'runTest("keyboard_', locale, '_bin_unittest.html")\'>unittest</a>');
+            _('</td>');
+//            _('<td align="center"><a href="', srcPage, '">try</a> ');
+//            _('<a style="font-size:60%" href="#"');
+//            _('onclick=\'runTest("javascript/keyboard/keyboard_', locale);
+//            _('_unittest.html")\'>unittest</a>');
+//            _('</td>');
+            _('<td align="center"><a href="bin/', dName, '">click</a>');
+//            _('/<a href="bin/', fName, '">fixed</a>');
+            if (gadgetDo) {
+              _('<td align="center"><a href="gadgets/', gadgetName, '">url</a></td>');
+            }
+            if (monkeyDo) {
+              _('<td align="center"><a href="greasemonkey/', greasemonkeyName, '">install</a></td>');
+            }
+            _('<td align="center">', bookmarklet(locale, dName, entry.title));
+            _('</td></tr>');
+          }
+        }
+
+        function bookmarklet(langId, scriptName, title) {
+          return ['<a href=\'javascript:(function(){var%20d=document;var%20s=d.createElement("script");s.onreadystatechange=s.onload=function(){window.onload()};s.src="bin/',
+              scriptName,
+              '";d.body.appendChild(s);})();\' style="border: 1px solid rgb(170, 170, 170); padding: 0.1em 0.5em; background-color: rgb(153, 153, 153); color: rgb(255, 255, 255); text-decoration: none; font-weight: bold; text-shadow: 2px 2px 2px rgb(102, 102, 102);" title="',
+            title,
+            ': drag this to your bookmarks bar">',
+            langId,
+            '</a>'].join('');
+        }
+      </script>
+  <tr>
+    <td>India (10 languages) </td>
+    <td>-</td>
+    <td><a href="Google_il_src.html">google.in</a></td>
+  </tr>
+  <tr>
+    <td align="right">
+      other
+    </td>
+    <td style="font-size:70%">
+      Unittests:<br>
+      <a href="#" onclick='runTest("javascript/keyboard/AllTests.html")'>All</a><br/>
+      <font size="-1">
+        <a href="#" onclick='runTest("javascript/keyboard/kbdlayout_unittest.html")'>Layout</a><br/>
+        <a href="#" onclick='runTest("javascript/keyboards/kbdlayer_unittest.html")'>Layer</a><br/>
+        <a href="#" onclick='runTest("javascript/keyboard/keyboard_unittest.html")'>Keyboard</a><br/>
+      </font>
+    </td>
+    <td style="font-size:70%">
+      <a href="Google_ru_colors.html">custom colors</a><br>
+      <a href="Google_ru_src_colors.html">same; test version</a>
+    </td>
+  </tr>
+</table>
+  </font>
+</td>
+<td valign="top"><table>
+<script type="text/javascript">
+  for (var i in data) {
+    var entry = data[i];
+    if (entry.tryit) {
+      _('<tr><td align="center">', entry.explanation || entry.title, '<br><textarea rows="6" cols="30", wrap="PHYSICAL"');
+      _(' lang="', entry.tryit, '">', entry.explanation, '</textarea></td></tr>')
+    }
+  }
+</script>
+</table>
+
+</table>
+<script type="text/javascript" src="javascript/keyboard/debug.js"></script>
+<script type="text/javascript" src="javascript/common.js"></script>
+<script type="text/javascript" src="javascript/lang.js"></script>
+<script type="text/javascript" src="javascript/keyboard/menu.js"></script>
+<script type="text/javascript" src="javascript/keyboard/keyboard.js"></script>
+<script type="text/javascript" src="javascript/keyboard/kbdlayer.js"></script>
+<script type="text/javascript" src="javascript/keyboard/kbdlayerdrag.js"></script>
+<script type="text/javascript" src="javascript/keyboard/kbdicons.js"></script>
+<script type="text/javascript" src="javascript/keyboard/kbdlayout.js"></script>
+<script type="text/javascript" src="javascript/keyboard/kbdlayoutloader.js"></script>
+<script type="text/javascript" src="javascript/keyboard/kbdmenu.js"></script>
+<script type="text/javascript" src="javascript/keyboard/kbd.js"></script>
+<!-- -->
+<a name="whatisgreasemonkey"></a>
+<b>About Greasemonkey</b>
+Greasemonkey is a Firefox extension that allows you to customize the way webpages look and function.
+<a href="https://addons.mozilla.org/en-US/firefox/downloads/file/16465/greasemonkey-0.7.20070607.0-fx.xpi">install greasemonkey</a>
+<h3>Release log</h3>
+<table border="1">
+  <tr>
+    <th>Date</th>
+    <th>version</th>
+    <th>Notes</th>
+  </tr>
+  <tr>
+    <td>07/10/2008</td>
+    <td>002</td>
+    <td>Bugfix (1235330)</td>
+  </tr>
+  <tr>
+    <td>08/04/2008</td>
+    <td>002</td>
+    <td>Bookmarklets added; improved Malayalam layout</td>
+  </tr>
+</table>
+</body></html>

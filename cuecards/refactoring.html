@@ -1,0 +1,745 @@
+<html>
+<head>
+  <meta name="author" content="Martin Fowler, Vlad Patryshev"/>
+  <meta name="description" content="Refactoring Cue Card">
+  <meta name="keywords" content="Refactoring, XP, Martin Fowler">
+  <title>Refactoring Cue Card</title>
+  <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+    _uacct = "UA-81536-1";
+    urchinTracker();
+  </script>
+</head>
+<body>
+<!--<b>Index</b>:
+<a href="#AlternativeClassesWithDifferentInterfaces">Alternative Classes with Different Interfaces</a>
+<a href="#BadSmells">Bad Smells</a>
+<a href="#BooleanParameter">Boolean Parameter</a>
+<a href="#Comments">Comments</a>
+<a href="#ComposingMethods">Composing Methods</a>
+<a href="#DataClass">Data Class</a>
+<a href="#DataClumps">Data Clumps</a>
+<a href="#DivergentChange">Divergent Change</a>
+<a href="#DuplicateCode">Duplicate Code</a>
+<a href="#ExplainingVariable">Explaining Variable</a>
+<a href="#ExtractMethod">Extract Method</a>
+<a href="#FeatureEnvy">Feature Envy</a>
+<a href="#HideDelegate">Hide Delegate</a>
+<a href="#InappropriateIntimacy">Inappropriate Intimacy</a>
+<a href="#IncompleteLibraryClass">Incomplete Library Class</a>
+<a href="#InlineMethod">Inline Method</a>
+<a href="#InlineTemp">Inline Temp</a>
+<a href="#LargeClass">Large Class</a>
+<a href="#LazyClass">Lazy Class</a>
+<a href="#LongMethod">Long Method</a>
+<a href="#MessageChain">Message Chain</a>
+<a href="#Method2MethodObject">Method&rarr;Method Object</a>
+<a href="#MiddleMan">Middle Man</a>
+<a href="#MovingFeatures"><b>Moving Features</b></a>
+<a href="#ParallelInheritanceHierarchies">Parallel Inheritance Hierarchies</a>
+<a href="#PrimitiveObsession">Primitive Obsession</a>
+<a href="#RefusedRequest">Refused Request</a>
+<a href="#RemoveParameterAssignment">Remove Parameter Assignment</a>
+<a href="#ShotgunSurgery">Shotgun Surgery</a>
+<a href="#SpecilativeGenerality">Speculative Generality</a>
+<a href="#SplitTempVariable">Split Temp Variable</a>
+<a href="#SubstituteAlgorithm">Substitute Algorithm</a>
+<a href="#SwitchStatement">Switch Statement</a>
+<a href="Temp2Query">Temp&rarr;Query</a>
+<a href="#TemporaryFields">Temporary Fields</a>
+<a href="#TwoStringParameters">Two String Parameters</a>
+<a href="#Creational">Creational</a>
+<a href="#Iterator">Cursor</a>
+<a href="#Decorator">Decorator</a>
+<a href="#Observer">Dependents</a>
+<a href="#Facade">Facade</a>
+<a href="#FactoryMethod">Factory Method</a>
+<a href="#Flyweight">Flyweight</a>
+<a href="#Bridge">Handle/Body</a>
+<a href="#Interpreter">Interpreter</a>
+<a href="#Iterator">Iterator</a>
+<a href="#AbstractFactory">Kit</a>
+<a href="#Mediator">Mediator</a>
+<a href="#Memento">Memento</a>
+<a href="#State">Objects for States</a>
+<a href="#Observer">Observer</a>
+<a href="#Prototype">Prototype</a>
+<a href="#Proxy">Proxy</a>
+<a href="#Observer">Publish/Subscribe</a>
+<a href="#Singleton">Singleton</a>
+<a href="#State">State</a>
+<a href="#Structural">Structural</a>
+<a href="#Proxy">Surrogate</a>
+<a href="#Template">Template</a>
+<a href="#Memento">Token</a>
+<a href="#Command">Transaction</a>
+<a href="#FactoryMethod">Virtual Constructor</a>
+<a href="#Visitor">Visitor</a>
+<a href="#Adapter">Wrapper</a>
+<br>
+-->
+<table>
+<tr valign="top">
+  <td colspan="4" align="center"><font size="+1"><b>
+<a name="BadSmells">
+Bad Smells in Code</a></b></font>
+</td></tr>
+<tr valign="top">
+<td width="267"><a name="DuplicateCode"><b>Duplicate Code</b></a></td>
+<td width="6">&nbsp;</td>
+<td colspan="2">Same expression in two methods - use <a href="#ExtractMethod">Extract Method</a>; 
+same expression in sibling classes - use <a href="#ExtractMethod">Extract Method</a>, then <a href="#PullUpMethod">Pull Up Method</a>; 
+if classes are not siblings, start with <a href="#ExtractClass">Extract Class</a>
+</td>
+</tr>
+<tr valign="top">
+<td><a name="LongMethod"><b>Long Method </b></a></td>
+<td>&nbsp;</td>
+<td colspan="2">Decompose if you feel the need to comment. Use <a href="#ExtractMethod">Extract Method</a>. 
+<a href="#ParameterObject">Introduce Parameter Object</a>, <a href="#PreserveWholeObject">Preserve Whole Object</a>, 
+and <a href="#DecomposeConditional">Decompose Conditional</a> can help.
+</td>
+</tr>
+<tr valign="top">
+<td><a name="LargeClass"><b>Large Class </b></a></td>
+<td>&nbsp;</td>
+<td colspan="2">Class tries to be omnipotent. Use <a href="#ExtractClass">Extract Class</a>, 
+<a href="#ExtractSubclass">Extract Subclass</a>, <a href="#ExtractInterface">Extract Interface</a>.
+</td>
+</tr>
+<tr valign="top">
+<td><a name="LongParameterList"><b>Long Parameter List </b></a></td>
+<td>&nbsp;</td>
+<td colspan="2">First, just use objects that encapsulate data. 
+<a href="#Parameter2Method">Parameter &rarr; Method</a>,
+<a href="#PreserveWholeObject">Preserve Whole Object</a>,
+<a href="#ParameterObject">Introduce Parameter Object</a> will help you.
+</td>
+</tr>
+<tr valign="top">
+<td><a name="DivergentChange"><b>Divergent Change </b></a></td>
+<td>&nbsp;</td>
+<td colspan="2">Happens when one class regularly changes for different reasons - 
+meaning it contains too much information or functionality.
+<a href="#ExtractClass">Extract Class</a> helps.
+</td>
+</tr>
+<tr valign="top">
+<td><a name="ShotgunSurgery"><b>Shotgun Surgery </b></a></td>
+<td>&nbsp;</td>
+<td colspan="2">Happens when one change requirement leads to changes in several places.
+Use <a href="#MoveMethod">Move Method</a>, <a href="#MoveField">Move Field</a> to put all changes into one class.
+</td>
+</tr>
+<tr valign="top">
+<td><a name="FeatureEnvy"><b>Feature Envy </b></a></td>
+<td>&nbsp;</td>
+<td colspan="2">A method is more interested in another class than its own. Use <a href="#MoveMethod">Move Method</a> to fix.
+</td>
+</tr>
+<tr valign="top">
+<td><a name="DataClumps"><b>Data Clumps </b></a></td>
+<td>&nbsp;</td>
+<td colspan="2">Data that hang together should be moved to an object. 
+Use <a href="#ExtractClass">Extract Class</a>,
+<a href="#PreserveWholeObject">Preserve Whole Object</a>,
+<a href="#ParameterObject">Introduce Parameter Object</a>.
+</td>
+</tr>
+<tr valign="top">
+<td><a name="PrimitiveObsession"><b>Primitive Obsession </b></a></td>
+<td>&nbsp;</td>
+<td colspan="2">Small classes do not take more memory or processor than primitive types. 
+Start with <a href="#DataValue2Object">Data Value &rarr; Object</a>,  
+<a href="#TypeCode2StateStrategy">Type Code &rarr; State/Strategy</a>
+<a href="#TypeCode2Subclasses">Type Code &rarr; Subclasses</a>; then you can get other bad smells and act accordingly.
+</td>
+</tr>
+<tr valign="top">
+<td><a name="SwitchStatement"><b>Switch Statement </b></a></td>
+<td>&nbsp;</td>
+<td colspan="2">Lack of switches is the symptom of object-oriented code. 
+<a href="#ExtractMethod">Extract Method</a>, <a href="#MoveMethod">Move Method</a>,
+<a href="#Conditional2Polymorphism">Conditional &rarr; Polymorphism</a>.
+To get rid of checking for <code>null</code>, use <a href="#IntroduceNullObject">Introduce Null Object</a>.
+</td>
+</tr>
+<tr valign="top">
+<td><a name="ParallelInheritanceHierarchies"><b>Parallel Inheritance Hierarchies </b></a></td>
+<td>&nbsp;</td>
+<td colspan="2">It is a special case of <a href="#ShotgunSurgery">Shotgun Surgery</a>.
+</td>
+</tr>
+<tr valign="top">
+<td><a name="LazyClass"><b>Lazy Class </b></a></td>
+<td>&nbsp;</td>
+<td colspan="2">Class that does nothing should be eliminated. 
+<a href="#CollapseHierarchy">Collapse Hierarchy</a>, <a href="#InlineClass">Inline Class</a>
+</td>
+</tr>
+<tr valign="top">
+<td><a name="SpeculativeGenerality"><b>Speculative Generality </b></a></td>
+<td>&nbsp;</td>
+<td colspan="2">Unnecessary generality is hard to understand and maintain. 
+<a href="#CollapseHierarchy">Collapse Hierarchy</a>, <a href="#InlineClass">Inline Class</a>, <a href="#RenameMethod">Rename Method</a> can help.
+</td>
+</tr>
+<tr valign="top">
+<td><a name="TemporaryFields"><b>Temporary Fields</b></a></td>
+<td>&nbsp;</td>
+<td colspan="2">An instance variable is set only in certain circumstances - it does not belong there then.
+<a href="#ExtractClass">Extract Class</a> can help find a place for such variables.
+</td>
+</tr>
+<tr valign="top">
+<td><a name="MessageChain"><b>Message Chain</b></a></td>
+<td>&nbsp;</td>
+<td colspan="2">It's when you get an object, get another object from it, and get another object from the result, etc.
+<a href="#HideDelegate">Hide Delegate</a> can help.
+</td>
+</tr>
+<tr valign="top">
+<td><a name="MiddleMan"><b>Middle Man </b></a></td>
+<td>&nbsp;</td>
+<td colspan="2">If a class does nothing else than passing requests to other classes...
+<a href="#RemoveMiddleMan">Remove Middle Man</a>.
+</td>
+</tr>
+<tr valign="top">
+<td><a name="InappropriateIntimacy"><b>Inappropriate Intimacy </b></a></td>
+<td>&nbsp;</td>
+<td colspan="2">Classes know too much about each other. <a href="#MoveMethod">Move Method</a>, <a href="#MoveField">Move Field</a>.
+</td>
+</tr>
+<tr valign="top">
+<td><a name="AlternativeClassesWithDifferentInterfaces"><b>Alternative Classes with Different Interfaces</b></a></td>
+<td>&nbsp;</td>
+<td colspan="2"><a href="#RenameMethod">Rename Method</a>, 
+<a href="#MoveMethod">Move Method</a>,
+<a href="#ExtractSuperclass">Extract Superclass</a>.
+</td>
+</tr>
+<tr valign="top">
+<td><a name="IncompleteLibraryClass"><b>Incomplete Library Class </b></a></td>
+<td>&nbsp;</td>
+<td colspan="2"><a href="#ForeignMethod">Introduce Foreign Method</a>,
+<a href="LocalExtension">Introduce Local Extension</a>.
+</td>
+</tr>
+<tr valign="top">
+<td><a name="DataClass"><b>Data Class </b></a></td>
+<td>&nbsp;</td>
+<td colspan="2"><a href="#EncapsulateField">Encapsulate Field</a>,
+<a href="#EncapsulateCollection">Encapsulate Collection</a> to get rid of public fields;
+<a href="#MoveMethod">Move Method</a> or <a href="#ExtractMethod">Extract Method</a>
+to add functionality to the class.
+</td>
+</tr>
+<tr valign="top">
+<td><a name="RefusedBequest"><b>Refused Bequest </b></a></td>
+<td>&nbsp;</td>
+<td colspan="2">Subclasses may not need some of the methods from superclasses - meaning
+we have a wrong hierarchy. Use <a href="#PushDownMethod">Push Down Method</a> to move such
+methods to its right clients.
+</td>
+</tr>
+<tr valign="top">
+<td><a name="Comments"><b>Comments</b></a></td>
+<td>&nbsp;</td>
+<td colspan="2">They signal code that is too complicated. 
+<a href="#ExtractMethod">Extract Method</a>, <a href="#RenameMethod">Rename Method</a>,
+<a href="#Assertion">Introduce assertion</a> may be helpful.
+</td>
+</tr>
+<tr valign="top">
+<td><a name="BooleanParameter"><b>Boolean Parameter </b></a></td>
+<td>&nbsp;</td>
+<td colspan="2">If boolean is used to modify behavior, try something different; cure is the same as for
+<a href="#PrimitiveObsession">Primitive Obsession</a>
+</td>
+</tr>
+<tr valign="top">
+<td><a name="TwoStringParameters"><b>Two String Parameters</b></a></td>
+<td>&nbsp;</td>
+<td colspan="2"><p>Unless the method deals specifically with strings, there's always a chance of mixing the strings
+<a href="#ParameterMethod">Introduce Parameter Object</a> may help.
+</p>
+  <p>&nbsp;</p></td>
+</tr>
+<tr valign="top">
+  <td colspan="2" align="center"><font size="+1"><b>
+<a name="ComposingMethods">
+Composing Methods </a></b></font>
+</td>
+  <td align="center"><strong>Action</strong></td>
+  <td align="center"><strong>Reason</strong></td>
+</tr>
+<tr valign="top">
+<td><a name="ExtractMethod"><b>Extract Method </b></a></td>
+<td>&nbsp;</td>
+<td width="289">pull a piece of code as a method </td>
+<td width="176">give code a name </td>
+</tr>
+<tr valign="top">
+<td><a name="InlineMethod"><b>Inline Method </b></a></td>
+<td>&nbsp;</td>
+<td>opposite to <a href="ExtractMethod">Extract Method</a> </td>
+<td>too trivial </td>
+</tr>
+<tr valign="top">
+<td><a name="InlineTemp"><b>Inline Temp </b></a></td>
+<td>&nbsp;</td>
+<td>get rid of temp variable </td>
+<td>do not cache results </td>
+</tr>
+<tr valign="top">
+<td><a name="Temp2Query"><b>Temp &rarr; Query </b></a></td>
+<td>&nbsp;</td>
+<td>get rid of value caching </td>
+<td>eliminate dependencies</td>
+</tr>
+<tr valign="top">
+<td><a name="ExplainingVariable"><b>Explaining Variable </b></a></td>
+<td>&nbsp;</td>
+<td>split complicated expression </td>
+<td>readability</td>
+</tr>
+<tr valign="top">
+<td><a name="Split Temp Variable"><b>Split Temp Variable </b></a></td>
+<td>&nbsp;</td>
+<td>get rid of variable reuse </td>
+<td>one responsibility per var</td>
+</tr>
+<tr valign="top">
+<td><a name="RemoveParameterAssignment"><b>Remove Parameter Assignment </b></a></td>
+<td>&nbsp;</td>
+<td>Use temp variable instead </td>
+<td>one responsibility per var </td>
+</tr>
+<tr valign="top">
+<td><a name="Method2Object"><b>Method -&gt; Method Object </b></a></td>
+<td>&nbsp;</td>
+<td>Make an object out of method </td>
+<td>helps to<a href="ExtractMethod">Extract Method</a> with too many local vars </td>
+</tr>
+<tr valign="top">
+<td><a name="SubstituteAlgorithm"><b>Substitute Algorithm </b></a></td>
+<td>&nbsp;</td>
+<td>rewrite the code </td>
+<td>you tell me (or ask Martin Fowler)</td>
+</tr>
+<tr>
+  <td colspan="2" align="center"><font size="+1"><b> Moving Features<a name="MovingFeatures">
+</a></b></font>
+</td>
+  <td align="center"><strong>Action</strong></td>
+  <td align="center"><strong>Reason</strong></td>
+</tr>
+<tr valign="top">
+<td><a name="MoveMethod"><b>Move Method </b></a></td>
+<td>&nbsp;</td>
+<td>move it from one class to another</td>
+<td>it deals with another class </td>
+</tr>
+<tr valign="top">
+<td><a name="MoveField"><b>Move Field </b></a></td>
+<td>&nbsp;</td>
+<td>move it from one class to another</td>
+<td>more used in another class</td>
+</tr>
+<tr valign="top">
+<td><a name="ExtractClass"><b>Extract Class </b></a></td>
+<td>&nbsp;</td>
+<td>split a class into two </td>
+<td>when it does the job of two </td>
+</tr>
+<tr valign="top">
+<td><a name="InlineClass"><b>Inline Class </b></a></td>
+<td>&nbsp;</td>
+<td>opposite to <a href="ExtractClass">Extract Class</a></td>
+<td>if it does not do anything </td>
+</tr>
+<tr valign="top">
+<td><a name="HideDelegate"><b>Hide Delegate </b></a></td>
+<td>&nbsp;</td>
+<td>create delegate methods to hide the delegate</td>
+<td>encapsulation</td>
+</tr>
+<tr valign="top">
+<td><a name="RemoveMiddleMan"><b>Remove Middle Man </b></a></td>
+<td>&nbsp;</td>
+<td>opposite to <a href="Hide Delegate">Hide Delegate</a></td>
+<td>hide delegate functionality from middleman </td>
+</tr>
+<tr valign="top">
+<td><a name="ForeignMethod"><b>Foreign Method </b></a></td>
+<td>&nbsp;</td>
+<td>create a method you cannot add to a class </td>
+<td>can't modify the class </td>
+</tr>
+<tr valign="top">
+<td><a name="LocalExtension"><b>Local Extension </b></a></td>
+<td>&nbsp;</td>
+<td>Decorate the subclass for your purposes </td>
+<td>can't modify the class </td>
+</tr>
+<tr>
+  <td colspan="2" align="center"><font size="+1"><b> Organizing Data
+<a name="OrganizingData">
+</a></b></font></td>
+  <td align="center"><strong>Action</strong></td>
+  <td align="center"><strong>Reason</strong></td>
+</tr>
+<tr valign="top">
+<td><a name="SelfEncapsulateField"><b>Self Encapsulate Field</b></a></td>
+<td>&nbsp;</td>
+<td>add getter/setter </td>
+<td>makes data access more flexible</td>
+</tr>
+<tr valign="top">
+<td><a name="Data2Object"><b>Data &rarr; Object </b></a></td>
+<td>&nbsp;</td>
+<td>make data item an object </td>
+<td>enables adding behavior and features</td>
+</tr>
+<tr valign="top">
+<td><a name="Value2Reference"><b>Value &rarr; Reference </b></a></td>
+<td>&nbsp;</td>
+<td>turn an object into a reference object </td>
+<td>keep one instance, give it its own life </td>
+</tr>
+<tr valign="top">
+<td><a name="Reference2Value"><b>Reference &rarr; Value </b></a></td>
+<td>&nbsp;</td>
+<td>opposite to <a href="Value2Reference">Value &rarr; Reference</a></td>
+<td>no need to care about the value lifecycle</td>
+</tr>
+<tr valign="top">
+<td><a name="Array2Object"><b>Array &rarr; Object </b></a></td>
+<td>&nbsp;</td>
+<td> will have a field for each array element </td>
+<td>heterogenous data are treated uniformly </td>
+</tr>
+<tr valign="top">
+<td><a name="DuplicateObservedData"><b>Duplicate Observed Data </b></a></td>
+<td>&nbsp;</td>
+<td>copy data to user object; set up observer to synchronize </td>
+<td>separate view data from model data in mvc</td>
+</tr>
+<tr valign="top">
+<td><a name="Unidirectional2Bidirectional"><b>Unidirectional &rarr; Bidirectional </b></a></td>
+<td>&nbsp;</td>
+<td>add back pointers; modifiers will change both sets </td>
+<td>client of referred class needs to get to referrer </td>
+</tr>
+<tr valign="top">
+<td><a name="Bidirectional2Unidirectional"><b>Bidirectional &rarr; Unidirectional </b></a></td>
+<td>&nbsp;</td>
+<td>drop unneeded end of association</td>
+<td>one class does not need features of the other </td>
+</tr>
+<tr valign="top">
+<td><a name="MagicNumber2SymbolicConstant"><b>Magic Number &rarr; Symbolic Constant</b></a></td>
+<td>&nbsp;</td>
+<td>create a constant with meaningful name </td>
+<td>to avoid mentioning the same constant in different places </td>
+</tr>
+<tr valign="top">
+<td><a name="EncapsulateField"><b>Encapsulate Field </b></a></td>
+<td>&nbsp;</td>
+<td>make it private, add accessors. see <a href="SelfEncapsulateField">Self Encapsulate Field</a></td>
+<td>never make your data public </td>
+</tr>
+<tr valign="top">
+<td><a name="EncapsulateCollection"><b>Encapsulate Collection</b></a></td>
+<td>&nbsp;</td>
+<td>return a read-only view of collection, provide add/remove methods </td>
+<td>to ensure owner's control over collection manipulation </td>
+</tr>
+<tr valign="top">
+<td><a name="Record2DataClass"></a><b>Record&rarr; Data Class</b></a></td>
+<td>&nbsp;</td>
+<td>make a data object for the record </td>
+<td>enable adding methods and fields </td>
+</tr>
+<tr valign="top">
+<td><a name="TypeCode2Class"><b>Type Code &rarr; Class</b></a></td>
+<td>&nbsp;</td>
+<td>Replace type number with class. see <a href="Typecode2Subclasses">Type Code &rarr; Subclasses</a> </td>
+<td>get rid of magic numeric codes </td>
+</tr>
+<tr valign="top">
+<td><a name="TypeCode2Sublasses"><b>Type Code &rarr; Subclasses</b></a></td>
+<td>&nbsp;</td>
+<td>introduce subclasses instead of typecode. see <a href="Typecode2Class">Type Code &rarr; Class</a>
+</td>
+<td>to isolate different behaviors i subclasses</td>
+</tr>
+<tr valign="top">
+<td><a name="TypeCode2StateStrategy"><b>Type Code &rarr; State/Strategy </b></a></td>
+<td>&nbsp;</td>
+<td>replace typecode with state object. see <a href="Typecode2Subclasses">Type Code &rarr; Subclasses</a>,  <a href="Typecode2Class">Type Code &rarr; Class</a>
+</td>
+<td>additionally, can be used if typecode changes </td>
+</tr>
+<tr valign="top">
+<td><a name="Subclass2Field"><b>Subclass&rarr; Field</b><b>s </b></a></td>
+<td>&nbsp;</td>
+<td>introduce fields that differ for subclasses, get rid of accessors and subclasses
+  
+(I woud
+add static constant instances to replace these subclasses) </td>
+<td>subclasses differ only in constants</td>
+</tr>
+  <tr>
+    <td colspan="2" align="center"><font size="+1"><b> Conditionals <a name="Conditionals"> </a></b></font></td></tr>
+  <tr valign="top">
+    <td><a name="Decompose"><b>Decompose</b></a></td>
+    <td>&nbsp;</td>
+    <td>turn complicated condition into method</td>
+    <td>complex conditions are source of errors </td>
+  </tr>
+  <tr valign="top">
+    <td height="29"><a name="Consolidate"><b>Consolidate</b></a></td>
+    <td>&nbsp;</td>
+    <td>turn sequence of conditionals with the same result into method </td>
+    <td>get rid of repeating evaluations</td>
+  </tr>
+  <tr valign="top">
+    <td><a name="ConsolidateDuplicates"><b>Consolidate Duplicates </b></a></td>
+    <td>&nbsp;</td>
+    <td>move duplicate code out of conditionals </td>
+    <td>get rid of duplicated fragments of code </td>
+  </tr>
+  <tr valign="top">
+    <td><a name="RemoveControlFlag"><b>Remove Control Flag </b></a></td>
+    <td>&nbsp;</td>
+    <td>use break or return instead </td>
+    <td>ancient theory of single exit... </td>
+  </tr>
+  <tr valign="top">
+    <td><a name="NestedConditional2GuardClause"><b>Nested Conditional &rarr; Guard Clause </b></a></td>
+    <td>&nbsp;</td>
+    <td>introduce guard conditions instead of tree of conditions</td>
+    <td>make code look simplistic</td>
+  </tr>
+  <tr valign="top">
+    <td><a name="Conditional2Polymorphism"><b>Conditional &rarr;Polymorphism</b></a></td>
+    <td>&nbsp;</td>
+    <td>move each leg to an overriding method of subclass, keeping original abstract </td>
+    <td>Polymorphism macht frei </td>
+  </tr>
+  <tr valign="top">
+    <td><a name="Null Object"><b>NullObject </b></a></td>
+    <td>&nbsp;</td>
+    <td>introduce a special default null object</td>
+    <td>get rid of if(==null) checks </td>
+  </tr>
+  <tr valign="top">
+    <td><a name="Assertion"><b>Assertion</b></a></td>
+    <td>&nbsp;</td>
+    <td>introduce assertion in the beginning of method </td>
+    <td>make an assumption explicit</td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center"><font size="+1"><b> Method Calls <a name="MethodCalls"> </a></b></font></td>
+		  <td align="center"><strong>Action</strong></td>
+  <td align="center"><strong>Reason</strong></td>
+</tr>
+  <tr valign="top">
+    <td><a name="RenameMethod"><b>Rename Method </b></a></td>
+    <td>&nbsp;</td>
+    <td>change the name </td>
+    <td>to reflect its purpose </td>
+  </tr>
+  <tr valign="top">
+    <td><a name="AddParameter"><b>Add Parameter </b></a></td>
+    <td>&nbsp;</td>
+    <td>add parameter </td>
+    <td>information missing</td>
+  </tr>
+  <tr valign="top">
+    <td><a name="RemoveParameter"><b>Remove Parameter</b></a></td>
+    <td>&nbsp;</td>
+    <td>remove it </td>
+    <td>if you don't need it </td>
+  </tr>
+  <tr valign="top">
+    <td><a name="SeparateQueryFromModifier"><b>Separate Query from Modifier</b></a></td>
+    <td>&nbsp;</td>
+    <td>create two method: one for query, one for modification </td>
+    <td>avoid mixing change and retrieval </td>
+  </tr>
+  <tr valign="top">
+    <td><a name="ParameterizeMethod"><b>Parameterize Method </b></a></td>
+    <td>&nbsp;</td>
+    <td>merge several methods into one, with parameter </td>
+    <td>avoid duplication </td>
+  </tr>
+  <tr valign="top">
+    <td><a name="Parameter2ExplicitMethods"><b>Parameter &rarr; Explicit Methods</b></a></td>
+    <td>&nbsp;</td>
+    <td>opposite to <a href="ParameterizeMethod">Parameterize Method</a></td>
+    <td>use when code to run depends on parameter </td>
+  </tr>
+  <tr valign="top">
+    <td><a name="PreserveWholeObject"><b>Preserve Whole Object</b></a></td>
+    <td>&nbsp;</td>
+    <td>pass an object instead of its fields </td>
+    <td>it is like middle man </td>
+  </tr>
+  <tr valign="top">
+    <td><a name="Parameter2Method"><b>Parameter &rarr; Method</b></a></td>
+    <td>&nbsp;</td>
+    <td>remove parameter, let receiver invoke the getter</td>
+    <td>shorter parameter list </td>
+  </tr>
+  <tr valign="top">
+    <td><a name="ParameterObject"><b>Parameter Object</b></a></td>
+    <td>&nbsp;</td>
+    <td>make an object out of a group of parameters that go together</td>
+    <td>easier to pass around </td>
+  </tr>
+  <tr valign="top">
+    <td><a name="RemoveSetter"><b>Remove Setter</b></a></td>
+    <td>&nbsp;</td>
+    <td>remove setters for a field </td>
+    <td>set immutable field at creation</td>
+  </tr>
+  <tr valign="top">
+    <td><a name="HideMethod"><b>Hide Method</b></a></td>
+    <td>&nbsp;</td>
+    <td>make method private</td>
+    <td>if nobody uses it </td>
+  </tr>
+  <tr valign="top">
+    <td><a name="Constructor2FactoryMethod"><b>Constructor &rarr; Factory Method</b></a></td>
+    <td>&nbsp;</td>
+    <td>replace constructor with factory method </td>
+    <td>if you want more than simple construction - e.g. when you replace type code with subclass </td>
+  </tr>
+  <tr valign="top">
+    <td><a name="EncapsulateDowncast"><b>Encapsulate Downcast</b></a></td>
+    <td>&nbsp;</td>
+    <td>move downcasting to withing the method that returns the value </td>
+    <td>get rid of downcasting... generics may help actually </td>
+  </tr>
+  <tr valign="top">
+    <td><a name="ErrorCode2Exception"><b>Error Code &rarr; Exception</b></a></td>
+    <td>&nbsp;</td>
+    <td>throw exception instead of returning error code </td>
+    <td>errors need special treatment anyway, they break the natural control flow </td>
+  </tr>
+  <tr valign="top">
+    <td><a name="Exception2Test"><b>Exception &rarr; Test</b></a></td>
+    <td>&nbsp;</td>
+    <td>let caller check condition instead of throwing exception on that condition </td>
+    <td>the caller has to react anyway </td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center"><font size="+1"><b> Generalization <a name="Generalization"> </a></b></font></td>
+	  <td align="center"><strong>Action</strong></td>
+  <td align="center"><strong>Reason</strong></td>
+</tr>
+  <tr valign="top">
+    <td><a name="PullUpField"><b>Pull Up Field</b></a></td>
+    <td>&nbsp;</td>
+    <td>move field to superclass </td>
+    <td>avoid its duplication in subclasses </td>
+  </tr>
+  <tr valign="top">
+    <td><a name="PullUpMethod"><b>Pull Up Method </b></a></td>
+    <td>&nbsp;</td>
+    <td>move method to superclass </td>
+    <td>avoid its duplication in subclasses </td>
+  </tr>
+  <tr valign="top">
+    <td><a name="PullUpConstructor Body"><b>Pull Up Constructor Body</b></a></td>
+    <td>&nbsp;</td>
+    <td>move constructor body to superclass </td>
+    <td>avoid duplication of common constructor code </td>
+  </tr>
+  <tr valign="top">
+    <td><a name="PushDownMethod"><b>Push Down Method </b></a></td>
+    <td>&nbsp;</td>
+    <td>move method to subclasses</td>
+    <td>if it is not used in all subclasses </td>
+  </tr>
+  <tr valign="top">
+    <td><a name="PushDownField"><b>Push Down Field </b></a></td>
+    <td>&nbsp;</td>
+    <td>move field to subclasses</td>
+    <td>if it is not used in all subclasses </td>
+  </tr>
+  <tr valign="top">
+    <td><a name="ExtractSubclass"><b>Extract Subclass </b></a></td>
+    <td>&nbsp;</td>
+    <td>create subclass for a subset of features </td>
+    <td>features are not used in all subclasses </td>
+  </tr>
+  <tr valign="top">
+    <td><a name="ExtractSuperclass"><b>Extract Superclass </b></a></td>
+    <td>&nbsp;</td>
+    <td>for two classes with similar features, create a superclass, move common features there </td>
+    <td>avoid code duplication </td>
+  </tr>
+  <tr valign="top">
+    <td><a name="ExtractInterface"><b>Extract Interface </b></a></td>
+    <td>&nbsp;</td>
+    <td>several classes have a partially common interface - extract the subset to an interface</td>
+    <td>create a new set of class responsibilities </td>
+  </tr>
+  <tr valign="top">
+    <td><a name="Collapse Hierarchy"><b>Collapse Hierarchy</b></a></td>
+    <td>&nbsp;</td>
+    <td>merge together subclass and superclass </td>
+    <td>when they are not very different </td>
+  </tr>
+  <tr valign="top">
+    <td height="45"><a name="FormTemplateMethod"><b>Form Template Method </b></a></td>
+    <td>&nbsp;</td>
+    <td>you have two methods in subclasses that perform similar but different steps in the same order - get the steps into methods, then pull original methods </td>
+    <td>inheritance helps eliminate duplicate behavior </td>
+  </tr>
+  <tr valign="top">
+    <td><a name="Inheritance2Delegation"><b>Inheritance &rarr; Delegation </b></a></td>
+    <td>&nbsp;</td>
+    <td>create a field for superclass, and delegate </td>
+    <td>subclass does not use much of superclass functionality and data </td>
+  </tr>
+  <tr valign="top">
+    <td><a name="Delegation2Inheritance"><b>Delegation &rarr; Inheritance</b></a></td>
+    <td>&nbsp;</td>
+    <td>make delegating class a subclass of the delegate </td>
+    <td>if you are using all of the delegate, and are tired writingdelegating methods</td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center"><font size="+1"><b> Big Refactoring <a name="BigRefactoring"> </a></b></font></td>
+  <td align="center"><strong>Action</strong></td>
+  <td align="center"><strong>Reason</strong></td>
+</tr>	
+  <tr valign="top">
+    <td><a name="TeaseApartInheritance"><b>Tease Apart Inheritance </b></a></td>
+    <td>&nbsp;</td>
+    <td>create two hierarchies out of one, and use delegates  </td>
+    <td>you have a hierarchy that does two jobs at once </td>
+  </tr>
+  <tr valign="top">
+    <td><a name="ProceduralDesign2Objects"><b>Procedural Design &rarr; Objects </b></a></td>
+    <td>&nbsp;</td>
+    <td>turn data to objects, break up behavior, move behavior to objects </td>
+    <td>you have a procedural-style code </td>
+  </tr>
+  <tr valign="top">
+    <td><a name="SeparateDomainFromPresentation"><b>Separate Domain From Presentation </b></a></td>
+    <td>&nbsp;</td>
+    <td>move domain logic from presentation to separate domain classes</td>-
+    <td>support MVC</td>
+  </tr>
+</table>
+<hr>
+This card is based on <a href="http://www.amazon.com/exec/obidos/ASIN/0201485672/qid=1104537736/sr=2-1/ref=pd_ka_b_2_1/102-4303668-0717704">Refactoring: Improving the Design of Existing Code</a> by
+Martin Fowler et al.
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!--
+Copyright 2006 Google Inc.
+ All Rights Reserved.
+-->
+
+<html>
+<head>
+<title>Closure Unit Tests - color/color.js</title>
+<script type="text/javascript" src="../../../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+<script type="text/javascript" src="../base.js"></script>
+<script type="text/javascript">
+  goog.require('goog.color');
+  goog.require('goog.color.names');
+  goog.require('goog.array');
+</script>
+</head>
+
+<script type="text/javascript">
+
+function testIsValidHexColor() {
+  var goodHexColors = ['#ffffff', '#ff7812', '#012345', '#Ff003D', '#3CA'];
+  var badHexColors = ['#xxxxxx', '889900', 'not_color', '#1234567', 'fffffg'];
+  for (var i = 0; i < goodHexColors.length; i++) {
+    assertTrue(goodHexColors[i], goog.color.isValidHexColor_(goodHexColors[i]));
+  }
+  for (var i = 0; i < badHexColors.length; i++) {
+    assertFalse(badHexColors[i], goog.color.isValidHexColor_(badHexColors[i]));
+  }
+}
+
+
+function testIsValidRgbColor() {
+  var goodRgbColors = ['(255, 26, 75)', 'RGB(2, 3, 4)', '(0,0,0)', 
+                       'rgb(255,255,255)'];
+  var badRgbColors = ['(2555,0,0)', '(1,2,3,4)', 'rgb(1,20,)',
+                      'RGB(20,20,20,)'];
+  for (var i = 0; i < goodRgbColors.length; i++) {
+    assertTrue(goodRgbColors[i],
+               goog.color.isValidRgbColor_(goodRgbColors[i])[0]);
+  }
+  for (var i = 0; i < badRgbColors.length; i++) {
+    assertFalse(badRgbColors[i],
+               goog.color.isValidRgbColor_(badRgbColors[i])[0]);
+  }
+}
+
+
+function testParse() {
+  var colors = ['rgb(15, 250, 77)', '(127, 127, 127)', '#ffeedd', '123456'];
+  var parsed = goog.array.map(colors, goog.color.parse);
+  assertEquals(parsed[0].type, 'rgb');
+  assertEquals(parsed[0].hex, goog.color.rgbToHex(15, 250, 77));
+  assertEquals(parsed[1].type, 'rgb');
+  assertEquals(parsed[1].hex, goog.color.rgbToHex(127, 127, 127));
+  assertEquals(parsed[2].type, 'hex');
+  assertEquals(parsed[2].hex, '#ffeedd');
+  assertEquals(parsed[3].type, 'hex');
+  assertEquals(parsed[3].hex, '#123456');
+  
+  var badColors = ['rgb(01, 1, 23)', '(256, 256, 256)', '#ffeeddaa'];
+  for (var i = 0; i < badColors.length; i++) {
+    try {
+      goog.color.parse(badColors[i]);
+      fail("Shouldn't reach here since " + badColors[i] + " is not a valid " +
+           "color string");
+    } catch (e) {
+      assertTrue(e.message.indexOf("is not a valid color string") > -1);
+    }
+  }
+}
+
+
+function testHexToRgbStyle() {
+  assertEquals(goog.color.hexToRgbStyle(goog.color.names.red), 'rgb(255,0,0)');
+  assertEquals(goog.color.hexToRgbStyle('#cecece'), 'rgb(206,206,206)');
+  assertEquals(goog.color.hexToRgbStyle('#3CA'), 'rgb(51,204,170)');
+  var badHexColors = ['#1234', null, undefined, '#.1234567890'];
+  for (var i = 0; i < badHexColors.length; ++i) {
+    try {
+      goog.color.hexToRgbStyle(badHexColors[i]);
+      fail("Shouldn't make it here since " + badHexColors[i] + " is an " +
+           "invalid hex color");
+    } catch (e) {
+      assertEquals(e.message, "'" + badHexColors[i] + "' is not a valid " +
+                   "hex color");
+    }
+  }
+}
+
+
+function testRgbToHex() {
+  assertEquals(goog.color.rgbToHex(255, 0, 0), goog.color.names.red);
+  assertEquals(goog.color.rgbToHex(175, 19, 255), '#af13ff');
+  var badRgb = [[-1, -1, -1], [256, 0, 0], ['a', 'b', 'c'], [undefined, 5, 5]];
+  for (var i = 0; i < badRgb.length; ++i) {
+    try {
+      goog.color.rgbArrayToHex(badRgb[i]);
+      fail("Shouldn't make it here since " + badRgb[i] + "is not a valid " +
+           "rgb color");
+    } catch (e) {
+      assertTrue(e.message.indexOf("is not a valid RGB color") > -1);
+    }
+  }
+}
+
+
+function testRgbToHsl() {
+  var rgb = [255, 171, 32];
+  var hsl = goog.color.rgbArrayToHsl(rgb);
+  assertEquals(hsl[0], 37);
+  assertTrue(1.0 - hsl[1] < 0.01);
+  assertTrue(hsl[2] - .5625 < 0.01);
+}
+
+
+function testHslToRgb() {
+  var hsl = [60, 0.5, 0.1];
+  var rgb = goog.color.hslArrayToRgb(hsl);
+  assertEquals(rgb[0], 38);
+  assertEquals(rgb[1], 38);
+  assertEquals(rgb[2], 13);
+}
+
+
+// For using the debugger
+function runTests() {
+  var fns = [ testIsValidHexColor, testHexToRgbStyle,
+              testRgbToHex, testRgbToHsl, testHslToRgb ];
+  for (var i = 0; i < fns.length; i++) {
+    fns[i]();
+  }
+}
+
+</script>
+
+</head>
+<body>
+<h1>goog.color</h1>
+<form>
+<button onclick='runTests()'>Run tests</button>
+</form>
+</body>
+</html>

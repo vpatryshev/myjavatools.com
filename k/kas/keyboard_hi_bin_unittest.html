@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Onscreen Keyboard Test Suite. Unittest for keyboard_hi.js</title>
+<!--
+Javascript unittest file. See instructions in the body.
+Script paths are relative to location of this file.
+Author: vpatryshev
+-->
+  <script src="bin/d_hi_002.js"></script>
+  <script src="javascript/keyboard/unittest_util.js"></script>
+  <script src="../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+</head>
+<body>
+This is a javascript unittest for <code>keyboard_hi.js</code><br>
+To run the test, you have to open in your browser the following file:<br>
+<code>google3/third_party/java/jsunit/jsunit2.2/testRunner.html</code><br>
+and enter the location of this test file into the file name field,
+and click 'Run' button.
+<textarea rows="2" cols="50" id="testarea"></textarea>
+<script type="text/javascript">
+  var testMsgHindi = '\u0627\u0644\u0639\u0631\u0628\u064a\u0629';
+
+  var titleInactive =
+      '<abbr style="border-style: none;" title="Hindi keyboard"><b>' +
+      '&nbsp;&nbsp;&nbsp;\u0939\u093f\u0928\u094d\u0926\u0940&nbsp;' +
+      '\u0915\u0940\u092c\u094b</b></abbr>';
+
+  var titleActive =
+      '<abbr style="border-style: none;" title="Hindi keyboard"><b>' +
+      '&nbsp;&nbsp;&nbsp;\u0939\u093f\u0928\u094d\u0926\u0940&nbsp;' +
+      '\u0915\u0940\u092c\u094b</b></abbr>';
+
+  function setUp() {
+    var input = document.getElementById('testarea');
+    input.value = '';
+    input.focus();
+  }
+
+  function testSaveRestore() {
+    checkSaveRestore(titleInactive, 'KBD=0HI3');
+  }
+
+  function testTitleInactive() {
+    checkInactiveTitle(titleInactive);
+  }
+
+  function testTitleActive() {
+    checkActiveTitle(titleActive);
+  }
+
+  function testTypeHi() {
+    activateKeyboard();
+    var input = document.getElementById('testarea');
+    assertEquals('', input.value);
+    type('QWERTYUIOPqwertyuiop');
+    var expected =
+        '\u0914\u0910\u0906\u0908\u090a\u092d\u0919\u0918\u0927\u091d\u094c' +
+        '\u0948\u093e\u0940\u0942\u092c\u0939\u0917\u0926\u091c';
+    assertEquals("Got " + show(input.value) + "\nvs " + show(expected),
+                 expected,
+                 input.value);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+
+<!--
+Copyright 2006 Google Inc.
+ All Rights Reserved.
+-->
+
+<html>
+<head>
+<title>goog.dom Tests</title>
+<script type="text/javascript" src="../../../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+<script type="text/javascript" src="../base.js"></script>
+<script type="text/javascript">
+  goog.require('goog.dom');
+</script>
+<style type="text/css">
+#styleTest1 {
+  width:120px;font-weight:bold;
+}
+</style>
+</head>
+<body>
+  <div id="testEl">
+    <span>Test Element</span>
+  </div>
+
+  <div><div><div id="testEl2"></div></div></div>
+
+  <span id="span1" class="test1"></span>
+  <span id="span2" class="test1"></span>
+  <span id="span3" class="test2"></span>
+  <span id="span4" class="test3"></span>
+  <span id="span5" class="test1"></span>
+
+  <p id="p1"></p>
+
+  <div id="styleTest1"></div>
+  <div id="styleTest2" style="width:100px;font-weight:bold"></div>
+  <div id="styleTest3"></div>
+
+  <!-- Paragraph to test element child and sibling -->
+  <p id="p2">
+    <!-- Comment -->
+    a
+    <b id="b1">c</b>
+    d
+    <!-- Comment -->
+    e
+    <b id="b2">f</b>
+    g
+    <!-- Comment -->
+  </p>
+
+  <iframe name="frame" src="../util/math_test.html"></iframe>
+
+<script type="text/javascript">
+
+  goog.globalize(goog);
+  goog.globalize(goog.dom);
+
+  function testDom() {
+    assert('Dom library exists', goog.isDef(goog.dom));
+  }
+
+
+  function testGetElement() {
+    var el = $('testEl');
+    assertEquals('Should be able to get id', el.id, 'testEl');
+  }
+
+
+  function testGetElementsByTagNameAndClass() {
+    assertEquals('Should get 6 spans', $$('span').length, 6);
+    assertEquals('Should get 3 spans', $$('span', 'test1').length, 3);
+    assertEquals('Should get 1 span', $$('span', 'test2').length, 1);
+    assertEquals('Should get lots of elements', $$().length,
+        document.getElementsByTagName('*').length);
+    assertEquals('Should get 1 span', $$('span', null, $('testEl')).length, 1);
+  }
+
+
+
+
+  function testSetProperties() {
+    var attrs = { 'name': 'test3', 'title': 'A title', 'random': 'woop' };
+    var el = $('testEl');;
+
+    var res = setProperties(el, attrs);
+    assertEquals('Should be equal', el.name, 'test3');
+    assertEquals('Should be equal', el.title, 'A title');
+    assertEquals('Should be equal', el.random, 'woop');
+  }
+
+  function testGetViewportSize() {
+    // TODO: How to test this?  Other than make sure it doesn't error
+    var dims = getViewportSize();
+    assertNotUndefined('Should be defined at least', dims.width);
+    assertNotUndefined('Should be defined at least', dims.height);
+  }
+
+  function testCreateDom() {
+    var el = $dom('div', { style: 'border: 1px solid black; width: 50%; background-color: #EEE;', onclick: "alert('woo')" },
+                  $dom('p', { style: 'font: normal 12px arial; color: red; ' },
+                       'Para 1'),
+                  $dom('p', { style: 'font: bold 18px garamond; color: blue; ' },
+                       'Para 2'),
+                  $dom('p', { style: 'font: normal 24px monospace; color: green; ' },
+                       'Para 3 ',
+                       $dom('a', { name: 'link', href: 'http://bbc.co.uk' },
+                            'has a link'),
+                       ', how cool is this?'));
+
+    assertEquals('Tagname should be a DIV', 'DIV', el.tagName);
+    assertEquals('Style width should be 50%', '50%', el.style.width);
+    assertEquals('first child is a P tag', 'P', el.childNodes[0].tagName);
+    assertEquals('second child .innerHTML', 'Para 2', el.childNodes[1].innerHTML);
+  }
+
+  function testContains() {
+    assertTrue('HTML should contain BODY', goog.dom.contains(
+        document.documentElement, document.body));
+    assertTrue('Document should contain BODY', goog.dom.contains(
+        document, document.body));
+
+    var d = $dom('p', null, 'A paragraph');
+    assertFalse('Disconnected element', goog.dom.contains(
+        document, d));
+    appendChild(document.body, d);
+    assertTrue('Connected element', goog.dom.contains(
+        document, d));
+    removeNode(d);
+  }
+
+  function testRemoveNode() {
+    var b = document.createElement('b');
+    var el = $('p1');
+    el.appendChild(b);
+    removeNode(b);
+    assertTrue('b should have been removed', el.lastChild != b);
+  }
+
+  function testIsNodeLike() {
+    assertTrue('document should be node like', isNodeLike(document));
+    assertTrue('document.body should be node like', isNodeLike(document.body));
+    assertTrue('a text node should be node like', isNodeLike(
+        document.createTextNode('')));
+
+    assertFalse('null should not be node like', isNodeLike(null));
+    assertFalse('a string should not be node like', isNodeLike('abcd'));
+
+    assertTrue('custom object should be node like', isNodeLike({nodeType: 1}));
+  }
+
+  function testGetOwnerDocument() {
+    assertEquals(getOwnerDocument($('p1')), document);
+    assertEquals(getOwnerDocument(document.body), document);
+    assertEquals(getOwnerDocument(document.documentElement), document);
+  }
+
+  function testDomHelper() {
+    var x = new DomHelper(window.frames['frame'].document);
+    assertTrue('Should have some HTML', x.getDocument().body.innerHTML.length > 0);
+  }
+
+  function testGetFirstElementChild() {
+    var p2 = $('p2');
+    var b1 = getFirstElementChild(p2);
+    assertNotNull('First element child of p2 should not be null', b1);
+    assertEquals('First element child is b1', 'b1', b1.id);
+
+    var c = getFirstElementChild(b1);
+    assertNull('First element child of b1 should be null', c);
+  }
+
+  function testGetLastElementChild() {
+    var p2 = $('p2');
+    var b2 = getLastElementChild(p2);
+    assertNotNull('Last element child of p2 should not be null', b2);
+    assertEquals('Last element child is b2', 'b2', b2.id);
+
+    var c = getLastElementChild(b2);
+    assertNull('Last element child of b2 should be null', c);
+  }
+
+  function testGetNextElementSibling() {
+    var b1 = $('b1');
+    var b2 = getNextElementSibling(b1);
+    assertNotNull('Next element sibling of b1 should not be null', b1);
+    assertEquals('Next element sibling is b2', 'b2', b2.id);
+
+    var c = getNextElementSibling(b2);
+    assertNull('Next element sibling of b2 should be null', c);
+  }
+
+  function testGetPreviousElementSibling() {
+    var b2 = $('b2');
+    var b1 = getPreviousElementSibling(b2);
+    assertNotNull('Previous element sibling of b2 should not be null', b1);
+    assertEquals('Previous element sibling is b1', 'b1', b1.id);
+
+    var c = getPreviousElementSibling(b1);
+    assertNull('Previous element sibling of b1 should be null', c);
+  }
+
+</script>
+</body>
+</html>

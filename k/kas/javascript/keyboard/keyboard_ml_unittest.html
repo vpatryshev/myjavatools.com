@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Onscreen Keyboard Test Suite. Unittest for keyboard_ml.js</title>
+<!--
+Javascript unittest file. See instructions in the body.
+Script paths are relative to location of this file.
+Author: vpatryshev
+-->
+  <script src="header.js"></script>
+  <script src="debug.js"></script>
+  <script src="unittest_util.js"></script>
+  <script src="../../../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+  <script>
+    if (!jsUnitFixTop) {
+      alert("Sorry, could not find jsUnitCore.js; please check your paths...");
+    }
+  </script>
+  <script src="keyboard.js"></script>
+  <script src="kbdlayout.js"></script>
+  <script src="kbdlayer.js"></script>
+  <script src="layout/Asian/ML.js"></script>
+  <script src="export.js"></script>
+</head>
+<body>
+This is a javascript unittest for <code>keyboard_ml.js</code><br>
+To run the test, you have to open in your browser the following file:<br>
+<code>google3/third_party/java/jsunit/jsunit2.2/testRunner.html</code><br>
+and enter the location of this test file into the file name field,
+and click 'Run' button.
+<textarea rows="2" cols="50" id="testarea"></textarea>
+<script type="text/javascript">
+  var kbdRestore = KBD_window._kbdInit;
+  var testMsg = '\u0d2e\u0d32\u0d2f\u0d3e\u0d33\u0d02';
+  var titleInactive =
+      addPointerCursor(
+        '<abbr style="border-style:none" title="Type in Manglish (Malayalam Phonetic Keyboard)"><B>' +
+        '&nbsp;' +
+        '\u0d2e\u0d32\u0d2f\u0d3e\u0d33\u0d02(\u0D2E\u0D4A\u0D34\u0D3F)' +
+        '</B></abbr>');
+
+  var titleActive =
+      '<abbr style="border-style:none" title="Type in Manglish (Malayalam Phonetic Keyboard)"><b>' +
+      '&nbsp;\u0d2e\u0d32\u0d2f\u0d3e\u0d33\u0d02(\u0D2E\u0D4A\u0D34\u0D3F)</b></abbr>';
+
+  function setUp() {
+    GKBD.layer.setup();
+    var input = document.getElementById('testarea');
+    input.value = '';
+    input.focus();
+    GKBD.layer.showAs_('v');
+    GKBD.layer.switchTo_('ML');
+  }
+
+  function testPresence() {
+    assertFalse(GKBD.Layout === undefined);
+  }
+
+  function testSaveRestore() {
+    checkSaveRestore(titleInactive, 'KBD=0ML3');
+  }
+
+  function testTitleInactive() {
+    checkInactiveTitle(titleInactive);
+  }
+
+  function testTitleActive() {
+    checkActiveTitle(titleActive);
+  }
+
+  function testType_n() {
+    var input = document.getElementById('testarea');
+    assertEquals('', input.value);
+    type('1n');
+    var expected = '1\u0d28\u0d4d\u200d';
+    expectEqual(expected, input.value);
+  }
+
+  function testType_na() {
+    var input = document.getElementById('testarea');
+    assertEquals('', input.value);
+    type('1na');
+    var expected = '1\u0d28';
+    expectEqual(expected, input.value);
+  }
+
+  function testType_naa() {
+    DEBUG = true;
+    var input = document.getElementById('testarea');
+    assertEquals('', input.value);
+    type('1naa');
+    var expected = '1\u0d28\u0d3e';
+    expectEqual(expected, input.value);
+  }
+
+  function testType_nt() {
+    DEBUG = true;
+    var input = document.getElementById('testarea');
+    assertEquals('', input.value);
+    type('1nt');
+    var expected = '1\u0D28\u0D4D\u0D31\u0D4D';
+    expectEqual(expected, input.value);
+  }
+
+  function testType_nu() {
+    DEBUG = true;
+    var input = document.getElementById('testarea');
+    assertEquals('', input.value);
+    type('1n');
+    pressAndRelease('\u00c0', true);
+    type('2');
+    var expected = '1\u0D28\u0D4D\u200C2';
+    expectEqual(expected, input.value);
+  }
+</script>
+</body>
+</html>

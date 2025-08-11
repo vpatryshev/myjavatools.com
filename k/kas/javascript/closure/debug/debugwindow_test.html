@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<!--
+Copyright 2006 Google Inc.
+ All Rights Reserved.
+-->
+
+<html>
+<head>
+<title>goog.debug.DebugWindow</title>
+<script type="text/javascript" src="../base.js"></script>
+<script type="text/javascript">
+  goog.require('goog.debug');
+  goog.require('goog.debug.Logger');
+  goog.require('goog.debug.DebugWindow');
+
+</script>
+</head>
+<body>
+
+
+<script type="text/javascript">
+
+goog.globalize();
+goog.globalize(goog.debug);
+
+var l1 = Logger.getLogger('goog.test');
+var l2 = Logger.getLogger('goog.bar');
+var l3 = Logger.getLogger('goog.bar.foo');
+var l4 = Logger.getLogger('goog.bar.baaz');
+var root = LogManager.getRoot();
+
+goog.debug.catchErrors(l1, true);
+goog.debug.catchErrors(l2, true);
+
+
+var debugWindow = new DebugWindow();
+debugWindow.setEnabled(true);
+
+function logSomething() {
+  // Log a string
+  l1.log(Logger.Level.SEVERE, "Test log");
+  
+  // Log an arbitrary object
+  l1.log(Logger.Level.WARNING, goog.debug.Logger);
+ 
+  // Catch an exception
+  try {
+    throw Error('This error is caught');
+  } catch (err) {
+    l1.severe('An error is being thrown, woops.', err);    
+  }
+  
+  // This will error and be caught by both l1 and l2.
+  l1.poop();
+}
+
+</script>
+
+<button onclick="logSomething()">Log Something</button>
+
+</body>
+</html>
+

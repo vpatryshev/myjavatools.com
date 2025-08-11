@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+Javascript unittest file. See instructions in the body.
+Script paths are relative to location of this file.
+Author: vpatryshev
+-->
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Onscreen Keyboard Test Suite</title>
+  <script src="../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+  <script language="JavaScript" type="text/javascript">
+    var fromJSUnitToRoot = '../../../../';
+    var currentLocation = 'kas/';
+    var scriptsLocation = '';
+    var testDir = fromJSUnitToRoot + currentLocation + scriptsLocation;
+    var locales = ['ar', 'hi', 'il', 'ru', 'tr', 'ua'];
+
+    function suite() {
+      var newSuite = new top.jsUnitTestSuite();
+      function add(testName) {
+        newSuite.addTestPage(testDir + testName + '_bin_unittest.html');
+      }
+
+      for (var i = 0; i < locales.length; i++) {
+        add('keyboard_' + locales[i]);
+      }
+
+      add('reload');  
+      return newSuite;
+    }
+  </script>
+</head>
+
+<body>
+<h1>Onscreen Keyboard Test Suite</h1>
+This is javascript test suite for onscreen keyboard.
+To run the test, you have to open in your browser the following file:<br>
+<code>google3/third_party/java/jsunit/jsunit2.2/testRunner.html</code><br>
+and enter the location of this test file into the file name field,
+and click 'Run' button.
+
+</body>
+</html>

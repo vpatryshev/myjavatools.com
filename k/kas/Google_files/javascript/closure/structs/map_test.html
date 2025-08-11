@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+
+<!--
+Copyright 2006 Google Inc.
+ All Rights Reserved.
+-->
+
+<html>
+<head>
+<title>goog.structs.Map</title>
+<script type="text/javascript" src="../../../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+<script type="text/javascript" src="../base.js"></script>
+<script type="text/javascript" src="../structs/map.js"></script>
+<script type="text/javascript">
+  goog.basePath = '../';
+  goog.require('goog.structs.map');
+</script>
+</head>
+<body>
+<script type="text/javascript">
+
+goog.globalize(goog.structs);
+
+function stringifyMap(m) {
+  var keys = m.getKeys();
+  var s = '';
+  for (var i = 0; i < keys.length; i++) {
+    s += keys[i] + m.get(keys[i]);
+  }
+  return s;
+}
+
+function getMap() {
+  var m = new Map;
+  m.put('a', 0);
+  m.put('b', 1);
+  m.put('c', 2);
+  m.put('d', 3);
+  return m;
+}
+
+// TODO(arv): Split this into more functions
+function testCount() {
+  var m = getMap();
+  assertEquals('count, should be 4', m.count, 4);
+  m.remove('d');
+  assertEquals('count, should be 3', m.count, 3);
+}
+
+function testKeys() {
+  var m = getMap();
+  assertEquals('getKeys, The keys should be a,b,c', m.getKeys().join(','),
+      'a,b,c,d');
+}
+
+function testValues() {
+  var m = getMap();
+  assertEquals('getValues, The values should be 0,1,2',
+      m.getValues().join(','), '0,1,2,3');
+}
+
+function testContainsKey() {
+  var m = getMap();
+  assertTrue("containsKey, Should contain the 'a' key", m.containsKey('a'));
+  assertFalse("containsKey, Should not contain the 'e' key",
+      m.containsKey('e'));
+}
+
+function testContainsValue() {
+  var m = getMap();
+  assertTrue('containsValue, Should contain the value 0', m.containsValue(0));
+  assertFalse('containsValue, Should not contain the value 4',
+      m.containsValue(4));
+  assertTrue('isEmpty, The map should not be empty', !m.isEmpty());
+}
+
+function testClear() {
+  var m = getMap();
+  m.clear();
+  assertTrue('cleared so it should be empty', m.isEmpty());
+  assertTrue("cleared so it should not contain 'a' key", !m.containsKey('a'));
+}
+
+function testPutAll() {
+  var m = new Map;
+  m.putAll({a:0,b:1,c:2,d:3});
+  assertTrue('putAll so it should not be empty', !m.isEmpty());
+  assertTrue("putAll so it should contain 'c' key", m.containsKey('c'));
+
+  var m2 = new Map;
+  m2.putAll(m);
+  assertTrue('putAll so it should not be empty', !m2.isEmpty());
+  assertTrue("putAll so it should contain 'c' key", m2.containsKey('c'));
+}
+
+function testConstructor() {
+  var m = getMap();
+  var m2 = new goog.structs.Map(m);
+  assertTrue('constr with Map so it should not be empty', !m2.isEmpty());
+  assertTrue("constr with Map so it should contain 'c' key",
+      m2.containsKey('c'));
+}
+
+function testClone() {
+  var m = getMap();
+  var m2 = m.clone();
+  assertTrue('clone so it should not be empty', !m2.isEmpty());
+  assertTrue("clone so it should contain 'c' key", m2.containsKey('c'));
+}
+
+function testForEach() {
+  var m = getMap();
+  var s = '';
+  m.forEach(function(val, key, m2) {
+    assertNotUndefined(key);
+    assertEquals(m, m2);
+    // TODO(arv): Should assert m
+    s += key + val;
+  });
+  assertEquals(s, 'a0b1c2d3');
+}
+
+function testFilter() {
+  var m = getMap();
+
+  var m2 = m.filter(function (val, key, m3) {
+    assertNotUndefined(key);
+    assertEquals(m, m3);
+    return val > 1;
+  });
+  assertEquals(stringifyMap(m2), 'c2d3');
+}
+
+
+function testMap() {
+  var m = getMap();
+  var m2 = m.map(function (val, key, m3) {
+    assertNotUndefined(key);
+    assertEquals(m, m3);
+    return val * val;
+  });
+  assertEquals(stringifyMap(m2), 'a0b1c4d9');
+}
+
+function testSome() {
+  var m = getMap();
+  var b = m.some(function (val, key, m2) {
+    assertNotUndefined(key);
+    assertEquals(m, m2);
+    return val > 1;
+  });
+  assertTrue(b);
+  var b = m.some(function (val, key, m2) {
+    assertNotUndefined(key);
+    assertEquals(m, m2);
+    return val > 100;
+  });
+  assertFalse(b);
+}
+
+function testEvery() {
+  var m = getMap();
+  var b = m.every(function (val, key, m2) {
+    assertNotUndefined(key);
+    assertEquals(m, m2);
+    return val >= 0;
+  });
+  assertTrue(b);
+  b = m.every(function (val, key, m2) {
+    assertNotUndefined(key);
+    assertEquals(m, m2);
+    return val > 1;
+  });
+  assertFalse(b);
+}
+
+function testContains() {
+  var m = getMap();
+  assertTrue(m.contains(3));
+  assertFalse(m.contains(4));
+}
+
+</script>
+</body>
+</html>
+

@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Unittest for jstools.js</title>
+<!--
+Javascript unittest file. See instructions in the body.
+Script paths are relative to location of this file.
+Author: vpatryshev
+-->
+  <script src="../../../../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+  <script>
+    if (!jsUnitFixTop) {
+      alert("Sorry, could not find jsUnitCore.js; please check your paths...");
+    }
+  </script>
+  <script src="jstools.js"></script>
+</head>
+<body>
+This is a javascript unittest for <code>jstools.js</code><br>
+To run the test, you have to open in your browser the following file:<br>
+<code>google3/third_party/java/jsunit/jsunit2.2/testRunner.html</code><br>
+and enter the location of this test file into the file name field,
+and click 'Run' button.
+<textarea rows="2" cols="50" id="testarea"></textarea>
+<script type="text/javascript">
+
+var JS_TOOLS = jstools("");
+
+function testSleep(n) {
+  try {
+    document.getElementById('log').value = '' + new Date() + ': Will sleep for ' + n + ' ms.';
+    if (n > 10000 || n < 100) throw "Wait time is wrong: " + n;
+    JS_TOOLS.sleep(n);
+    document.getElementById('log').value += '\n' + new Date() + ': Done sleeping.';
+  } catch (e) {
+    document.getElementById('log').value += '\nOops, ' +e.message;
+  }
+}
+
+function testPresence() {
+  assertFalse(JS_TOOLS === undefined);
+}
+
+function testSleep() {
+  var startedAt = new Date().getTime();
+  JS_TOOLS.sleep(200);
+  var stoppedAt = new Date().getTime();
+  var dt = stoppedAt - startedAt;
+  assertTrue("Woke up too early: slept for " + dt, dt > 199);
+  assertTrue("Woke up too late: slept for " + dt, dt < 300);
+}
+
+</script>
+</body>
+</html>

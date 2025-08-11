@@ -1,0 +1,192 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Onscreen Keyboard Test Suite. Unittest for keyboard_ru.js</title>
+  <!--
+  Javascript unittest file. See instructions in the body.
+  Script paths are relative to location of this file.
+  Author: vpatryshev
+  -->
+  <script language="javascript" src="../../../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+  <script>
+    if (!jsUnitFixTop) {
+      alert('Sorry, could not find jsUnitCore.js; please check your paths...');
+    }
+  </script>
+  <script src="header.js"></script>
+  <script src="debug.js"></script>
+  <script src="unittest_util.js"></script>
+  <script src="keyboard.js"></script>
+  <script src="kbdlayout.js"></script>
+  <script src="kbdlayer.js"></script>
+  <script src="keyboard_ru_kiosk.js"></script>
+  <script type="text/javascript" src="layout/WestEuropean/EN.js"></script>
+  <script src="layout/EastEuropean/RU.js"></script>
+  <script src="export.js"></script>
+ </head>
+ <body>
+ This is a javascript unittest for <code>keyboard_ru.js</code><br>
+ To run the test, you have to open in your browser the following file:<br>
+ <code>google3/third_party/java/jsunit/jsunit2.2/testRunner.html</code><br>
+ and enter the location of this test file into the file name field,
+ and click 'Run' button.
+ <textarea rows="2" cols="50" id="testarea"></textarea>
+ <br>
+
+  <script language="javascript">
+    var kbdRestore = KBD_window._kbdInit;
+    var keyboardInRussian =
+        '\u043a\u043b\u0430\u0432\u0438\u0430\u0442\u0443\u0440\u0430';
+    var titleInactive = span(keyboardInRussian);
+
+    var english =
+        '<a style="text-decoration:none;cursor:pointer;font-size:80%;color:blue" ' +
+        'onmouseover="this.style.textDecoration=\'underline\'" ' +
+        'onmouseout="this.style.textDecoration=\'none\'" ' +
+        'onclick="_kbdS2(\'EN\');">English</a>';
+
+    var standardOn = '<abbr title="Russian keyboard">' +
+        '&nbsp;Русская&nbsp;клавиатура' +
+        '</abbr>' +
+        'onmouseover="this.style.textDecoration=\'underline\'" ' +
+        'onmouseout="this.style.textDecoration=\'none\'" ';
+
+    var englishOn = '<abbr title="English keyboard">' +
+        '&nbsp;English keyboard' +
+        '</abbr>' +
+        'onmouseover="this.style.textDecoration=\'underline\'" ' +
+        'onmouseout="this.style.textDecoration=\'none\'" ';
+
+    var standard =
+        '<a style="text-decoration:none;cursor:pointer;font-size:80%;color:blue" ' +
+        'onmouseover="this.style.textDecoration=\'underline\'" ' +
+        'onmouseout="this.style.textDecoration=\'none\'" ' +
+        'onclick="_kbdS2(\'RU\');">стандартная</a>';
+
+    var titleStandardActiveEnglishFirst =
+        [standardOn, english].join('&nbsp;&nbsp;');
+
+    var titleStandardActiveTranslitFirst =
+        [standardOn, english].join('&nbsp;&nbsp;');
+
+    function keyboardObject() { return !GKBD ? null : GKBD.layer.keyboard_;}
+
+    function KBD_debug() {};
+
+    function setUp() {
+      GKBD.layer.setup();
+      GKBD.layer.switchTo_('EN');
+      GKBD.layer.switchTo_('RU');
+
+      var input = document.getElementById('testarea');
+      input.value = '';
+      input.focus();
+    }
+
+    function buildEvent(key) {
+      return{target:   document.getElementById('testarea'),
+             which:    key.toUpperCase().charCodeAt(0),
+             shiftKey: key == key.toUpperCase()};
+    }
+
+    function testSetupHasPassed() {
+      // if setup fails, this one will sow an error
+      assertEquals('Setup failed somewhere', 'a', 'a');
+    }
+
+    function testPresence() {
+      assertFalse(GKBD.Layout === undefined);
+    }
+
+    function testKeyboardPresence() {
+      assertFalse(GKBD.layer.keyboard_ === undefined);
+    }
+
+    function testIsListening() {
+      document.cookie = 'KBD=0RU0;expires=November 07, 2051';
+      kbdRestore();
+      GKBD.layer.startListening_();
+      assertTrue(GKBD.layer.isListening_());
+    }
+
+    function testSwitchTo() {
+      document.cookie = 'KBD=0RU0;expires=November 07, 2051';
+      kbdRestore();
+      assertEquals('0RU', keyboardObject().serialize_());
+      GKBD.layer.startListening_();
+      assertTrue(GKBD.layer.isListening_());
+      GKBD.layer.switchTo_('EN');
+      assertEquals('0EN', keyboardObject().serialize_());
+      expectStartsWith(englishOn, getStrippedTitleContent());
+    }
+
+    function testTitleInactive() {
+      GKBD.layer.hide_();
+      assertEquals('0RU-2', getCookie());
+      assertFalse(keyboardObject().layout_ === undefined);
+      checkInactiveTitle(titleInactive);
+    }
+
+    function testTitleActive() {
+      document.cookie = 'KBD=0RU3;expires=November 07, 2051';
+      activateKeyboard();
+      assertEquals('0RU', keyboardObject().serialize_());
+      assertFalse(keyboardObject().layout_ === undefined);
+      expectStartsWith(standardOn, getStrippedTitleContent());
+    }
+
+    function testInput_standard() {
+      activateKeyboard();
+      var input = document.getElementById('testarea');
+      assertEquals('', input.value);
+      pressAndRelease('F');
+      assertEquals('\u0410', input.value);
+      pressAndRelease('Z');
+      assertEquals('\u0410\u042f', input.value);
+    }
+
+    function testType_standardWithSpace() {
+      activateKeyboard();
+      var input = document.getElementById('testarea');
+      assertEquals('', input.value);
+      type('Heccrfz rkfdbfnehf');
+      assertEquals(
+          '\u0420\u0443\u0441\u0441\u043a\u0430\u044f ' +
+          '\u043a\u043b\u0430\u0432\u0438\u0430\u0442\u0443\u0440\u0430',
+          input.value);
+    }
+
+    function testAcceptKey() {
+      var result = pressAndRelease('A');
+      assertFalse('keydown should have accepted', result.fromKeyDown);
+      assertFalse('keypress should have accepted', result.fromKeyPress);
+    }
+
+    function testHaveaButton() {
+      assertEquals('Key mappings should be defined in keyboard',
+          'object', typeof keyboardObject().keys_);
+      var havesome = false;
+      for (var i in keyboardObject().keys_) havesome = true;
+
+      assertTrue('Buttons mapping should be defined', havesome);
+    }
+
+    function testHaveButton_R() {
+      assertEquals(
+          'Key mapping for 72 should be defined in keyboard',
+          'object', typeof keyboardObject().keys_[72]);
+      var currentValue = keyboardObject().keys_[72].value;
+      assertTrue(
+          'Got ' + currentValue + ' instead of \u0440 or \u0420',
+          '\u0420\u0440'.indexOf(currentValue) >= 0);
+    }
+
+    function testPassKey() {
+      var result = pressAndRelease('\u0028'); // "down" key
+      assertTrue('keydown should have passed', result.fromKeyDown);
+      assertTrue('keypress should have passed', result.fromKeyPress);
+      assertFalse('keyup should have grabbed', result.fromKeyUp);
+    }
+  </script>
+ </body>
+</html>

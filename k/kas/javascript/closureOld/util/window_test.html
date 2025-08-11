@@ -1,0 +1,129 @@
+<!--
+  Copyright 2006 Google Inc.
+  All rights reserved.
+  Author: Harry Ugol (hugol@google.com)
+  Author: Erik Hanson (erikh@google.com)
+-->
+
+<html>
+<head>
+
+  <!-- script paths are relative to location of this file -->
+  <script type="text/javascript" src="../../../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+  <script type="text/javascript" src="../base.js"></script>
+  <script type="text/javascript">
+    goog.require('goog.window');
+  </script>
+
+  <script type="text/javascript">
+
+    var actualHref;
+    var actualTarget;
+    var actualOpts;
+    var wasFocusCalled;
+    var originalWindowOpen;
+
+    function mockWindowOpen(href, target, opts) {
+      actualHref = href;
+      actualTarget = target;
+      actualOpts = opts;
+      return new MockWindow();
+    }
+
+    function MockWindow() {}
+    MockWindow.prototype.focus = function() {
+      wasFocusCalled = true;
+    };
+
+    function setUp() {
+      actualHref = null;
+      actualTarget = null;
+      actualOpts = null;
+      wasFocusCalled = false;
+      originalWindowOpen = window.open;
+      window.open = mockWindowOpen;
+    }
+
+    function tearDown() {
+      if (originalWindowOpen != undefined)
+        window.open = originalWindowOpen;
+    }
+
+    function testPassingHrefAndDefaultWindowTargetAndSize() {
+      var popUp = goog.window.popup('href');
+      assertEquals('href', actualHref);
+      assertEquals('google_popup', actualTarget);
+      assertContains('width=690', actualOpts);
+      assertContains('height=500', actualOpts);
+      assertTrue(wasFocusCalled);
+    }
+
+    function testPassingHrefAndSpecifiedWindowTargetAndSize() {
+      var popUp = goog.window.popup('href',
+        {target: 'target', width: 100, height: 200});
+      assertEquals('href', actualHref);
+      assertEquals('target', actualTarget);
+      assertContains('width=100', actualOpts);
+      assertContains('height=200', actualOpts);
+      assertEquals(-1, actualOpts.indexOf('toolbar='));
+      assertEquals(-1, actualOpts.indexOf('scrollbars='));
+      assertEquals(-1, actualOpts.indexOf('location='));
+      assertEquals(-1, actualOpts.indexOf('statusbar='));
+      assertEquals(-1, actualOpts.indexOf('menubar='));
+      assertEquals(-1, actualOpts.indexOf('resizable='));
+      assertTrue(wasFocusCalled);
+    }
+
+    function testPassingHrefAndAllOptions() {
+      var popUp = goog.window.popup('href',
+        {target: 'target', width: 100, height: 200, toolbar: true,
+         scrollbars: true, location: true, statusbar: true, menubar: true,
+         resizable: true});
+      assertEquals('href', actualHref);
+      assertEquals('target', actualTarget);
+      assertContains('width=100', actualOpts);
+      assertContains('height=200', actualOpts);
+      assertContains('toolbar=1', actualOpts);
+      assertContains('scrollbars=1', actualOpts);
+      assertContains('location=1', actualOpts);
+      assertContains('statusbar=1', actualOpts);
+      assertContains('menubar=1', actualOpts);
+      assertContains('resizable=1', actualOpts);
+      assertTrue(wasFocusCalled);
+    }
+
+    function testPassingHrefNullSize() {
+      var popUp = goog.window.popup('href');
+      assertEquals('href', actualHref);
+      assertEquals('google_popup', actualTarget);
+      assertContains('width=690', actualOpts);
+      assertContains('height=500', actualOpts);
+      assertTrue(wasFocusCalled);
+    }
+
+    function testPassingAnchorAndDefaultWindowTarget() {
+      var anchor = document.createElement('a');
+      assertNotNull(anchor);
+      anchor.href = 'http://href/';
+      var popUp = goog.window.popup(anchor);
+      assertEquals('http://href/', actualHref);
+      assertEquals('google_popup', actualTarget);
+    }
+
+    function testWindowTargetComesFromAnchorWithHref() {
+      var anchor = document.createElement('a');
+      assertNotNull(anchor);
+      anchor.href = 'http://href/';
+      anchor.target = 'target';
+      var popUp = goog.window.popup(anchor);
+      assertEquals('http://href/', actualHref);
+      assertEquals('target', actualTarget);
+    }
+
+  </script>
+
+</head>
+
+<body id='body'>
+</body>
+</html>

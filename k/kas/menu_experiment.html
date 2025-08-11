@@ -1,0 +1,136 @@
+<!--
+  Copyright 2006 Google Inc.
+  All Rights Reserved
+  Author: jonp@google.com (Jon Perlow)
+  FOR INTERNAL USE ONLY
+
+  File for testing menu.
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Nested Menu Test</title>
+<!-- Following URL is for development inside google3 -->
+<script type="text/javascript" src="javascript/closure/base.js"></script>
+<script type="text/javascript">
+  if (typeof goog == 'undefined') {
+    alert('Closure failed to load');
+  } else {
+    goog.require('goog.ui.Popup'); // something weird happens if this line is commented out - vpatryshev 09/30/2006
+    goog.require('goog.ui.AttachableMenu');
+    goog.require('goog.ui.NestedMenu');
+  }
+</script>
+
+<style>
+
+.menu {
+  position:absolute;
+  background-color:#e0ecff;
+  color:black;
+  visibility:hidden;
+  font-size: 80%;
+  cursor: default;
+}
+
+.menu .menu-item {
+  height: 1.5em;
+  line-height:1.5em;
+  vertical-align: middle;
+  margin:2px 2px 2px 2px;
+}
+
+.menu hr {
+  margin:0px 0px 0px 0px;
+}
+
+.menu .menu-item-selected {
+  background-color: #c3d9ff;
+}
+
+</style>
+
+
+</head>
+<body>
+<table width="100%">
+  <tr>
+    <td>
+      <textarea rows="40" cols="70" id="debug"></textarea>
+    </td>
+    <td width="200" align="left">
+      <button id="btn" style="border:solid black 1px" onclick="showMenu()">
+        Press me!
+      </button>
+    </td>
+  </tr>
+</table>
+  <div id='mainMenu' class='menu' tabindex="0" style="width:100px;">
+    <div class="menu-item" id="toFishMenu">Fish</div>
+    <div class="menu-item" id="toMeatMenu">Meat</div>
+    <div class="menu-item" id="notHungry">Not hungry</div>
+    <hr/>
+    <div class="menu-item" id="busy">Busy</div>
+  </div>
+  <div id='fishMenu' class='menu' tabindex="0" style="width:150px;">
+    <div class="menu-item" id="toFreshWaterFish">Fresh water fish</div>
+    <div class="menu-item" id="toSaltWaterFish">Salt water fish</div>
+    <hr/>
+    <div class="menu-item" id="dvf">Death Valley Fish</div>
+  </div>
+  <div id='freshWaterFish' class='menu' tabindex="0" style="width:130px;">
+    <div class="menu-item" id="cs">Centropristis striata</div>
+    <div class="menu-item" id="guppy">Guppy</div>
+    <div class="menu-item" id="tilapia">Tilapia</div>
+    <div class="menu-item" id="catfish">Catfish</div>
+  </div>
+  <div id='saltWaterFish' class='menu' tabindex="0" style="width:100px;">
+    <div class="menu-item" id="salmon">Salmon</div>
+    <div class="menu-item" id="shark">Shark</div>
+    <div class="menu-item" id="gar">Gar</div>
+  </div>
+  <div id='meatMenu' class='menu' tabindex="0" style="width:70px;">
+    <div class="menu-item" id="lamb">Lamb</div>
+    <div class="menu-item" id="beef">Beef</div>
+    <div class="menu-item" id="pork">Pork</div>
+  </div>
+
+  <script>
+    var btn = document.getElementById('btn');
+    var mainMenuElt = document.getElementById('mainMenu');
+    var fishMenuElt = document.getElementById('fishMenu');
+    var freshFishMenuElt = document.getElementById('freshWaterFish');
+    var saltedFishMenuElt = document.getElementById('saltWaterFish');
+    var meatMenuElt = document.getElementById('meatMenu');
+
+    function showMenu() {
+      try {
+        var menu = new goog.ui.NestedMenu(mainMenuElt,
+            function(item) { alert("Won't eat: " + item.id);});
+        menu.setPinnedCorner(goog.ui.Popup.Corner.TOP_LEFT);
+        menu.setPosition(new goog.ui.Popup.AnchoredPosition(btn,
+            goog.ui.Popup.Corner.BOTTOM_LEFT));
+        menu.setVisible(true);
+        var meatMenu = new goog.ui.NestedMenu(meatMenuElt, menuAction);
+//        meatMenu.setPinnedCorner(goog.ui.Popup.Corner.TOP_LEFT);
+//        meatMenu.setPosition(new goog.ui.Popup.AnchoredPosition(btn,
+//            goog.ui.Popup.Corner.TOP_RIGHT));
+//        meatMenu.setVisible(true);
+        menu.addSubmenu("toMeatMenu", meatMenu);
+  //        menu.addSubmenu("toMeatMenu", new goog.ui.NestedMenu(meatMenuElt, menuAction));
+        var fishMenu = new goog.ui.NestedMenu(fishMenuElt, function(item) { alert("Chewing " + item.id);});
+        menu.addSubmenu("toFishMenu", fishMenu);
+        fishMenu.addSubmenu("toFreshWaterFish", new goog.ui.NestedMenu(freshFishMenuElt, function(item) { alert("Fresh fish: " + item.id);}));
+        fishMenu.addSubmenu("toSaltWaterFish", new goog.ui.NestedMenu(saltedFishMenuElt, function(item) { alert("Salted fish: " + item.id);}));
+      } catch (e) { alert("2:" + e); }
+    }
+
+    function menuAction(item) {
+      alert("selected: " + item.id);
+    }
+
+
+  </script>
+</body>
+</html>
+

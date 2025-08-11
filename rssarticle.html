@@ -1,0 +1,157 @@
+<b>A Brief History of RSS</b><br>
+RSS, "Real Simple Syndication", is a flexible and efficient format for exchanging news headlines.
+You might have not noticed it yet, but as soon as you get interested, you'll discover it is ubiquitous.<br>
+
+Originally RSS was developed by Netscape; the abbreviation, RSS then stood
+for <a href="http://www.w3.org/RDF/">RDF</a> Site Summary; with time it was rebaptized
+by other developers to "Real Simple Syndication".<br>
+
+Essentially, an RSS document contains one <code>&lt;channel></code> element, which may have a title, a description, a link,
+and has an <code>&lt;image></code> element and a certain amount of <code>&lt;item></code>
+and <code>&lt;textInput></code> elements. All these elements have at least a title; <code>&lt;item></code>, typically,
+also has a description and a link to resource. If there existed only one RSS
+format, like in the case of XML, that would be the end of the story -
+but, unfortunately, history had its word here.<br>
+
+Here is an example of original Netscape version, 0.90:<br>
+
+<pre><code>
+&lt;rdf:RDF
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns="http://my.netscape.com/rdf/simple/0.9/">
+  &lt;channel>
+    &lt;title>devx.com&lt;/title>
+    &lt;link>http://www.devx.com&lt;/link>
+    &lt;description>DevX.com - the know-how behind application development.&lt;/description>
+    &lt;image>
+      &lt;title>&lt;/title>
+      &lt;url>http://www.devx.com/assets/devx/7819.gif&lt;/url>
+      &lt;link>http://www.devx.com/&lt;/link>
+    &lt;/image>
+    &lt;item>
+      &lt;title>Practical XML for Java Programs&lt;/title>
+      &lt;link>http://www.devx.com/Java/Article/16571/0&lt;/link>
+    &lt;/item>
+    &lt;item>
+      &lt;title>Get Nasdaq Quotes Online in your Java Program&lt;/title>
+      &lt;link>http://www.devx.com/tips/Tip/14965&lt;/link>
+    &lt;/item>
+  &lt;/channel>
+&lt;/rdf:RDF>
+</code></pre>
+
+Note the absence of item descriptions.<br>
+
+The next version, 0.91, developed concurrently by Netscape and Userland,
+is the most laconic, pure and beautiful - look at the example:<br>
+<pre><code>
+&lt;rss version="0.91">
+  &lt;channel>
+    &lt;title>devx.com&lt;/title>
+    &lt;link>http://www.devx.com/&lt;/link>
+    &lt;description>DevX.com - the know-how behind application development.&lt;/description>
+    &lt;language>en-us&lt;/language>
+    &lt;item>
+      &lt;title>Practical XML for Java Programs&lt;/title>
+      &lt;link>http://www.devx.com/Java/Article/16571/0&lt;/link>
+      &lt;description>When dealing with XML, you need a convenient representation of the XML data in memory. This article offers Java programmers a solution to achieve this goal: an easy-to-use package for handling XML data in Java.&lt;/description>
+    &lt;/item>
+      &lt;title>Get Nasdaq Quotes Online in your Java Program&lt;/title>
+      &lt;link>http://www.devx.com/tips/Tip/14965&lt;/link>
+  &lt;/channel>
+&lt;/rss>
+</code></pre>
+
+Versions 0.92 through 0.94 were adding various elements to the format, such as webMaster,
+managingEditor, expirationDate, skipHours, rating, language.<br>
+
+In 2000 version 1.0 was published by RSS-dev group; this version was based on 0.90.
+Version 1.0 is the most obscure and unreadable; it widely uses XML namespaces that were
+ popular those opulent times.<br>
+
+In 2002 Userland published version 2.0, based on 0.92-0.94.
+There were actually three slightly different flavors of 2.0.<br>
+Here is an example of 2.0:<br>
+
+<pre><code>
+&lt;rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  &lt;channel>
+    &lt;title>devx.com&lt;/title>
+    &lt;link>http://www.devx.com/&lt;/link>
+    &lt;description>DevX.com - the know-how behind application development.&lt;/description>
+    &lt;language>en-us&lt;/language>
+    &lt;item>
+      &lt;title>Practical XML for Java Programs&lt;/title>
+      &lt;link>http://www.devx.com/Java/Article/16571/0&lt;/link>
+      &lt;description>When dealing with XML, you need a convenient representation of the XML data in memory. This article offers Java programmers a solution to achieve this goal: an easy-to-use package for handling XML data in Java.&lt;/description>
+      &lt;dc:creator>Vlad Patryshev&lt;/dc:creator>
+      &lt;dc:date>2003-07-25&lt;/dc:date>
+    &lt;/item>
+      &lt;title>Get Nasdaq Quotes Online in your Java Program&lt;/title>
+      &lt;link>http://www.devx.com/tips/Tip/14965&lt;/link>
+      &lt;description>Get Nasdaq Quotes Online in your Java Program&lt;/description>
+      &lt;dc:creator>Vlad Patryshev&lt;/dc:creator>
+      &lt;dc:date>2001-11-09&lt;/dc:date>
+  &lt;/channel>
+&lt;/rss>
+</code></pre>
+
+<a href="http://www.rssdotnet.com/documents/version_comparison.html" >This article</a> from Rssdotnet
+contains a comparison chart of all RSS versions.<br>
+
+<b>RSS in Java</b><br>
+
+There are several scattered Java packages that work with RSS -
+some of them can read some formats, some can write.
+The class I am going to talk about, com.myjavatools.xml.Rss,
+read all known RSS formats, 0.90 to 2.0; at output,
+all data are converted to format 2.0.<br>
+
+com.myjavatools.xml.Rss can be instantiated from RSS feeds of any RSS version. It gives access to all the RSS elements;
+one can also create new Rss containers, add or change the contents, and write RSS data to an output stream.
+There are no syndication features here, though, no filtration or selection.<br>
+
+com.myjavatools.xml.Rss is a decorator class for com.myjavatools.xml.BasicXmlData
+(see <a href="http://www.devx.com/Java/Article/16571/0">Xml for Java Programs</a>), and thus
+inherits all the standard features of XmlData: a type name, a value, a collection of attributes,
+and a collection of subelements (which are also instances of BasicXmlData).<br>
+
+Three static member classes, corresponding to popular RSS subelements, are defined in Rss: Rss.Image,
+Rss.TextInput, and RssItem. Other subelements, such as cloud, are just plain instances of BasicXmlData.<br>
+
+Constructors instantiate Rss from a File, Url, InputStream, or XmlData.
+One can also use default constructor to create an empty Rss container, and then build
+the container by adding items (<code>addItem(Rss.Item item)</code>) and setting various
+data (using setters: <code>setImage, setCopyright, setDescription, setTextInput, setWebmaster</code>,
+and the like - there are 21 setters in total). <br>
+
+23 getters, <code>getCategory()</code>, <code>getCloud()</code> to <code>getWebMaster()</code>, return various RSS elements.<br>
+
+To accelerate item search, items in Rss container are indexed by title:
+<code>getItem(String title)</code> uses a HashMap.. Other finders, <code>findByDescription</code>, <code>findByUrl</code>, and <code>findByGuid</code> are not indexed.<br>
+
+Descriptions in all element (channel, item, image, textInput) are stripped of leading and trailing space characters.
+Methods inherited from BasicXmlData can be used to save Rss object to a File or to send it to an OutputStream;
+the output RSS format is always 2.0.<br>
+
+The package contains a full set of unit tests, with samples of all versions of Rss.<br>
+
+Now a small code snippet.
+
+<code><pre>
+    data_091 = new Rss(new URL("http://www.xml.com/cs/xml/query/q/19"));
+    System.out.println("Title:\t" + data_091.getTitle());
+    System.out.println("Webmaster:\t" + data_091.getWebMaster());
+    System.out.println("Description:\t" + data_091.getDescription());
+    for (Iterator i = data_091.getItems().iterator(); i.hasNext();) {
+      Rss.Item item = (Rss.Item)i.next();
+      System.out.println("  Item:\t" + item.getTitle());
+      System.out.println("  Description:\t" + item.getDescription());
+      System.out.println("  Link:\t" + item.getLink());
+      System.out.println();
+    }
+</pre></code>
+
+You can see the listing <a href="http://www.myjavatools.com/rsssource.html">here</a>, or download the whole package, com.myjavatools.xml, with the library,
+mjxml.jar, here: <a href="http://www.myjavatools.com/projects/v.1.4.2/xml/mjxml.zip">http://www.myjavatools.com/projects/v.1.4.2/xml/mjxml.zip</a>; Java documentation
+for the package is here: <a href="http://www.myjavatools.com/projects/v.1.4.2/xml/doc/com/myjavatools/xml/Rss.html">http://www.myjavatools.com/projects/v.1.4.2/xml/doc/com/myjavatools/xml/Rss.html</a>.

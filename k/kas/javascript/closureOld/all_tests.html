@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Closure all tests</title>
+
+<script type="text/javascript" src="../../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+<script type="text/javascript">
+
+function suite() {
+  var newsuite = new top.jsUnitTestSuite();
+  newsuite.addTestPage('../../../../javascript/closure/base_test.html');
+  //newsuite.addTestPage('../../../../javascript/closure/color/color_test.html');
+  newsuite.addTestPage('../../../../javascript/closure/dom/classes_test.html');
+  newsuite.addTestPage('../../../../javascript/closure/dom/dom_test.html');
+  newsuite.addTestPage('../../../../javascript/closure/events/eventtarget_test.html');
+  newsuite.addTestPage('../../../../javascript/closure/structs/structs_test.html');
+  newsuite.addTestPage('../../../../javascript/closure/structs/map_test.html');
+  newsuite.addTestPage('../../../../javascript/closure/structs/set_test.html');
+  newsuite.addTestPage('../../../../javascript/closure/style/style_test.html');
+  newsuite.addTestPage('../../../../javascript/closure/util/array_test.html');
+  newsuite.addTestPage('../../../../javascript/closure/util/json_test.html');
+  newsuite.addTestPage('../../../../javascript/closure/util/math_test.html');
+  newsuite.addTestPage("../../../../javascript/closure/util/string_test.html");
+  newsuite.addTestPage("../../../../javascript/closure/util/timer_test.html");
+  newsuite.addTestPage("../../../../javascript/closure/util/uri_test.html");
+  newsuite.addTestPage("../../../../javascript/closure/util/useragent_test.html");
+  newsuite.addTestPage('../../../../javascript/closure/util/window_test.html');
+  return newsuite;
+}
+
+
+</script>
+</head>
+<body>
+</body>
+</html>
+

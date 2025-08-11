@@ -1,0 +1,121 @@
+<html>
+<head>
+</head>
+<body>
+<form name="theform">
+Type here: <input type="text" name="thetext" value="?" size="100"onkeyup="push()"></input><br>
+Read here: <input type="text" name="received" value="" size="100"readonly="yes"></input>
+</form>
+
+<script type="text/javascript"> //<![CDATA[
+/* checked with jsLint 2003 09 09 */
+expdate = new Date();
+expdate.setTime(expdate.getTime()+(5*24*60*60*1000));
+function BakeCookie(name,value) {
+   argv=arguments;
+   argc=arguments.length;
+   expires=(argc>2) ? argv[2] : null;
+   path=(argc>3) ? argv[3] : null;
+   domain=(argc>4) ? argv[4] : null;
+   secure=(argc>5) ? argv[5] : false;
+   document.cookie=name+"="+escape(value) +
+     ((expires === null) ? "" : ("; expires="+expires.toUTCString())) +
+     ((path === null) ? "" : ("; path="+path)) +
+     ((domain === null) ? "" : ("; domain="+domain)) +
+     ((secure === true) ? "; secure" : "");
+}
+function EatCookie(name) {
+   arg=name+"=";
+   alen=arg.length;
+   clen=document.cookie.length;
+   i=0;
+   while (i<clen) {
+      j=i+alen;
+      if (document.cookie.substring(i,j) == arg) {
+          return EatCookieVal(j);
+          }
+      i=document.cookie.indexOf(" ",i) + 1;
+      if (i === 0) {break;}
+   }
+}
+function EatCookieVal(offset) {
+   endstr=document.cookie.indexOf(";",offset);
+   if (endstr == -1) {endstr=document.cookie.length;}
+   return unescape(document.cookie.substring(offset,endstr));
+}
+function TossCookie(name) {
+   ThreeDays = 3*24*60*60*1000; //in millisecounds
+   expDate=new Date();
+   expDate.setTime(exp.getTime()-ThreeDays);
+   document.cookie=name+'=foobar; expires='+expDatetoGMTString();
+}
+//]]>
+</script>
+
+<script language="javascript">
+/**
+ * Sets a Cookie with the given name and value.
+ *
+ * name       Name of the cookie
+ * value      Value of the cookie
+ * [expires]  Expiration date of the cookie (default: end of current session)
+ * [path]     Path where the cookie is valid (default: path of calling document)
+ * [domain]   Domain where the cookie is valid
+ *              (default: domain of calling document)
+ * [secure]   Boolean value indicating if the cookie transmission requires a
+ *              secure transmission
+ */
+function setCookie(name, value, expires, path, domain, secure)
+{
+    cookieString = name + "=" + escape(value) +
+        ((expires) ? "; expires=" + expires.toGMTString() : "") +
+        ((path) ? "; path=" + path : "") +
+        ((domain) ? "; domain=" + domain : "") +
+        ((secure) ? "; secure" : "");
+    document.cookie= cookieString;
+}
+
+/**
+ * Gets the value of the specified cookie.
+ *
+ * name  Name of the desired cookie.
+ *
+ * Returns a string containing value of specified cookie,
+ *   or null if cookie does not exist.
+ */
+function getCookie(name)
+{
+    var dc = document.cookie;
+    var prefix = name + "=";
+    var begin = dc.indexOf("; " + prefix);
+    if (begin == -1)
+    {
+        begin = dc.indexOf(prefix);
+        if (begin != 0) return null;
+    }
+    else
+    {
+        begin += 2;
+    }
+    var end = document.cookie.indexOf(";", begin);
+    if (end == -1)
+    {
+        end = dc.length;
+    }
+    return unescape(dc.substring(begin + prefix.length, end));
+}
+
+  function push() {
+    BakeCookie("babble", document.theform.thetext.value);
+//    setCookie("babble", document.theform.thetext.value);
+  }
+
+  function pull() {
+    document.theform.received.value = EatCookie("babble");
+    setTimeout("pull()", 2000);
+  }
+  pull();
+</script>
+
+</body>
+</html>

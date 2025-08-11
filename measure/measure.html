@@ -1,0 +1,23 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>measure the web</title>
+</head><body >
+<script type="text/javascript" language="JavaScript1.2" src="rule.js"></script>
+
+<script language="javascript">
+//  var parsed = document.location.match(/^[^\\?]+?([^=]+=)?(http:)?(.*)/i);
+  var dl = document.location.toString();
+  var parsed = dl.match(/^[^\?]+\?([^=]+=)?(http:)?(.*)/i);
+  document.write(parsed);
+  document.write("<hr>");
+  var url = "";
+  if (url.length > 1) {
+    document.write('<iframe width=100% height=100% src="' + url + '"/>');
+  } else {
+    document.write("<b>Usage:</b><br>http://myjavatools.com/measure.html?<i>(url to measure)</i><br>");
+    document.write("or enter it here: <form action='measure.html'><input type='text' name='url'></input><input type='submit'/></form>");
+    document.write("<p>");
+    document.write("Actually, this is just an example of using the rules to measure your page.<br>See <a href='rule.js'>the script</a>.");
+  }
+</script>
+</body></html>

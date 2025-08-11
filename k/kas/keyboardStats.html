@@ -1,0 +1,153 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>Google Keyboard StatsCollector</title>
+<style>
+<!--
+body,td,a,p,.h{font-family:arial,sans-serif;}
+body {overflow:hidden}
+div.content {height:100%; overflow:auto;}
+.h{font-size: 20px;}
+.q{color:#0000cc;}
+td.bt{width:18;height:18;}
+//-->
+</style>
+
+</head>
+<body  topmargin="3" alink="#ff0000" bgcolor="#ffffff" link="#0000cc" marginheight="3" text="#000000" vlink="#551a8b">
+
+<textarea rows="30" cols="140" id="statisticsOutput"></textarea><br/>
+<input type="button" value="click to load all" onclick="KBD_loadAll();"/>
+<input type="button" value="click to show stats" onclick="KBD_showStats();"/>
+</form><br><br>
+
+<div id="log" style="border-color:#006699; border-width: thick; position:relative; left:0; top:0; height:300; overflow: visible; visibility:visible"></div>
+
+<script type="text/javascript" src="javascript/closure/base.js"></script>
+
+<script type="text/javascript">
+  if (typeof goog == 'undefined') {
+    alert('Closure failed to load');
+  } else {
+    goog.require('goog.ui.Popup'); // something weird happens if this line is commented out - vpatryshev 09/30/2006
+    goog.require('goog.ui.NestedPopup'); // something weird happens if this line is commented out - vpatryshev 09/30/2006
+    goog.require('goog.ui.AttachableMenu');
+    goog.require('goog.ui.NestedMenu');
+  }
+</script>
+
+<script type="text/javascript" src="javascript/keyboard/common.js"></script>
+<script type="text/javascript" src="javascript/lang.js"></script>
+<script type="text/javascript" src="javascript/keyboard/menu.js"></script>
+<script type="text/javascript" src="javascript/keyboard/keyboard.js"></script>
+<script type="text/javascript" src="javascript/keyboard/kbdlayer.js"></script>
+<script type="text/javascript" src="javascript/keyboard/kbdlayout.js"></script>
+<script type="text/javascript" src="javascript/keyboard/kbd.js"></script>
+
+<script type="text/javascript">
+  var out = forId("statisticsOutput");
+  var list = [];
+
+  function KBD_loadAll() {
+    try {
+      list = [];
+      for (var id in KBDl.layouts) {
+        var layout = KBDl.layouts[id];
+        layout.load();
+        list.push(id);
+      }
+      out.value = "total: " + list.length + " layouts.";
+    } catch (e) {
+      out.value = e;
+    }
+  }
+</script>
+<script type="text/javascript">
+  var hD="0123456789ABCDEF";
+  function d2h(d) {
+    var h = hD.substr(d&15,1);
+      while(d>15) {d>>=4;h=hD.substr(d&15,1)+h;}
+    return h;
+  }
+  var report = [];
+  var byLocale = {};
+
+  function reportAll() {
+    report = ["layout\thex\tdec\tchar"];
+    for (var locale in byLocale) {
+      for (var c in byLocale[locale]) {
+        reportChar(locale, String.fromCharCode(c), c);
+      }
+    }
+  }
+
+  function ec(code) {
+    return code == '\\'.charCodeAt(0) ||
+           code == '\''.charCodeAt(0) ||
+           code == '\"'.charCodeAt(0)  ? "" : String.fromCharCode(code);
+  };
+
+  function reportChar(id, c, code) {
+    report.push(id + "\t" + d2h(code) + "\t" + code + "\t" + ec(code));
+  }
+
+  function reportChars(id, chars) {
+    for (var pos = 0; pos < chars.length; pos++) {
+      var c = chars.charCodeAt(pos);
+      if (c != 8) {
+        var slot = byLocale[id];
+        if (!slot) {
+          byLocale[id] = slot = {};
+        }
+        if (!slot[c]) {
+          slot[c] = 1;
+        } else {
+          slot[c]++;
+        }
+        reportChar(id, pos, chars, chars.charAt(pos), c);
+      }
+    }
+  }
+
+  /**
+   * This program is for statistics
+   */
+  function KBD_showStats() {
+    report = [];
+    out.value = "";
+    var modifiers = ['', 's', 'c', 'l', 'sc', 'sl', 'cl', 'scl'];
+    var id;
+    for (id in KBDl.layouts) {
+      out.value += id + " ";
+      var layout = KBDl.layouts[id];
+      try {
+        if (!layout.initialized_) {
+          out.value = "Oops, " + id + " is not initialized.";
+          return;
+        }
+        for (var i in layout.transformation) {
+          var value = layout.transformation[i];
+          if ('-' != value) {
+            reportChars(id, value);
+          }
+        }
+        for (var i = 0; i < modifiers.length; i++) {
+          var m = modifiers[i];
+          var mapping = layout.getMapping(m);
+
+          if (mapping) {
+            for (var c in mapping) {
+              var value = mapping[c];
+              if (layout.view2char[value]) value = layout.view2char[value];
+              reportChars(id, value);
+            }
+          }
+        }
+      }catch (e) { alert(e); throw e; }
+    }
+    reportAll();
+    out.value = report.join("\n");
+  }
+
+</script>
+</body>
+</html>

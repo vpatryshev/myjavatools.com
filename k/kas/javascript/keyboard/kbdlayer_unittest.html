@@ -1,0 +1,781 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01te Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Onscreen Keyboard Test Suite. Unittest for kbdlayer.js</title>
+<!--
+Javascript unittest file. See instructions in the body.
+Script paths are relative to location of this file.
+Author: vpatryshev
+-->
+    <title>Unit Test of Closure-Using Code</title>
+    <!--So far the closure test runner does not work on a laptop...-->
+    <!--<script type="text/javascript" src="../closure/base.js"></script>-->
+    <!--<script type="text/javascript">-->
+      <!--goog.require('goog.testing.jsunit');-->
+    <!--</script>-->
+
+  <script src="../../../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+  <script>
+    if (!jsUnitFixTop) {
+      alert('Sorry, could not find jsUnitCore.js; please check your paths...');
+    }
+  </script>
+  <script src="header.js"></script>
+  <script src="debug.js"></script>
+  <script src="unittest_util.js"></script>
+  <script src="keyboard.js"></script>
+  <script src="kbdlayer.js"></script>
+  <script src="kbdlayout.js"></script>
+  <script src="export.js"></script>
+</head>
+<body>
+This is a javascript unittest for <code>kbdlayer.js</code><br>
+To run the test, you have to open in your browser the following file:<br>
+<code>google3/third_party/java/jsunit/jsunit2.2/testRunner.html</code><br>
+and enter the location of this test file into the file name field,
+and click 'Run' button.
+<textarea rows="2" cols="50" id="testarea"></textarea>
+<table>
+  <tr>
+    <td><textarea rows="10" cols="10" id="testareaRU" lang="RU"></textarea></td>
+    <td><textarea rows="10" cols="10" id="testareaRU_LATN" lang="RU_LATN"></textarea> </td>
+  </tr></table>
+<ul><li><input type="text" id="testinput" onfocus="lastFocused=this.id;"/> </li>
+<li><input type="text" id="testinputRU" lang="RU" onfocus="lastFocused=this.id;"/> </li>
+  <li><input type="text" id="testinputRU_LATN" lang="RU_LATN" onfocus="lastFocused=this.id;"/> </li>
+</ul>
+
+<script type="text/javascript">
+var kbdRestore = KBD_window._kbdInit;
+var layout1;
+var layout1Config = {
+  id:'RU_LATN,Ru:Russian (Translit)',
+  titleProvider : function() {
+      return 'this is a title';
+  },
+  tooltip: 'here be keyboard tooltip',
+  shortTitle: 'keyboard is disabled',
+  mappings: {
+    'sl':{'\u00c0':'\u044a','1':'!','2':'@','3':'"','4':'$','5':'%','6':'^',
+          '7':'&','8':'*','9':'(','0':')','m':'_','=':'\u044c' ,
+          'Q':'\u044f','W':'\u0436','E':'\u0435','R':'\u0440','T':'\u0442',
+          'Y':'\u044b','U':'\u0443','I':'\u0438','O':'\u043e','P':'\u043f',
+          '\u00db':'\u0448','\u00dd':'\u0449','\u00dc':'\u044d' ,
+          'A':'\u0430','S':'\u0441','D':'\u0434','F':'\u0444','G':'\u0433',
+          'H':'\u0447','J':'\u0439','K':'\u043a','L':'\u043b',';':':',
+          '\u00de':'"' ,
+          'Z':'\u0437','X':'\u0445','C':'\u0446','V':'\u0432','B':'\u0431',
+          'N':'\u043d','M':'\u043c','\u00bc':'<','\u00be':'>','\u00bf':'?'
+         },
+    'l': {'\u00c0':'\u042a','1':'1','2':'2','3':'3','4':'4','5':'5','6':'6',
+          '7':'7','8':'8','9':'9','0':'0','m':'-','=':'\u042c' ,
+          'Q':'\u042f','W':'\u0416','E':'\u0415','R':'\u0420','T':'\u0422',
+          'Y':'\u042b','U':'\u0423','I':'\u0418','O':'\u041e','P':'\u041f',
+          '\u00db':'\u0428','\u00dd':'\u0429','\u00dc':'\u042d' ,
+          'A':'\u0410','S':'\u0421','D':'\u0414','F':'\u0424','G':'\u0413',
+          'H':'\u0427','J':'\u0419','K':'\u041a','L':'\u041b',';':';',
+          '\u00de':'\'' ,
+          'Z':'\u0417','X':'\u0425','C':'\u0426','V':'\u0412','B':'\u0411',
+          'N':'\u041d','M':'\u041c','\u00bc':',','\u00be':'.','\u00bf':'/'
+         },
+    's': {'\u00c0':'\u042a','1':'!','2':'@','3':'"','4':'$','5':'%','6':'^',
+          '7':'&','8':'*','9':'(','0':')','m':'_','=':'\u042c' ,
+          'Q':'\u042f','W':'\u0416','E':'\u0415','R':'\u0420','T':'\u0422',
+          'Y':'\u042b','U':'\u0423','I':'\u0418','O':'\u041e','P':'\u041f',
+          '\u00db':'\u0428','\u00dd':'\u0429','\u00dc':'\u042d',
+          'A':'\u0410','S':'\u0421','D':'\u0414','F':'\u0424','G':'\u0413',
+          'H':'\u0427','J':'\u0419','K':'\u041a','L':'\u041b',';':':',
+          '\u00de':'"' ,
+          'Z':'\u0417','X':'\u0425','C':'\u0426','V':'\u0412','B':'\u0411',
+          'N':'\u041d','M':'\u041c','\u00bc':'<','\u00be':'>','\u00bf':'?'
+         },
+    '':  {'\u00c0':'\u044a','1':'1','2':'2','3':'3','4':'4','5':'5','6':'6',
+          '7':'7','8':'8','9':'9','0':'0','m':'-','=':'\u044c' ,
+          'Q':'\u044f','W':'\u0436','E':'\u0435','R':'\u0440','T':'\u0442',
+          'Y':'\u044b','U':'\u0443','I':'\u0438','O':'\u043e','P':'\u043f',
+          '\u00db':'\u0448','\u00dd':'\u0449','\u00dc':'\u044d',
+          'A':'\u0430','S':'\u0441','D':'\u0434','F':'\u0444','G':'\u0433',
+          'H':'\u0447','J':'\u0439','K':'\u043a','L':'\u043b',';':';',
+          '\u00de':'\'',
+          'Z':'\u0437','X':'\u0445','C':'\u0446','V':'\u0432','B':'\u0431',
+          'N':'\u043d','M':'\u043c','\u00bc':',','\u00be':'.','\u00bf':'/'
+         },
+    'sc':{'=':'+', 'O':'\u0405', 'B':'\u0406', 'Q':'\u0407', 'J':'\u0460',
+          'K':'\u047e','\u00c0':'\u0462','T':'\u0464','Z':'\u0466',
+          'X':'\u0468','E':'\u046a','R':'\u046c','P':'\u046e','S':'\u0470',
+          'A':'\u0472','N':'\u0474','M':'\u0476','W':'\u0478','L':'\u047a',
+          ';':'\u047c','\u00db':'{','\u00dd':'}','\u00dc':'|'
+         },
+    'cl':{'=':'+','O':'\u0405','B':'\u0406','Q':'\u0407','J':'\u0460',
+         'K':'\u047e','\u00c0':'\u0462','T':'\u0464','Z':'\u0466',
+         'X':'\u0468','E':'\u046a','R':'\u046c','P':'\u046e','S':'\u0470',
+         'A':'\u0472','N':'\u0474','M':'\u0476','W':'\u0478','L':'\u047a',
+         ';':'\u047c','\u00db':'[','\u00dd':']','\u00dc':'\\'
+        },
+    'c': {'=':'=','O':'\u0455','B':'\u0456','Q':'\u0457','J':'\u0461',
+          'K':'\u047f','\u00c0':'\u0463','T':'\u0465','Z':'\u0467',
+          'X':'\u0469','E':'\u046b','R':'\u046d','P':'\u046f','S':'\u0471',
+          'A':'\u0473','N':'\u0475','M':'\u0477','W':'\u0479','L':'\u047b',
+          ';':'\u047d','\u00db':'[','\u00dd':']','\u00dc':'\\'
+         },
+    'scl':{'=':'=','O':'\u0455','B':'\u0456','Q':'\u0457','J':'\u0461',
+           'K':'\u047f','\u00c0':'\u0463','T':'\u0465','Z':'\u0467',
+           'X':'\u0469','E':'\u046b','R':'\u046d','P':'\u046f','S':'\u0471',
+           'A':'\u0473','N':'\u0475','M':'\u0477','W':'\u0479','L':'\u047b',
+           ';':'\u047d','\u00db':'{','\u00dd':'}','\u00dc':'|'
+          }
+    },
+    transform: {
+      //           jo                      ju
+      '\u0439\u043e':'\u0451','\u0439\u0443':'\u044e',
+      '\u0419\u041e':'\u0401','\u0419\u0423':'\u042e',
+      //           yo                      yu
+      '\u044b\u043e':'\u0451','\u044b\u0443':'\u044e',
+      '\u042b\u041e':'\u0401','\u042b\u0423':'\u042e'
+    }
+};
+
+var layout2;
+
+var layout2Config = {id:'RU,RU:Russian',
+  mappings: {
+    'sl': {'\u00c0':'\u0451','1':'!','2':'\"','3':'\u2116','4':';','5':'%',
+           '6':':','7':'?','8':'*','9':'(','0':')','m':'_','=':'+' ,
+           'Q':'\u0439','W':'\u0446','E':'\u0443','R':'\u043a','T':'\u0435',
+           'Y':'\u043d','U':'\u0433','I':'\u0448','O':'\u0449','P':'\u0437',
+           '\u00db':'\u0445','\u00dd':'\u044a','\u00dc':'/',
+           'A':'\u0444','S':'\u044b','D':'\u0432','F':'\u0430','G':'\u043f',
+           'H':'\u0440','J':'\u043e','K':'\u043b','L':'\u0434',';':'\u0436',
+           '\u00de':'\u044d' ,
+           'Z':'\u044f','X':'\u0447','C':'\u0441','V':'\u043c','B':'\u0438',
+           'N':'\u0442','M':'\u044c','\u00bc':'\u0431','\u00be':'\u044e',
+           '\u00bf':',' },
+    'l':  {'\u00c0':'\u0401','1':'1','2':'2','3':'3','4':'4','5':'5','6':'6',
+           '7':'7','8':'8','9':'9','0':'0','m':'-','=':'=' ,
+           'Q':'\u0419','W':'\u0426','E':'\u0423','R':'\u041a','T':'\u0415',
+           'Y':'\u041d','U':'\u0413','I':'\u0428','O':'\u0429','P':'\u0417',
+           '\u00db':'\u0425','\u00dd':'\u042a','\u00dc':'\\',
+           'A':'\u0424','S':'\u042b','D':'\u0412','F':'\u0410','G':'\u041f',
+           'H':'\u0420','J':'\u041e','K':'\u041b','L':'\u0414',';':'\u0416',
+           '\u00de':'\u042d' ,
+           'Z':'\u042f','X':'\u0427','C':'\u0421','V':'\u041c','B':'\u0418',
+           'N':'\u0422','M':'\u042c','\u00bc':'\u0411','\u00be':'\u042e',
+           '\u00bf':'.'
+          },
+    's':  {'\u00c0':'\u0401','1':'!','2':'\"','3':'\u2116','4':';','5':'%',
+           '6':':','7':'?','8':'*','9':'(','0':')','m':'_','=':'+' ,
+           'Q':'\u0419','W':'\u0426','E':'\u0423','R':'\u041a','T':'\u0415',
+           'Y':'\u041d','U':'\u0413','I':'\u0428','O':'\u0429','P':'\u0417',
+           '\u00db':'\u0425','\u00dd':'\u042a','\u00dc':'/',
+           'A':'\u0424','S':'\u042b','D':'\u0412','F':'\u0410','G':'\u041f',
+           'H':'\u0420','J':'\u041e','K':'\u041b','L':'\u0414',';':'\u0416',
+           '\u00de':'\u042d',
+           'Z':'\u042f','X':'\u0427','C':'\u0421','V':'\u041c','B':'\u0418',
+           'N':'\u0422','M':'\u042c','\u00bc':'\u0411','\u00be':'\u042e',
+           '\u00bf':',' },
+    '':   {'\u00c0':'\u0451','1':'1','2':'2','3':'3','4':'4','5':'5','6':'6',
+           '7':'7','8':'8','9':'9','0':'0','m':'-','=':'=' ,
+           'Q':'\u0439','W':'\u0446','E':'\u0443','R':'\u043a','T':'\u0435',
+           'Y':'\u043d','U':'\u0433','I':'\u0448','O':'\u0449','P':'\u0437',
+           '\u00db':'\u0445','\u00dd':'\u044a','\u00dc':'\\' ,
+           'A':'\u0444','S':'\u044b','D':'\u0432','F':'\u0430','G':'\u043f',
+           'H':'\u0440','J':'\u043e','K':'\u043b','L':'\u0434',';':'\u0436',
+           '\u00de':'\u044d' ,
+           'Z':'\u044f','X':'\u0447','C':'\u0441','V':'\u043c','B':'\u0438',
+           'N':'\u0442','M':'\u044c','\u00bc':'\u0431','\u00be':'\u044e',
+           '\u00bf':'.'
+          },
+    'sc,cl':{'P':'\u0405','B':'\u0406','Q':'\u0407','J':'\u0460','K':'\u047e',
+             '\u00c0':'\u0462','T':'\u0464','Z':'\u0466','X':'\u0468',
+             'E':'\u046a','R':'\u046c','\u00db':'\u046e','S':'\u0470',
+             'A':'\u0472','N':'\u0474','M':'\u0476','W':'\u0478','L':'\u047a',
+             ';':'\u047c'
+            },
+    'c,scl':{'P':'\u0455','B':'\u0456','Q':'\u0457','J':'\u0461','K':'\u047f',
+             '\u00c0':'\u0463','T':'\u0465','Z':'\u0467','X':'\u0469',
+             'E':'\u046b','R':'\u046d','\u00db':'\u046f','S':'\u0471',
+             'A':'\u0473','N':'\u0475','M':'\u0477','W':'\u0479','L':'\u047b',
+             ';':'\u047d'
+            }
+}};
+
+/**
+ * @type Object System Under Test - that is, GKBD.layer.
+ */
+var sut;
+
+function setupLayer() {
+  layout1 = new GKBD.Layout(layout1Config);
+  layout2 =  new GKBD.Layout(layout2Config);
+  sut = GKBD.layer;
+  sut.addLayout_('-', layout1);
+  sut.addLayout_('-', layout2);
+  sut.setDefaultLayout_(layout1);
+  sut.titleAlignmnent_ = 'left';
+  sut.relX_ = sut.relY_ = 0;
+  sut.configure(
+    {
+       bgColor : '#ffffff',
+       defaultVisibility : 'h',
+       hasSpacebar : false,
+       hasEnter : false,
+       scale: 1
+     });
+  sut.setup();
+  assertTrue(sut.keyboard_.layout_.isInitialized);
+}
+
+var originalWindowOnresize = window.onresize;
+var windowOnresize;
+var input;
+
+var testElements = ['testarea', 'testareaRU', 'testinputRU_LATN', 'testinput', 'testinputRU', 'testinputRU_LATN'];
+
+var savedOnfocus = {};
+
+for (var i = 0; i < testElements.length; i++) {
+  var id = testElements[i];
+  savedOnfocus[id] = document.getElementById(id).onfocus;
+}
+var p = 3;
+function setUp() {
+  DEBUG=false;
+  setupLayer();
+  GKBD.layer.keyboard_.setState_(0);
+  GKBD.layer.keyboard_.drawKeyboard_(); // builds the content
+  GKBD.layer.keyboard_.draw_(); // renders the content
+  assertTrue('Main element for layer should exist', !!forId('kbd_0'));
+  GKBD.layer.switchTo_('RU');
+  input = document.getElementById('testarea');
+  input.value = '';
+  input.focus();
+  windowOnresize = window.onresize;
+}
+
+function cleanupElement(element) {
+  element.onfocus = savedOnfocus[element.id];
+  element['hasKeyboard'] = undefined;
+}
+
+function tearDown() {
+  window.onresize = originalWindowOnresize;
+  for (var i = 0; i < testElements.length; i++) {
+    var id = testElements[i];
+    cleanupElement(document.getElementById(id));
+  }
+}
+
+function testPresence() {
+  assertFalse(GKBD['Layout'] === undefined);
+}
+
+function testBuildLink1() {
+  var expected = '<a style="text-decoration:none;cursor:pointer;' +
+                 'font-size:80%;color:blue" ' +
+                 'onmouseover="this.style.textDecoration=\'underline\'" ' +
+                 'onmouseout="this.style.textDecoration=\'none\'" >' +
+                 'the content of the message</a>';
+  assertEquals(expected, GKBD.buildLink_("the content of the message"));
+}
+/**/
+function testBbuildLink2() {
+  var expected = '<a style="text-decoration:none;cursor:pointer;' +
+                 'font-size:80%;color:blue" ' +
+                 'onmouseover="this.style.textDecoration=\'underline\'" ' +
+                 'onmouseout="this.style.textDecoration=\'none\'" ' +
+                 'id="theid" ' +
+                 'onclick="all rize">Ce n\'est pas un pipe</a>';
+  assertEquals(expected,
+      GKBD.buildLink_("Ce n'est pas un pipe", "theid", "all rize"));
+}
+
+function testConfigure() {
+  sut.titleAlignmnent_ = 'left';
+  sut.relX_ = sut.relY_ = 0;
+  sut.configure(
+    {
+       historySize_: 100,
+       bgColor : '#ddaaff',
+       defaultVisibility : 'v',
+       hasSpacebar : true,
+       hasEnter : true,
+       scale: 2.5
+     });
+  assertEquals(100, sut.historySize_);
+  assertEquals('v', sut.defaultVisibility);
+  assertTrue(sut.hasEnter);
+  assertTrue(sut.hasSpacebar);
+  assertEquals(2.5, sut.scale);
+  assertEquals('#ddaaff', sut.bgColor);
+}
+
+function testExtractCookieValueUndefined() {
+  var actual = extractCookieValue(undefined);
+  assertEquals('', actual);
+}
+
+function testExtractCookieValueNull() {
+  assertEquals('', extractCookieValue(null));
+}
+
+function testExtractCookieValueNoValue() {
+  assertEquals('', extractCookieValue(''));
+  assertEquals('', extractCookieValue('anythingButOurCookie=something'));
+  assertEquals('', extractCookieValue('UKBD=something'));
+  assertEquals('', extractCookieValue('KBD="'));
+}
+
+function testExtractCookieValueEmpty() {
+  assertEquals('', extractCookieValue(''));
+}
+
+function testExtractCookieValueNotOurCookie() {
+  assertEquals('', extractCookieValue('UKBD=something'));
+}
+
+function testExtractCookieValueNoValue() {
+  assertEquals('', extractCookieValue('KBD='));
+}
+
+function testExtractCookieValueLonely() {
+  assertEquals('abc', extractCookieValue('KBD=abc'));
+}
+
+function testExtractCookieValueLeading() {
+  assertEquals('abc', extractCookieValue('KBD=abc;UKBD=def'));
+}
+
+function testExtractCookieValueTrailing() {
+  assertEquals('abc', extractCookieValue('UKBD=def;KBD=abc'));
+}
+
+function testExtractCookieValueNonLowAscii() {
+  assertEquals('кука', extractCookieValue('UKBD=def;KBD=кука;NKBD=abc'));
+}
+
+function testSaveRestoreStep0() {
+  GKBD.layer.showAs_('v');
+  GKBD.layer.switchTo_('RU');
+  expectEqual('Initially', 'Russian', getTitleContent());
+}
+
+function testSaveRestoreStep1() {
+  GKBD.layer.showAs_('v');
+  document.cookie = 'KBD=0RU3;expires=November 07, 2010';
+  kbdRestore();
+  checkTitle(addPointerCursor('Russian'), 'Restored hidden');
+}
+
+function testSaveRestoreStep2() {
+  GKBD.layer.showAs_('h');
+  document.cookie = 'KBD=0RU3';
+  kbdRestore();
+  checkTitle(addPointerCursor('Russian'), 'Restored hidden');
+  assertEquals('h', GKBD.layer.visibility_);
+  document.cookie = 'KBD=0Ru0';
+  kbdRestore();
+  assertEquals('v', GKBD.layer.visibility_);
+  checkTitle('this is a title', 'Restored visible');
+}
+
+function testRestoreMustOverride() {
+  GKBD.layer.showAs_('h');
+  document.cookie = 'KBD=0RU3;expires=November 07, 2010';
+  kbdRestore();
+  expectEqual('Restored visibility', 'h', GKBD.layer.visibility_);
+  checkTitle(addPointerCursor('Russian'), 'Restored hidden');
+  assertEquals('New element, should not be tagged', undefined, forId('kbd')['tagthatdidnotexistbefore']);
+  forId('kbd')['tagthatdidnotexistbefore'] = 'it exists now';
+  assertEquals('Just tagged the element', 'it exists now', forId('kbd')['tagthatdidnotexistbefore']);
+  document.cookie = 'KBD=0RU0;expires=November 07, 2010';
+  kbdRestore();
+  assertEquals('Newly-restored visibility', 'v', GKBD.layer.visibility_);
+  assertEquals('Another new element, should not be tagged', undefined, forId('kbd')['tagthatdidnotexistbefore']);
+}
+
+function testTitleInactive() {
+  GKBD.layer.switchTo_('Ru');
+  checkInactiveTitle('keyboard is disabled');
+}
+
+function testTitleActive() {
+  GKBD.layer.switchTo_('Ru');
+  checkTitle('this is a title');
+}
+
+function testPressAndRelease() {
+  GKBD.layer.showAs_('v');
+  input.value = 'MM';
+  GKBD.layer.switchTo_('RU');
+  assertTrue(GKBD.layer.keyboard_.layout_.isInitialized);
+  pressAndRelease('A');
+  assertEquals('MM\u0424', input.value);
+}
+
+function testInput1() {
+  GKBD.layer.showAs_('v');
+  GKBD.layer.switchTo_('RU');
+  var input = document.getElementById('testarea');
+  assertEquals('', input.value);
+  pressAndRelease('Z');
+  assertEquals('\u042f', input.value);
+}
+
+function testInput2() {
+  GKBD.layer.showAs_('v');
+  var input = document.getElementById('testarea');
+  assertEquals('', input.value);
+  pressAndRelease('F');
+  assertEquals('\u0410', input.value);
+  pressAndRelease('Z');
+  assertEquals('\u0410\u042f', input.value);
+}
+
+function testInputButtons() {
+  GKBD.layer.showAs_('v');
+  var input = document.getElementById('testarea');
+  assertEquals('', input.value);
+  clickKeyButton('F');
+  assertEquals('\u0430', input.value);
+  clickKeyButton('Z');
+  assertEquals('\u0430\u044f', input.value);
+}
+
+function testType1() {
+  GKBD.layer.showAs_('v');
+  var input = document.getElementById('testarea');
+  assertEquals('', input.value);
+  type('Heccrfz rkfdbfnehf');
+  assertEquals('\u0420\u0443\u0441\u0441\u043a\u0430\u044f' +
+               '\u043a\u043b\u0430\u0432\u0438\u0430\u0442\u0443\u0440\u0430',
+               input.value);
+}
+
+function testType2() {
+  GKBD.layer.showAs_('v');
+  GKBD.layer.switchTo_('Ru');
+  var input = document.getElementById('testarea');
+  assertEquals('', input.value);
+  type('Russkaq klaviatura');
+  assertEquals('\u0420\u0443\u0441\u0441\u043a\u0430\u044f' +
+               '\u043a\u043b\u0430\u0432\u0438\u0430\u0442\u0443\u0440\u0430',
+               input.value);
+}
+
+function testDeadKeys1() {
+  GKBD.layer.showAs_('v');
+  GKBD.layer.switchTo_('Ru');
+  var input = document.getElementById('testarea');
+  assertEquals('', input.value);
+  type('yyuujjuuyyoojjoo');
+  assertEquals('\u044b\u044e\u0443\u0439\u044e\u0443' +
+               '\u044b\u0451\u043e\u0439\u0451\u043e',
+               input.value);
+}
+
+function testDeadKeys2() {
+  GKBD.layer.showAs_('v');
+  GKBD.layer.switchTo_('Ru');
+  var input = document.getElementById('testarea');
+  assertEquals('', input.value);
+  type('YYUUJJUUYYOOJJOO');
+  assertEquals('\u042b\u042e\u0423\u0419\u042e\u0423' +
+               '\u042b\u0401\u041e\u0419\u0401\u041e',
+               input.value);
+}
+
+function resizeTheWindow(width, height) {
+  try {
+    if (KBD_window['resizeTo']) {
+      KBD_window.resizeTo(width, height);
+      return true;
+    }
+  } catch (e) {
+    // ignore; and let's try it the other way
+  }
+
+  if (KBD_window['outerWidth']) {
+    try {
+      KBD_window.outerWidth = width;
+      KBD_window.outerHeight = height;
+      return true;
+    } catch (e) {
+      fail('Failed to resize window in test fixture: ' + e.message);
+    }
+  }
+}
+
+function canResize() {
+  return KBD_window['outerWidth'] || KBD_window['resizeTo'];
+}
+
+function testReposition1() {
+    assertEquals(0, GKBD.layer.relX_);
+    assertEquals(0, GKBD.layer.relY_);
+  try {
+    var cr = canResize();
+  } catch (e) {
+    fail('Failed at canResize(): ' + e.message);
+  }
+
+  var onresizeWorks = false;
+  if (canResize()) {
+    try {
+      window.onresize = function() {
+        onresizeWorks = true;
+        windowOnresize();
+      };
+    } catch (e) {
+      fail('Failed at step 1: ' + e.message);
+    }
+    resizeTheWindow(640, 480);
+
+    if (onresizeWorks &&
+        640 == window.outerWidth &&
+        480 == window.outerHeight) {
+      assertTrue(GKBD.layer.isNearHome_());
+      try {
+        resizeTheWindow(800,600);
+      } catch (e) {
+        fail('Failed at step 3: ' + e.message);
+      }
+      assertTrue(GKBD.layer.isNearHome_());
+    }
+  } else {
+    fail('cannot resize actually: ' +
+         KBD_window['outerWidth'] + ',' + KBD_window['resizeTo']);
+  }
+}
+
+function testReposition2() {
+  GKBD.layer.goHome_();
+  resizeTheWindow(640,480);
+  assertTrue(GKBD.layer.isNearHome_());
+}
+
+function testReposition3() {
+  GKBD.layer.goHome_();
+  try {
+    resizeTheWindow(640,480);
+  } catch (e) {
+    fail('Failed at step 1: ' + e.message);
+  }
+  assertTrue(GKBD.layer.isNearHome_());
+  try {
+    resizeTheWindow(800,600);
+  } catch (e) {
+    fail('Failed at step 2: ' + e.message);
+  }
+    assertTrue(GKBD.layer.isNearHome_());
+}
+
+function testAccessDeniedMessageInIE() {
+  // this chunk of code is extracted from GKBD.layer.goHome_(),
+  // to see where exactly it fails (occasionally) in IE.
+  var self = GKBD.layer;
+  try {
+    self.relX_ = self.relY_ = 0;
+    self.moveTo_(300, 300);
+    self.reposition_();
+    self.saveRelativePosition_();
+  } catch (e) {
+    fail('something\'s wrong: ' + e.message);
+  }
+}
+
+function test2functions() {
+  function a() { return 'this is function'; }
+  function b() { return 'this is function'; }
+  var c = a;
+  assertEquals(a, c);
+  assertFalse(c == b);
+  c = b;
+  assertEquals(b, c);
+  assertFalse(c == a);
+}
+
+function testElementsInited() {
+  GKBD.layer.showAs_('v');
+  document.cookie = 'KBD=0RU3;expires=November 07, 2010';
+  kbdRestore();
+  for (var i = 0; i < testElements.length; i++) {
+    var id = testElements[i];
+    assertFalse('element(' + id + ') must have keyboard',
+        document.getElementById(id).hasKeyboard === undefined);
+    assertTrue('hk for ' + id + ' is ' + document.getElementById(id).hasKeyboard,
+            document.getElementById(id).hasKeyboard);
+  }
+}
+
+function checkButton(code) {
+  assertTrue('button ' + code + ' must exist ',
+      !!document.getElementById('K' + code));
+}
+
+function testButtonsPresent() {
+  for (var p = letterA; p < letterZ; p++) {
+    checkButton(p);
+  }
+  checkButton(8); // backspace
+  checkButton(KBD_CAPSLOCK_CODE);
+  checkButton(0x10);
+  checkButton(KBD_ALTCTRL_CODE);
+}
+
+function testBackspaceWithButton() {
+  GKBD.layer.switchTo_('Ru');
+  GKBD.layer.showAs_('v');
+  clickButtons('AB\u0008C');
+  assertEquals('\u0430\u0446', input.value);
+}
+
+function testShift() {
+  GKBD.layer.showAs_('v');
+  GKBD.layer.switchTo_('Ru');
+  var input = document.getElementById('testarea');
+  assertEquals('', input.value);
+  assertEquals(0, GKBD.layer.keyboard_.getState());
+  clickButtons('\u0010R\u0010USSKAQ\u0010K\u0010LAVIATURA\u001012\u00103');
+  DEBUG=true;
+  assertEquals('\u0420\u0443\u0441\u0441\u043a\u0430\u044f' +
+               '\u041a\u043b\u0430\u0432\u0438\u0430\u0442\u0443\u0440\u0430!@3',
+               input.value);
+}
+
+function testButtonShiftKeyInput() {
+  GKBD.layer.showAs_('v');
+  GKBD.layer.switchTo_('Ru');
+  var input = document.getElementById('testarea');
+  assertEquals('', input.value);
+  DEBUG=true;
+  clickButtons('\u0010')
+  type('russkaq');
+  clickButtons('\u0010');
+  type('klaviatura');
+  assertEquals('\u0420\u0443\u0441\u0441\u043a\u0430\u044f' +
+               '\u041a\u043b\u0430\u0432\u0438\u0430\u0442\u0443\u0440\u0430',
+               input.value);
+}
+
+function testReplaceCharsPlain() {
+  GKBD.layer.showAs_('v');
+  GKBD.layer.switchTo_('Ru');
+  var input = document.getElementById('testarea');
+  input.value = '';
+  GKBD.layer.consumer_ = input;
+  assertFalse('Must be editable', GKBD.isIE && !input.isContentEditable);
+  assertEquals(0, GKBD.layer.keyboard_.getState());
+  GKBD.layer.replaceChars_('abcdef');
+  assertEquals('abcdef', input.value);
+}
+
+function testReplaceCharsReplacing() {
+  GKBD.layer.showAs_('v');
+  GKBD.layer.switchTo_('Ru');
+  var input = document.getElementById('testarea');
+  input.value = 'abc';
+  GKBD.layer.consumer_ = input;
+  assertEquals(0, GKBD.layer.keyboard_.getState());
+  GKBD.layer.replaceChars_({back: 2, chars: 'def'});
+  assertEquals('adef', input.value);
+}
+
+function testOnclickListenerFunctioning() {
+  GKBD.layer.showAs_('v');
+  GKBD.layer.switchTo_('Ru');
+  var input = document.getElementById('testarea');
+  assertEquals('', input.value);
+  assertEquals(0, GKBD.layer.keyboard_.getState());
+  var button = document.getElementById('K53');
+  var onclickListener = button.onclick;
+  assertTrue('Listener should exist', !!onclickListener);
+  assertTrue('Layout should be initialized',
+      GKBD.layer.keyboard_.layout_.isInitialized);
+  assertTrue(GKBD.layer.keyboard_.layout_.sequence_.length >= 0);
+  assertEquals('Transformed "5"', '5', GKBD.layer.keyboard_.transform_('5'));
+  GKBD.layer.keyboard_.buttonOnclick(button);
+  assertEquals('Clicked 5', '5', input.value);
+}
+
+function testPlainClick() {
+  GKBD.layer.showAs_('v');
+  GKBD.layer.switchTo_('Ru');
+  var input = document.getElementById('testarea');
+  GKBD.layer.consumer_ = input;
+  assertEquals('', input.value);
+  GKBD.layer.consumer_ = input;
+  assertEquals(0, GKBD.layer.keyboard_.getState());
+  clickKeyButton('5'.charAt(0));
+  assertEquals(
+      'Clicked 5, listener was ' + document.getElementById('K53').onclick,
+      '5', input.value);
+}
+
+function testButtonPresence() {
+  GKBD.layer.showAs_('v');
+  GKBD.layer.switchTo_('Ru');
+  var input = document.getElementById('testarea');
+  GKBD.layer.consumer_ = input;
+  assertEquals('', input.value);
+  assertEquals(0, GKBD.layer.keyboard_.getState());
+  var id = 'K57';
+  assertTrue(id + ' should be present in keyboard content',
+      GKBD.layer.keyboard_.content_.indexOf(id) > 0);
+  assertTrue(id + ' should be present in layer html',
+      forId('kbd_0').innerHTML.indexOf(id) > 0);
+  var element = document.getElementById(id);
+
+  assertTrue('Element ' + id + ' should exist', !!element);
+  assertTrue(!!element.onclick);
+  assertEquals('9', element.value);
+}
+
+function testMultipleClicks() {
+  GKBD.layer.showAs_('v');
+  GKBD.layer.switchTo_('Ru');
+  var input = document.getElementById('testarea');
+  GKBD.layer.consumer_ = input;
+  assertEquals('', input.value);
+  assertEquals(0, GKBD.layer.keyboard_.getState());
+  clickButtons('123');
+  assertEquals('Clicked 123', '123', input.value);
+}
+
+function testCapslock() {
+  GKBD.layer.showAs_('v');
+  GKBD.layer.switchTo_('Ru');
+  var input = document.getElementById('testarea');
+  GKBD.layer.consumer_ = input;
+  assertEquals('', input.value);
+  assertEquals(0, GKBD.layer.keyboard_.getState());
+  clickButtons('123');
+  assertEquals('Just clicked 123', '123', input.value);
+  clickButtons('\u0014R\u0014USSKAQ\u0014K\u0014LAVIATURA\u001412\u00143');
+  assertEquals('123\u0420\u0443\u0441\u0441\u043a\u0430\u044f\u041a' +
+               '\u043b\u0430\u0432\u0438\u0430\u0442\u0443\u0440\u0430123',
+               input.value);
+}
+
+function testAltGr() {
+  assertEquals('function', typeof forId); // the function should be available
+  GKBD.layer.showAs_('v');
+  GKBD.layer.switchTo_('Ru');
+  var input = document.getElementById('testarea');
+  GKBD.layer.consumer_ = input;
+  assertEquals('', input.value);
+  clickButtons('740');
+  assertEquals('Just clicked 740', '740', input.value);
+  clickButtons(
+      '\u0014NEL\u0111\u00c0\u0111POLINYB\u0111' +
+      'Z\u0111\u00dbET\u00c0BRAT\u0111Q\u0111E');
+  assertEquals('740НЕЛѢПОЛИНЫБѦШЕТЪБРАТЇЕ', input.value);
+}
+
+function testClientHeight() {
+  assertTrue(sut.clientHeight_() > 40); // a reasonable window height limit
+}
+
+</script>
+</body>
+</html>

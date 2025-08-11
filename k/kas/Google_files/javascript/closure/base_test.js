@@ -1,0 +1,118 @@
+// Copyright 2006 Google Inc.
+// All Rights Reserved.
+
+/**
+ * Unit test for Closure's 'base' script.
+ */
+
+//=== tests for library ===
+
+function testLibrary() {
+  assertNotUndefined("'goog' not loaded", goog);
+}
+
+function testCreateNamespace() {
+  goog.createNamespace('goog.test.name.space');
+  assertNotUndefined('CreateNamespace failed: goog.test', goog.test);
+  assertNotUndefined('CreateNamespace failed: goog.test.name', goog.test.name);
+  assertNotUndefined('CreateNamespace failed: goog.test.name.space', 
+                     goog.test.name.space);
+}
+
+function testGlobalize() {
+  goog.globalize();
+  assertNotUndefined('Globalize goog', createNamespace);
+  
+  var a = { a:1, b:2, c:3 };
+  var b = {};
+  goog.globalize(a, b);
+  assertNotUndefined('Globalize to arbitrary object', b.a);
+  assertNotUndefined('Globalize to arbitrary object', b.b);
+  assertNotUndefined('Globalize to arbitrary object', b.c);
+}
+
+//=== tests for getHashCode ===
+
+function testGetHashCode() {
+  var a = {};
+  var b = {};
+  var c = {};
+
+  var hc1 = goog.getHashCode(a);
+  var hc2 = goog.getHashCode(b);
+  var hc3 = goog.getHashCode(c);
+
+  assertNotEquals("Hash codes must be unique", hc1, hc2);
+  assertNotEquals("Hash codes must be unique", hc1, hc3);
+  assertNotEquals("Hash codes must be unique", hc2, hc3);
+}
+
+
+//=== tests for bind() and friends ===
+
+var foo = "global";
+var obj = {foo:"obj"};
+
+function getFoo(arg1, arg2) {
+  return {foo:this.foo, arg1:arg1, arg2:arg2};
+}
+
+function testBindWithoutObj() {
+  assertEquals(foo, getFoo.bind()().foo);
+}
+
+function testBindWithObj() {
+  assertEquals(obj.foo, getFoo.bind(obj)().foo);
+}
+
+function testBindWithNullObj() {
+  assertEquals(foo, getFoo.bind()().foo);
+}
+
+function testBindStaticArgs() {
+  var fooprime = getFoo.bind(obj, "hot", "dog");
+  var res = fooprime();
+  assertEquals(obj.foo, res.foo);
+  assertEquals("hot", res.arg1);
+  assertEquals("dog", res.arg2);
+}
+
+function testBindDynArgs() {
+  var res = getFoo.bind(obj)("hot", "dog");
+  assertEquals(obj.foo, res.foo);
+  assertEquals("hot", res.arg1);
+  assertEquals("dog", res.arg2);
+}
+
+function testBindCurriedArgs() {
+  var res = getFoo.bind(obj, "hot")("dog");
+  assertEquals(obj.foo, res.foo);
+  assertEquals("hot", res.arg1);
+  assertEquals("dog", res.arg2);
+}
+
+function testBindDoubleBind() {
+  var getFooP = goog.bind(getFoo, obj, "hot");
+  var getFooP2 = goog.bind(getFooP, null, "dog");
+
+  assertEquals("getFooP.boundFn_ should equal getFoo",
+               getFoo, getFooP.boundFn_);
+  assertEquals("getFooP.boundArgs_ should have length 1", 
+               1, getFooP.boundArgs_.length);
+  assertEquals("getFooP2.boundFn_ should equal getFoo", 
+               getFoo, getFooP2.boundFn_);
+  assertEquals("getFooP2.boundArgs_ should have length 2",
+               2, getFooP2.boundArgs_.length);
+  assertEquals("getFooP2.boundArgs_[0] should be 'hot'",
+               "hot", getFooP2.boundArgs_[0]);
+  assertEquals("getFooP2.boundArgs_[1] should be 'dog'",
+               "dog", getFooP2.boundArgs_[1]);
+  assertEquals("getFooP.boundSelf_ should equal obj.",
+               obj, getFooP.boundSelf_);
+  assertEquals("getFooP2.boundSelf_ should equal obj.",
+               obj, getFooP2.boundSelf_);
+
+  var res = getFooP2();
+  assertEquals("res.arg1 should be 'hot'", "hot", res.arg1);
+  assertEquals("res.arg2 should be 'dog'", "dog", res.arg2);
+}

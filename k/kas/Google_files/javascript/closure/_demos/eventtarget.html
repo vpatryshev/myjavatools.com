@@ -1,0 +1,31 @@
+<html>
+<head>
+  <title>Event Test</title>
+  <script type="text/javascript" src="../base.js"></script>
+  <script type="text/javascript">
+    goog.require('goog.events.EventTarget');
+  </script>
+</head>
+<body>
+
+  <script type="text/javascript">
+
+  function Something() { }
+  Something.inherits(goog.events.EventTarget);
+
+  Something.prototype.DoSomething = function() {
+    alert('Doing something');
+    this.dispatchEvent({type: 'synth', arg: 'Wooo' });
+  }
+
+  var st = new Something();
+
+  goog.events.listen(st, 'synth', function(e) { 
+    alert('Custom event says ' + e.arg);
+  });
+
+  st.DoSomething();
+
+  </script> 
+</body>
+</html>

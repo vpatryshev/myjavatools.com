@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Onscreen Keyboard Test Suite. Unittest for keyboard_hi.js</title>
+<!--
+Javascript unittest file. See instructions in the body.
+Script paths are relative to location of this file.
+Author: vpatryshev
+-->
+  <script src="header.js"></script>
+  <script src="debug.js"></script>
+  <script src="unittest_util.js"></script>
+  <script src="../../../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+  <script>
+    if (!jsUnitFixTop) {
+      alert("Sorry, could not find jsUnitCore.js; please check your paths...");
+    }
+  </script>
+  <script src="keyboard.js"></script>
+  <script src="kbdlayout.js"></script>
+  <script src="kbdlayer.js"></script>
+  <script src="keyboard_hi.js"></script>
+  <script src="layout/Asian/HI.js"></script>
+  <script src="export.js"></script>
+</head>
+<body>
+This is a javascript unittest for <code>keyboard_hi.js</code><br>
+To run the test, you have to open in your browser the following file:<br>
+<code>google3/third_party/java/jsunit/jsunit2.2/testRunner.html</code><br>
+and enter the location of this test file into the file name field,
+and click 'Run' button.
+<textarea rows="2" cols="50" id="testarea"></textarea>
+</body>
+<script type="text/javascript">
+  var kbdRestore = KBD_window._kbdInit;
+  var testMsgHindi = '\u0627\u0644\u0639\u0631\u0628\u064a\u0629';
+
+  var titleInactive =
+      addPointerCursor(
+        '<abbr style="border-style:none" title="Hindi keyboard"><b>' +
+        '&nbsp;\u0939\u093f\u0928\u094d\u0926\u0940&nbsp;' +
+        '\u0915\u0940\u092c\u094b</b></abbr>');
+
+  var titleActive =
+      '<abbr style="border-style:none" title="Hindi keyboard"><b>' +
+      '&nbsp;\u0939\u093f\u0928\u094d\u0926\u0940&nbsp;' +
+      '\u0915\u0940\u092c\u094b</b></abbr>';
+
+  function setUp() {
+    GKBD.layer.setup();
+    var input = document.getElementById('testarea');
+    input.value = '';
+    input.focus();
+  }
+
+  function pressAndRelease(key) {
+    var input = document.getElementById('testarea');
+    var event = {target:   input,
+                 which:    key.toUpperCase().charCodeAt(0),
+                 shiftKey: key == key.toUpperCase()};
+    document.onkeydown(event);
+    document.onkeyup(event);
+  }
+
+  function type(s) {
+    var input = document.getElementById('testarea');
+    for (var i = 0; i < s.length; i++) {
+      pressAndRelease(s.charAt(i));
+    }
+  }
+
+  function show(s) {
+    var buf = [];
+    for (var i = 0; i < s.length; i++) {
+      var c= s.charCodeAt(i);
+      var hex = c.toString(16);
+      while (hex.length < 4) hex = '0' + hex;
+      buf.push((c < 128 && c > 31) ? s.charAt(i) : ("\\u" + hex));
+    }
+    return buf.join("");
+  }
+
+  function testPresence() {
+    assertFalse(GKBD.Layout === undefined);
+  }
+
+  function testSaveRestore() {
+    checkSaveRestore(titleInactive, 'KBD=0HI3');
+  }
+
+  function testTitleInactive() {
+    checkInactiveTitle(titleInactive);
+  }
+
+  function testTitleActive() {
+    checkActiveTitle(titleActive);
+  }
+
+  function testTypeHi() {
+    GKBD.layer.showAs_('v');
+    GKBD.layer.switchTo_('HI');
+    var input = document.getElementById('testarea');
+    assertEquals('', input.value);
+    type('QWERTYUIOPqwertyuiop');
+    var expected =
+        '\u0914\u0910\u0906\u0908\u090a\u092d\u0919\u0918\u0927\u091d\u094c' +
+        '\u0948\u093e\u0940\u0942\u092c\u0939\u0917\u0926\u091c';
+    assertEquals("Got " + show(input.value) + "\nvs " + show(expected),
+                 expected,
+                 input.value);
+  }
+  
+</script>
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+
+<!--
+Copyright 2006 Google Inc.
+ All Rights Reserved.
+-->
+
+<html>
+<head>
+<title>Testing goog.events.EventTarget</title>
+<script type="text/javascript" src="../../../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+<script type="text/javascript" src="../base.js"></script>
+<script type="text/javascript">
+    goog.require('goog.events.Event');
+    goog.require('goog.events.CustomEvent');
+    goog.require('goog.events.EventTarget');
+</script>
+</head>
+<body>
+<script type="text/javascript">
+
+  goog.globalize(goog.events);
+  
+  /**
+   * Class that implements EventTarget and dispatches a custom event 'count'
+   */
+  function TargetClass() {
+    this.count = 0;
+  };
+  TargetClass.inherits(EventTarget);
+  
+  TargetClass.prototype.increment = function() {
+    this.count++;
+    return this.dispatchEvent(new MyEvent());
+  };
+  
+  TargetClass.prototype.reset = function() {
+    this.count = 0;
+  };
+  
+  
+  /**
+   * Class that is set up to listen to the target
+   */
+  function ListenerClass() {
+    this.count = 0;
+  };
+  
+  ListenerClass.prototype.reset = function() {
+    this.count = 0;
+  };
+  
+  ListenerClass.prototype.justListen1 = function(e) {
+    this.count++;
+  };
+  
+  ListenerClass.prototype.justListen2 = function(e) {
+    this.count++;
+  };
+  
+  ListenerClass.prototype.justListen3 = function(e) {
+    this.count++;
+  };
+  
+  ListenerClass.prototype.preventDefault = function(e) {
+    this.count++;
+    e.preventDefault();
+  };
+  
+  ListenerClass.prototype.stopPropagation = function(e) {
+    this.count++;
+    e.stopPropagation();
+  };
+  
+  ListenerClass.prototype.returnFalse = function(e) {
+    this.count++;
+    return false;
+  };
+  
+  ListenerClass.prototype.handleEvent = function(e) {
+    if (e.type == 'count') {
+      this.count++;
+    }
+  };
+  
+  function MyEvent(obj) {
+    this.type = 'count';
+  }
+  MyEvent.inherits(goog.events.CustomEvent);
+  
+  
+  /**
+   * No listeners
+   */
+  function testNoListeners() {
+    var target = new TargetClass();
+    var listener = new ListenerClass();
+    
+    var result = target.increment();
+  
+    assertEquals(0, listener.count);
+    assertTrue(result);
+ 
+    assertEquals('0 listeners should be removed', 0, removeAll(target));
+  }
+  
+  
+  /**
+   * Basic test of listeners
+   */
+  function testBasicEventTarget() {
+    var target = new TargetClass();
+    var listener = new ListenerClass();
+  
+    listen(target, 'count', listener.justListen1, false, listener);
+    listen(target, 'count', listener.justListen2, false, listener);
+    listen(target, 'count', listener.justListen3, false, listener);
+  
+    var result = target.increment();
+  
+    assertEquals(3, listener.count);
+    assertTrue(result);
+	
+    assertEquals('3 listeners should be removed', 3, removeAll(target));
+  }
+  
+  /**
+   * Just Capture
+   */
+  function testJustCapture() {
+    var target = new TargetClass();
+    var listener = new ListenerClass();
+  
+    listen(target, 'count', listener.justListen1, true, listener);
+  
+    var result = target.increment();
+  
+    assertEquals(1, listener.count);
+    assertTrue(result);
+ 
+    assertEquals('1 listeners should be removed', 1, removeAll(target));
+  }
+  
+  /**
+   * Just Bubble
+   */
+  function testJustBubble() {
+    var target = new TargetClass();
+    var listener = new ListenerClass();
+  
+    listen(target, 'count', listener.justListen1, false, listener);
+  
+    var result = target.increment();
+
+    assertEquals(1, listener.count);
+    assertTrue(result);
+ 
+    assertEquals('1 listeners should be removed', 1, removeAll(target));
+  }
+  
+  /**
+   * Basic test of listeners
+   */
+  function testCaptureAndBubble() {
+    var target = new TargetClass();
+    var listener = new ListenerClass();
+  
+    listen(target, 'count', listener.justListen1, true, listener);
+    listen(target, 'count', listener.justListen2, true, listener);
+    listen(target, 'count', listener.justListen3, true, listener);
+    listen(target, 'count', listener.justListen1, false, listener);
+    listen(target, 'count', listener.justListen2, false, listener);
+    listen(target, 'count', listener.justListen3, false, listener);
+  
+    var result = target.increment();
+  
+    assertEquals(6, listener.count);
+    assertTrue(result);
+	
+    assertEquals('6 listeners should be removed', 6, removeAll(target));
+  }
+  
+    
+  /**
+   * Test of prevent default
+   */
+  function testPreventDefault() {
+    var target = new TargetClass();
+    var listener = new ListenerClass();
+  
+    listen(target, 'count', listener.justListen1, false, listener);
+    listen(target, 'count', listener.justListen2, false, listener);
+    listen(target, 'count', listener.preventDefault, false, listener);
+  
+    var result = target.increment();
+  
+    assertEquals(3, listener.count);
+    assertFalse(result);
+	
+    assertEquals('3 listeners should be removed', 3, removeAll(target));
+  }
+  
+    
+  /**
+   * Test of stop propagation
+   */
+  function testStopPropagation() {
+    var target = new TargetClass();
+    var listener = new ListenerClass();
+  
+    listen(target, 'count', listener.justListen1, true, listener);
+    listen(target, 'count', listener.stopPropagation, true, listener);
+    listen(target, 'count', listener.justListen1, false, listener);
+    listen(target, 'count', listener.justListen2, false, listener);
+  
+    var result = target.increment();
+  
+    assertEquals(2, listener.count);
+    assertTrue(result);
+	
+    assertEquals('4 listeners should be removed', 4, removeAll(target));
+  }
+  
+  
+  /**
+   * Test of stop propagation and prevent default
+   */
+  function testStopPropagationAndPreventDefaultAtCapture() {
+    var target = new TargetClass();
+    var listener = new ListenerClass();
+  
+    listen(target, 'count', listener.preventDefault, true, listener);
+    listen(target, 'count', listener.stopPropagation, true, listener);
+    listen(target, 'count', listener.justListen1, false, listener);
+    listen(target, 'count', listener.justListen2, false, listener);
+  
+    var result = target.increment();
+  
+    assertEquals(2, listener.count);
+    assertFalse(result);
+	
+    assertEquals('4 listeners should be removed', 4, removeAll(target));
+  }  
+    
+  
+  /**
+   * Test of stop propagation and prevent default
+   */
+  function testStopPropagationAndPreventDefaultAtBubble() {
+    var target = new TargetClass();
+    var listener = new ListenerClass();
+  
+    listen(target, 'count', listener.justListen2, true, listener);
+    listen(target, 'count', listener.stopPropagation, true, listener);
+    listen(target, 'count', listener.justListen1, false, listener);
+    listen(target, 'count', listener.preventDefault, false, listener);
+  
+    var result = target.increment();
+  
+    assertEquals(2, listener.count);
+  
+    // Should be true because stop propagation cancelled the listener that
+    // prevented default
+    assertTrue(result); 
+	
+    assertEquals('4 listeners should be removed', 4, removeAll(target));
+  }
+  
+	
+  /**
+   * Test return false
+   */
+  function testReturnFalse() {
+    var target = new TargetClass();
+    var listener = new ListenerClass();
+  
+    listen(target, 'count', listener.justListen1, false, listener);
+    listen(target, 'count', listener.returnFalse, false, listener);
+    listen(target, 'count', listener.justListen3, false, listener);
+  
+    var result = target.increment();
+    assertEquals(3, listener.count);
+    assertFalse(result);
+	
+    assertEquals('3 listeners should be removed', 3, removeAll(target));
+  }
+  
+  function testHandleEvent() {
+    var target = new TargetClass();
+    var listener1 = new ListenerClass();
+    var listener2 = new ListenerClass();
+    var listener3 = new ListenerClass();
+
+    listen(target, 'count', listener1, false);
+    listen(target, 'count', listener2, false);
+    listen(target, 'count', listener3, false);
+
+    target.increment();
+    target.increment();
+    var result = target.increment();
+    assertEquals(3, listener1.count);
+    assertEquals(3, listener2.count);
+    assertEquals(3, listener3.count);
+    assertTrue(result);
+
+    assertEquals('3 listeners should be removed', 3, removeAll(target));
+
+  }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Onscreen Keyboard Test Suite. Unittest for keyboard_tr.js</title>
+<!--
+Javascript unittest file. See instructions in the body.
+Script paths are relative to location of this file.
+Author: vpatryshev
+-->
+  <script src="header.js"></script>
+  <script src="debug.js"></script>
+  <script src="unittest_util.js"></script>
+  <script src="../../../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+  <script>
+    if (!jsUnitFixTop) {
+      alert("Sorry, could not find jsUnitCore.js; please check your paths...");
+    }
+  </script>
+  <script src="keyboard.js"></script>
+  <script src="kbdlayout.js"></script>
+  <script src="kbdlayer.js"></script>
+  <script src="layout/MiddleEastern/TR.js"></script>
+  <script src="export.js"></script>
+</head>
+<body>
+This is a javascript unittest for <code>keyboard_tr.js</code><br>
+To run the test, you have to open in your browser the following file:<br>
+<code>google3/third_party/java/jsunit/jsunit2.2/testRunner.html</code><br>
+and enter the location of this test file into the file name field,
+and click 'Run' button.
+<textarea rows="2" cols="50" id="testarea"></textarea>
+<script type="text/javascript">
+  var kbdRestore = KBD_window._kbdInit;
+  var titleInactive =
+      addPointerCursor(
+        '<abbr style="border-style:none" title="Turkish keyboard"><b>' +
+        '&nbsp;T\u00fcrk\u00e7e Klavie</b></abbr>');
+
+  var titleActive =
+      '<abbr style="border-style:none" title="Turkish keyboard"><b>' +
+      '&nbsp;T\u00fcrk\u00e7e Klavie</b></abbr>';
+
+  function setUp() {
+    GKBD.layer.setup();
+    var input = document.getElementById('testarea');
+    input.value = '';
+    input.focus();
+  }
+
+  function pressAndRelease(key) {
+    var input = document.getElementById('testarea');
+    var event = {target:   input,
+                 which:    key.toUpperCase().charCodeAt(0),
+                 shiftKey: key == key.toUpperCase()};
+    document.onkeydown(event);
+    document.onkeyup(event);
+  }
+
+  function type(s) {
+    var input = document.getElementById('testarea');
+    for (var i = 0; i < s.length; i++) {
+      pressAndRelease(s.charAt(i));
+    }
+  }
+
+  function testSaveRestore() {
+    checkSaveRestore(titleInactive, 'KBD=0TR3');
+  }
+
+  function testTitleInactive() {
+    checkInactiveTitle(titleInactive);
+  }
+
+  function testTitleActive() {
+    checkActiveTitle(titleActive);
+  }
+
+  function testTypeTr() {
+    GKBD.layer.showAs_('v');
+    GKBD.layer.switchTo_('TR');
+    var input = document.getElementById('testarea');
+    assertEquals('', input.value);
+    type('op\u00db\u00ddkl;m\u00bc\u00be');
+    var expected =
+        'op\u011e\u00dckl\u015em\u00d6\u00c7';
+    assertEquals("Got " + show(input.value) + "\nvs " + show(expected),
+                 expected,
+                 input.value);
+  }
+</script>
+</body>
+</html>

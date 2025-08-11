@@ -1,0 +1,74 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Onscreen Keyboard Test Suite. Unittest for keyboard_ru.js</title>
+  <!--
+  Javascript unittest file. See instructions in the body.
+  Script paths are relative to location of this file.
+  Author: vpatryshev
+  -->
+  <script src="javascript/keyboard/tools/jstools.js"></script>
+=  <script src="javascript/keyboard/unittest_util.js"></script>
+  <script src="../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+</head>
+<body>
+This is a javascript unittest for binary keyboard script reloading.
+What we need here is to check that when one script loads, it overrides the other one.
+<br>
+
+To run the test, you have to open in your browser the following file:<br>
+<code>google3/third_party/java/jsunit/jsunit2.2/testRunner.html</code><br>
+and enter the location of this test file into the file name field,
+and click 'Run' button.
+<textarea rows="2" cols="50" id="testarea"></textarea>
+<br>
+<script type="text/javascript">
+var titleRussianActive =
+    '<abbr style="border-style: none;" title=' +
+    '"Russian keyboard"><b>&nbsp;&nbsp;&nbsp;' +
+    '\u0420\u0443\u0441\u0441\u043a\u0430\u044f&nbsp;' +
+    '\u043a\u043b\u0430\u0432\u0438\u0430\u0442\u0443\u0440\u0430' +
+    '</b></abbr>&nbsp;&nbsp;' +
+    '<a style=' +
+    '"text-decoration: none; cursor: pointer; font-size: 80%; color: blue;"'+
+    ' onmouseover="this.style.textDecoration=\'underline\'" ' +
+    'onmouseout="this.style.textDecoration=\'none\'" ' +
+    'onclick="_kbdS2(\'Ru\');">' +
+    '\u0442\u0440\u0430\u043d\u0441\u043b\u0438\u0442</a>';
+
+function setUp() {
+  var input = document.getElementById('testarea');
+  input.value = '';
+  input.focus();
+}
+
+function reload(path) {
+  var script = document.createElement("script");
+  script.onreadystatechange =
+  script.onload =
+  function(){
+    window.onload();
+  };
+  script.src=path;
+  document.body.appendChild(script);
+}
+
+function testSwitchToRussian() {
+  reload('bin/d_ru_002.js');
+  JS_TOOLS.sleep(500);
+
+  _kbdS2('Ru');
+  assertEquals('0Ru', getCookie().substring(0, 3));
+  checkActiveTitle(titleRussianActive);
+  activateKeyboard();
+  var input = document.getElementById('testarea');
+  input.value = '';
+  type('Heccrfz rkfdbfnehf');
+  assertEquals('\u0420\u0443\u0441\u0441\u043a\u0430\u044f' +
+               '\u043a\u043b\u0430\u0432\u0438\u0430\u0442\u0443\u0440\u0430',
+               input.value);
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<!--
+Copyright 2006 Google Inc.
+All Rights Reserved.
+Author: pupius@google.com (Daniel Pupius)
+
+Can't really unit test this effectivly, so this is just a demo
+-->
+
+<html>
+<head>
+<title>goog.dom.FontSizeMonitor Demo</title>
+<script type="text/javascript" src="../../../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+<script type="text/javascript" src="../base.js"></script>
+<script type="text/javascript">
+	goog.require('goog.events');
+	goog.require('goog.events.EventTarget');
+	goog.require('goog.dom');
+	goog.require('goog.Timer');
+  goog.require('goog.dom.FontSizeMonitor');
+</script>
+</head>
+<body>
+<p>Post Hoc Ergo Propter Hoc</p>
+<script type="text/javascript">
+
+var timer;
+if (confirm('Do you want to use a timer class?\n\n' +
+            'Click OK to use a Timer.\n' +
+            'Click Cancel to use a setInterval')) {
+	timer = new goog.Timer;
+	timer.start();
+}
+
+var fsm = new goog.dom.FontSizeMonitor(timer);
+goog.events.listen(fsm, 'fontsizechange', function() {
+  alert('The fontsize was changed');
+});
+
+</script>
+</body>
+</html>

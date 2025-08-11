@@ -1,0 +1,16 @@
+GKBD.layer.configure({
+  msgOpen:  "__MSG_activate__",
+  msgClose: "__MSG_deactivate__",
+  openClosePosition: "__BIDI_END_EDGE__"
+});
+    
+var ol = window.onload;
+window.onload = function() {
+  if (ol) ol();
+  document.getElementById('typehere').onfocus();
+}
+</script>
+
+</span>
+]]></Content>
+</Module>

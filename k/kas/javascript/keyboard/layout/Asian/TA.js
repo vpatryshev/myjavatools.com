@@ -1,0 +1,7 @@
+KBD_loadme({id:'TA',name:'Tamil',title:'\u0ba4\u0bae\u0bbf\u0bb4\u0bcd',
+mappings: {'sl,s': {'\u00c0':'\u0b92','6':'\u0ba4\u0bcd\u0bb0','7':'\u0b95\u0bcd\u0bb7','8':'\u0bb7\u0bcd\u0bb0','m':'\u0b83' , 'Q':'\u0b94','W':'\u0b90','E':'\u0b86','R':'\u0b88','T':'\u0b8a','Y':'\u0baa','U':'\u0b99','I':'\u0b95','O':'\u0ba4','P':'\u0b9a','\u00db':'\u0b9f','\u00dd':'\u0b9e' , 'A':'\u0b93','S':'\u0b8f','D':'\u0b85','F':'\u0b87','G':'\u0b89','H':'\u0baa','J':'\u0bb1','K':'\u0b95','L':'\u0ba4',';':'\u0b9a','\u00de':'\u0b9f' , 'Z':'\u0b8e','C':'\u0ba3','V':'\u0ba9','B':'\u0bb4','N':'\u0bb3','M':'\u0bb7','\u00bc':'\u0bb7','\u00be':'\u0bb8\u0bcd\u0bb0\u0bc0','\u00bf':'\u0baf' },
+'cl,c': {'1':'\u0be7','2':'\u0be8','3':'\u0be9','4':'\u0bea','5':'\u0beb','6':'\u0bec','7':'\u0bed','8':'\u0bee','9':'\u0bef','0':'\u0bf0','m':'\u0bf1','=':'\u0bf2' },
+'l,': {'\u00c0':'\u0bca','1':'1','2':'2','3':'3','4':'4','5':'5','6':'6','7':'7','8':'8','9':'9','0':'0','m':'-' , 'Q':'\u0bcc','W':'\u0bc8','E':'\u0bbe','R':'\u0bc0','T':'\u0bc2','Y':'\u0baa','U':'\u0bb9','I':'\u0b95','O':'\u0ba4','P':'\u0b9c','\u00db':'\u0b9f','\u00dd':'\u0b9e' , 'A':'\u0bcb','S':'\u0bc7','D':'\u0bcd','F':'\u0bbf','G':'\u0bc1','H':'\u0baa','J':'\u0bb0','K':'\u0b95','L':'\u0ba4',';':'\u0b9a','\u00de':'\u0b9f' , 'Z':'\u0bc6','C':'\u0bae','V':'\u0ba8','B':'\u0bb5','N':'\u0bb2','M':'\u0bb8','\u00bc':',','\u00be':'.','\u00bf':'\u0baf' }
+}
+}
+);

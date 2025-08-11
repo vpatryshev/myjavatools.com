@@ -1,0 +1,2659 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+<ModulePrefs title="لوحة مفاثيح اللغة العرب" height="300" singleton="true">
+</ModulePrefs>
+<Content type="html-inline"><![CDATA[
+<span id="KBD_anchor"></span>
+<body topmargin="3" dir="rtl" alink="#ff0000" bgcolor="#ffffff" link="#0000cc" marginheight="3" text="#000000" vlink="#551a8b">
+<textarea rows="3" cols="30"></textarea>
+<script>
+var KBD_gadgetClient = document.getElementById("KBD_anchor").parentNode;
+
+/**
+ * This is the namespace for external keyboard functions and classes.
+ */
+var GKBD = {};
+
+/**
+ * Location of all the scripts. Settint this here is a temporary meaasure,
+ * before I figure out how to find files/scripts from a script.
+ */
+GKBD.LOCATION_ = "";
+
+/**
+ * Checks whether a variable is defined.
+ */
+GKBD.isDef_ = function(v) {
+  return typeof v != "undefined";
+};
+
+var KBD_window = window;
+if (typeof unsafeWindow != 'undefined') KBD_window = unsafeWindow;
+var KBD_document; // These two shortcuts will be set onload.
+var KBD_client;
+var KBD_document_element;
+var Math_floor = Math.floor;
+var Math_min = Math.min;
+var Math_max = Math.max;
+var Math_round = Math.round;
+var Math_abs = Math.abs;
+
+/**
+ * Returns an element by its id
+ * @param id
+ * @return an element
+ */
+function forId(id) {
+  return KBD_document.getElementById(id);
+};
+
+/**
+ * Returns element's width
+ * @param element
+ * @return its width
+ */
+function elementWidth(element) {
+  return !element             ? -1 :
+         element.offsetWidth  ? element.offsetWidth :
+         element.clip         ? element.clip.width  :
+                                -1;
+}
+
+/**
+ * Returns element's height
+ * @param element
+ * @return its height
+ */
+function elementHeight(element) {
+  return element.offsetHeight  ? element.offsetHeight :
+         element.clip         ? element.clip.height  : -1;
+}
+
+
+/**
+ * Appends "px" to the value - good for using with loose.dtd where px is
+ * required
+ * @param x the value (width, height, x, y)
+ * @return x + "px"
+ */
+function px(x) {
+  return "" + Math_floor(x) + "px";
+}
+
+
+/**
+ * Encodes a string for display
+ * @param s {String} The string to encode
+ * @return the string where all unsafe characters are escaped
+ * @private
+ */
+function htmlEncode(s) {
+  var result = [];
+  for (var i = 0; i < s.length; i++) {
+    var c = s.charAt(i);
+    var code = s.charCodeAt(i);
+    result.push('\\\'\"'.indexOf(c) >= 0 || code > 127 || code < 33 ?
+                ("&#" + code + ";") : c);
+  }
+  return result.join('');
+}
+
+
+// browser detection - from common.js
+GKBD.isIE = navigator.userAgent.toLowerCase().indexOf('msie') != -1 &&
+            !KBD_window.opera;
+
+var eventMetaBit = 0;
+var eventCtlBit = 0;
+var eventAltBit = 0;
+var eventShiftBit = 0;
+
+if (KBD_window.Event) {
+  eventMetaBit = Event.ALT_MASK; // !! check if these are really very different bits !!
+  eventCtlBit = Event.CONTROL_MASK;
+  eventAltBit = Event.ALT_MASK;
+  eventShiftBit = Event.SHIFT_MASK;
+}
+
+/**
+ * "Ctrl" or "Alt" or "Meta" mask
+ * On a strange occasion when Event class is not defined, the value is 0.
+ */
+var CTL_ALT_META_MASK = eventMetaBit | eventCtlBit | eventAltBit;
+
+/**
+ * Checks whether it is a special character - alt, ctrl, and meta (wtf is it?)
+ * @param event Keyboard event
+ */
+function isSpecialEvent(event) {
+  return (event.ctrlKey && !event.altKey) ||
+         (event.modifiers & CTL_ALT_META_MASK);
+};
+
+
+/**
+ * Checks whether meta is currently pressed, according to the event
+ * @param event Keyboard event
+ * @return true if is pressed
+ * @private
+ */
+function isMetaPressed(event) {
+  return event.modifiers & eventMetaBit;
+};
+
+
+/**
+ * Checks whether ctrl is currently pressed, according to the event
+ * @param event Keyboard event
+ * @return true if is pressed
+ * @private
+ */
+function isCtrlPressed(event) {
+  return event.ctrlKey || (event.modifiers & eventCtlBit) ? 1 : 0;
+};
+
+
+/**
+ * Checks whether alt is currently pressed, according to the event
+ * @param event Keyboard event
+ * @return true if is pressed
+ * @private
+ */
+function isAltPressed(event) {
+  return event.altKey || (event.modifiers & eventAltBit) ? 1 : 0;
+};
+
+
+/**
+ * Checks whether the events will turn the keyboard into Alt-Gr state
+ * @param event Keyboard event
+ * @return true if ctrl and alt are pressed
+ */
+function isAltGrEvent(event) {
+  return (isCtrlPressed(event) && isAltPressed(event)) ||
+         isMetaPressed(event);
+};
+
+
+/**
+ * Checks whether shift is currently pressed, according to the event
+ * @param event Keyboard event
+ * @return true if is pressed
+ * @private
+ */
+function isShiftPressed(event) {
+  return event.shiftKey || (event.modifiers & eventShiftBit) ? 1 : 0;
+};
+
+
+/**
+ * OEM keyboard layout - key widths.
+ * @private
+ */
+var KBD_format = [[0,27,27,27,27,27,27,27,27,27,27,27,27,27,66],
+                  [36,27,27,27,27,27,27,27,27,27,27,27,27,57,0],
+                  [0,50,27,27,27,27,27,27,27,27,27,27,27,0,67],
+                  [0,67,27,27,27,27,27,27,27,27,27,27,84,0]];
+
+
+/**
+ * English OEM keyboard layout - key codes assignment, four rows
+ * @private
+ */
+var KBD_rows = ['\u00c01234567890m=',
+                'QWERTYUIOP\u00db\u00dd\u00dc',
+                'ASDFGHJKL;\u00de',
+                'ZXCVBNM\u00bc\u00be\u00bf'];
+
+/**
+ * OEM keyboard remapping table:
+ * for each type (de, fr) we map a keyboard char to its "actual"
+ * English counterpart, so that, e.g. French AZERTY is decoded as QWERTY, etc.
+ */
+var KBD_remap = {
+  'de': {
+    'Y':90,  //'Z'.charCodeAt(0),
+    'Z':89,  //'Y'.charCodeAt(0),
+    '\u00dc':0xc0,
+    '\u00db':109,  //'m'.charCodeAt(0),
+    '\u00dd':61,  //'='.charCodeAt(0),
+    ';':0xdb,
+    '=':0xdd,
+    '\u00bf':0xdc,
+    '\u00cc':59,  //';'.charCodeAt(0),
+    'm':0xbf
+  },
+  'fr': {
+    'Q':65,  //'A'.charCodeAt(0),
+    'A':81,  //'Q'.charCodeAt(0),
+    'Z':87,  //'W'.charCodeAt(0),
+    'W':90,  //'Z'.charCodeAt(0),
+    '\u00dd':0xdb,
+    ';':0xdd,
+    'M':59,  //';'.charCodeAt(0),
+    '\u00c0':0xde,
+    '\u00de':0xc0,
+    '\u00bc':77,  //'M'.charCodeAt(0),
+    '\u00be':0xbc,
+    '\u00bf':0xbe,
+    '\u00df':0xbf,
+    '\u00db':109  //'m'.charCodeAt(0)
+  }
+};
+
+
+/**
+ * Maps variants of keycodes for certain keys to the main English keycode
+ * @private
+ */
+var KBD_mergeCodes = {
+  0xbd : 109,  //'m,'.charCodeAt(0),
+  0xbb : 61,  //'='.charCodeAt(0),
+  0xba : 59  //';'.charCodeAt(0)
+};
+
+
+/** Three physical keyboard layouts known in this world */
+var KBD_oems = 'endefr';
+
+
+/**
+ * Tooltip text for non-English physical keyboard settings.
+ * All disabled by default.
+ */
+var KBD_oemHint = {"en": "", "fr": "", "de": ""};
+
+
+/**
+ * Keyboard state masks and special key values
+ */
+var KBD_SHIFT = 1;
+var KBD_CAPS = 2;
+var KBD_CTRL = 4;
+var KBD_ALT = 8;
+var KBD_ALTCTRL = 12;
+var KBD_APPLE = 16;
+var KBD_CAPSLOCK_CODE = 0x14;
+var KBD_SHIFT_CODE = 0x10;
+var KBD_CTRL_CODE = 0x11;
+var KBD_ALT_CODE = 0x12;
+var KBD_APPLE_CODE = 0xe0;
+GKBD.BACKSPACE_ = '\b';
+
+
+/**
+ * Keyboard is a representation of a physical keyboard,
+ * minus some functional keys that cannot be intercepted anyway.
+ * Keyboard owns one or more layouts.
+ *
+ * @param groups Associative array mapping each layout group name
+ *                 to an array of layouts
+ * @param layouts Associative array mapping layout ids to layouts
+ * @param opt_defaultLayout A default layout instance
+ *
+ * @constructor
+ */
+GKBD.Keyboard = function(layer, groups, layouts, opt_defaultLayout) {
+  var self = this;
+  var contentBuffer = [];
+  var myState = 0;
+  var isPressed = false;
+  var isDown = false;
+  var currentCode = -1;
+  var layoutId = '';
+  var defaultLayout = opt_defaultLayout;
+  self.history_ = [];
+
+  self.groups_ = groups;
+  self.layouts_ = layouts;
+  self.scale_ = 1;
+  self.keys_ = {};
+  self.localScale_ = 1;
+  layoutId = defaultLayout ? defaultLayout.getId_() : "??";
+  self.oemId_ = "en";
+
+  /**
+   * Sets new oem id. There are three known oem ids for three different physical
+   * keyboard layouts: generic (qwerty), French (azerty), German (qwertz).
+   * Their ids are en, fr, de.
+   *
+   * @param newOemId (String) new id (see above).
+   */
+  self.setOemId_ = function(newOemId) {
+    self.oemId_ = newOemId;
+    self.updateTitle_();
+    layer.save_();
+  };
+
+  /**
+   * Draws the whole keyboard
+   * Keyboard consists of four rows of key characters, as you can see from the
+   * code below
+   * @private
+   */
+  self.drawKeyboard_ = function() {
+    contentBuffer = ['<form style="margin-bottom:0" action="">'];
+    self.content_ = "";
+    var row1 = KBD_format[0];
+    leftpad(row1[0]);
+    drawRow(KBD_rows[0], row1, 1);
+    drawButton(GKBD.BACKSPACE_, 'Backspace', row1[14], .53);
+    rightpad(0);
+
+    var row2 = KBD_format[1];
+    leftpad(row2[0]);
+    drawRow(KBD_rows[1], row2, 1);
+    rightpad(row2[14]);
+
+    var row3 = KBD_format[2];
+    leftpad(row3[0]);
+    drawButton('\u0014', self.getCapslockTitle_(), row3[1], .75);
+    drawRow(KBD_rows[2], row3, 2);
+    rightpad(row1[14]);
+
+    var row4 = KBD_format[3];
+    leftpad(row4[0]);
+    drawButton('\u0010', 'Shift', row4[1], .9);
+    drawRow(KBD_rows[3], row4, 2);
+    drawButton('\u0111', 'Alt+Ctrl', row4[12], .85);
+    rightpad(row4[13]);
+    print("</form>");
+    self.content_ = contentBuffer.join("");
+  };
+
+
+  /**
+   * serializes current keyboard state.
+   * @return a string with serialize_d state
+   */
+  self.serialize_ = function() {
+    return KBD_oems.indexOf(self.oemId_) + self.history_.join('');
+  };
+
+
+  /**
+   * Deserializes keyboard state
+   * @param opt_data {String} keyboard state, as returned by serialize_();
+   *                 if empty, set the default state of the keyboard.
+   */
+  self.deserialize_ = function(opt_data) {
+    if (!opt_data) {
+      self.switchTo_(defaultLayout ? defaultLayout.getId_() : "??");
+    } else {
+      var oempos = opt_data.charCodeAt(0) - 48;
+      var id = opt_data.substring(opt_data.length - 2);
+      self.oemId_ = KBD_oems.substring(oempos, oempos + 2);
+      self.switchTo_(id);
+    }
+  };
+
+
+  /**
+   * @return a layout switch function
+   */
+  self.getSwitcher_ = function() {
+    return function(item) {
+      layer.switchTo_(item.id);
+    };
+  };
+
+
+  /**
+   * Sets default layout
+   & @param layout Keyboard layout
+   */
+  self.setDefaultLayout_ = function(layout) {
+    defaultLayout = layout;
+//    setLayout(layout);
+  };
+
+  /**
+   * Switches between layouts
+   * @param opt_id {String} Id of the layout to switch to.
+   *        if id is missing, switches to default layout
+   */
+  self.switchTo_ = function(opt_id) {
+    var candidate;
+    if (opt_id) {
+      candidate = self.layouts_[opt_id] ||
+                  self.layouts_[opt_id.toUpperCase()] ||
+                  self.layouts_[opt_id.substring(0,2).toUpperCase()];
+      layoutId = opt_id;
+    }
+    if (!candidate) {
+      layoutId = defaultLayout ? defaultLayout.getId_() : "??";
+      self.setLayout_(defaultLayout);
+    } else if (candidate.load_()) {
+      self.setLayout_(candidate);
+    }
+  };
+
+
+  /**
+   * Updates keyboard title.
+   */
+  self.updateTitle_ = function() {
+    var oemText = self.oemId_ == 'en' ? '' : KBD_oemHint[self.oemId_];
+    if (self.layout_) {
+      layer.setTitle_(self.layout_.getTitle_(),
+          self.layout_.getShortTitle_(), oemText);
+    } else {
+      layer.setTitle_("(please wait)", "(please wait)", oemText);
+    }
+  };
+
+  /**
+   * Sets a new keyboard layout
+   * @param layout (@see Layout.js)
+   */
+  self.setLayout_ = function(layout) {
+    if (self.layout_ != layout) {
+      self.layout_ = layout;
+      self.updateTitle_();
+      self.reassignButtons_();
+      var id = layout.getId_();
+      for (var i = 0; i < self.history_.length; i++) {
+        if (self.history_[i] == id) {
+          self.history_.splice(i, 1);
+        }
+      }
+      self.history_.push(id);
+      if (self.history_.length > layer.historySize_) self.history_.shift();
+    }
+  };
+
+  /**
+   * Draws itself in a DOM element (probably a layer)
+   */
+  self.draw_ = function () {
+    self.updateTitle_();
+    layer.setContent_(self.content_);
+  };
+
+
+  /**
+   * Outputs html content
+   * @param var_args {String} The strings to add to content
+   */
+  function print(var_args) {
+    for (var i = 0; i < arguments.length; i++) {
+      contentBuffer.push(arguments[i]);
+    }
+  };
+
+
+  /**
+   * Outputs a table cell of specified width
+   * @param width {Number} Cell width
+   * @private
+   */
+  function emptySpace(width) {
+    print('<td style="width:', px(width * self.scale_), '"/>');
+  };
+
+
+  /**
+   * Outputs keyboard's left padding element
+   * @param size {Number} Pad width
+   * @private
+   */
+  function leftpad(size) {
+    var height = GKBD.isIE ? (DEFAULT_BUTTON_HEIGHT * self.scale_) : 15;
+    print('<table style="table-layout:fixed;margin-left:auto;' +
+          'margin-right:auto;empty-cells:show;border-collapse:collapse" ' +
+          'border="0" width="100%" cellspacing="0" cellpadding="0">' +
+          '<tr align="left" style="height:', px(height), '">');
+    emptySpace(size);
+  };
+
+
+  /**
+   * Outputs keyboard's right padding element
+   * @param size {Number} Pad width
+   * @private
+   */
+  function rightpad(size) {
+    emptySpace(size);
+    print('</tr></table>\n');
+  };
+
+
+  /**
+   * class tag for buttons. Makes it easier to recognize them.
+   */
+  var BUTTON_CLASSNAME = 'kbdButton';
+  var DEFAULT_BUTTON_HEIGHT = 30;
+  var DEFAULT_FONT_SIZE = 14;
+  var buttonHeight = DEFAULT_BUTTON_HEIGHT;
+
+  /**
+   * Draws a keyboard button
+   * @param c {String} The character for the button's OEM code
+   * @param text {String} The text to display on the button
+   * @param width {Number{ Button width
+   * @param opt_fontScale text size scale, for long texts, % to generic
+   * @private
+   */
+  function drawButton(c, text, width, opt_fontSize) {
+    var fontSize = DEFAULT_FONT_SIZE *
+                   (opt_fontSize || 1) *
+                    Math_min(self.scale_, 1) *
+                   (GKBD.isIE ? 1 : self.localScale_);
+
+    width = width * self.scale_;
+    var code = c.charCodeAt(0);
+    self.keys_[code] = undefined;
+    var id = 'K' + code;
+    print('<td style="margin:0; width:',
+        width > 0 ? px(width) : '1px; visibility:hidden');
+    print('"><input type="button" class="', BUTTON_CLASSNAME, '" id="', id);
+    print('" name="', id, '" value="');
+
+    if (text != '\u0000') {
+      print(htmlEncode(text));
+    }
+    print('" style="width:100%;height:', px(buttonHeight));
+    print(';font-size:', px(fontSize), '"/></td>');
+  };
+
+
+  /**
+   * Draws a row of character buttons
+   * @param buttons {String} A string of keyboard button chars
+   * @param widths {Array} And array of button widths
+   * @param from (Number) an index into widths, shows where button widths start.
+   * @private
+   */
+  function drawRow(buttons, widths, from) {
+    for (var i = 0; i < buttons.length; i++) {
+      var code = buttons.charAt(i);
+      drawButton(code, code, widths[i + from]);
+    }
+  };
+
+
+  /**
+   * Transforms an incoming character, together with the previous sequence, into
+   * a new character sequence, according to the transformation table.
+   * E.g. if you type a '^' followed by 'o', you'll have an 'o circonflexe'.
+   * And so on; in Japanese you can modify 'ha' to produce 'ba' or 'pa'.
+   * See the tables.
+   * @param c {String} The character to transform.
+   * @return transformed sequence of characters.
+   */
+  self.transform_ = function(c) {
+    return self.layout_ ? self.layout_.transform_(c) : c;
+  };
+
+
+  function cleanBuffer() {
+    if (self.layout_) self.layout_.cleanBuffer_();
+  }
+
+
+  /**
+   * Processes a single input which may consist of several character(s).
+   * Processing consists of inserting the characters into the consumer
+   * input field.
+   * @param chars {String} Input character(s)
+   */
+  function processInput(chars) {
+    for (var i = 0; i < chars.length; i++) {
+      if (chars.charAt(i) != GKBD.BACKSPACE_) {
+        layer.replaceChars_(i, chars.substring(i));
+        return;
+      }
+    }
+    layer.replaceChars_(chars.length, '');
+  };
+
+
+  /**
+   * Onclick actions for special keys.
+   */
+  var specialKeyDispatch = {
+    K8: function() {
+      cleanBuffer();
+      processInput(GKBD.BACKSPACE_);
+    },
+    K16: function() {
+      doShift(!isShiftState());
+    },
+    K273: function() {
+      doAltGr();
+    },
+    K20: function() {
+      doCapslock();
+    }
+  };
+
+
+  /**
+   * Default onclick function.
+   */
+  function defaultOnclick() {
+    processInput(self.transform_(this.value));
+  }
+
+
+  /**
+   * Links all our keyboard keys (four rows) to the buttons drawn in the
+   * onscreen keyboard. The buttons are identified by their ids, which are
+   * letter 'K' followed by the key code.
+   */
+  self.setListeners_ = function() {
+    for (var code in self.keys_) {
+      var id = "K" + code;
+      if (code.charCodeAt(0) < 58) {
+        var element = forId(id);
+        self.keys_[code] = element;
+        if (element) {
+          element.f = specialKeyDispatch[id] || defaultOnclick;
+          element.onclick = function() { visualizeClick(this); this.f(); };
+      }
+    }
+    }
+  };
+
+
+  /**
+   * Checks whether keyboard shift is on
+   * @return true if it is
+   */
+  function isShiftState() {
+    return (myState & KBD_SHIFT) == KBD_SHIFT;
+  };
+
+
+  /**
+   * Checks whether keyboard capslock is on
+   * @return true if it is
+   */
+   function isCapsLockState() {
+    return (myState & KBD_CAPS) == KBD_CAPS;
+  };
+
+
+  /**
+   * Checks whether keyboard alt-gr state is on
+   * @return true if it is
+   */
+  function isAltGrState() {
+    return (myState & KBD_ALTCTRL) == KBD_ALTCTRL;
+  }
+
+
+  /**
+   * Gets a string representation of the keyboard status
+   * @return status as string
+   */
+   function getStatus() {
+     return (isShiftState() ? 's' : '') +
+            (isAltGrState() ? 'c' : '') +
+            (isCapsLockState() ? 'l' : '');
+  };
+
+  /**
+   * Returns a keyboard button object for the keycode
+   * @param keycode {Number} The OEM code from the keyboard (hopefully)
+   * @return matching button
+   * @private
+   */
+  function getButton(keycode) {
+    return self.keys_[keycode];
+  };
+
+
+  /**
+   * @return {Number} best scale for the keyboard
+   */
+  function getNewScale() {
+    var element = forId("kbd_tx");
+    if (!element) return -1;
+    var newScale = element.offsetHeight / 18;
+    return newScale;
+  };
+
+
+  /**
+   * Resizes the keyboard on the screen according to text size.
+   * @param newScale - new scale to resixe to
+   * @return true if resize succeeded
+   */
+  self.resizeTo_ = function(newScale) {
+    if (newScale < 0) return false;
+    self.scale_ = newScale;
+    buttonHeight = Math_round(DEFAULT_BUTTON_HEIGHT * self.scale_);
+    self.drawKeyboard_();
+    layer.setContent_(self.content_);
+    self.reassignButtons_();
+    layer.resize_(newScale / self.localScale_);
+    return true;
+  };
+
+
+  /**
+   * Checks the changes in text size and resizes the keyboard if necessary
+   */
+  self.tryResize_ = function(opt_required) {
+    var newScale = getNewScale();
+    if (opt_required ||((newScale < 5) &&
+        (Math_abs(newScale / self.scale_ - 1) > 0.1) &&
+        (newScale > 0.5))) {
+      return self.resizeTo_(newScale);
+    } else {
+      return false;
+    }
+  };
+
+
+  /**
+   * Gets current title for capslock button
+   * @return title The title for Capslock button in current keyboard state
+   * @private
+   */
+  self.getCapslockTitle_ = function() {
+    return (!self.layout_ || !self.layout_.capslockTitles_) ? 'C/Lk' :
+             self.layout_.capslockTitles_[isCapsLockState() ? 'l' : ''];
+  };
+
+
+  /**
+   * Assigns to buttons their values from current mapping.
+   */
+  self.reassignButtons_ = function() {
+    if (!self.layout_) {
+      return;
+    }
+    var mapping = self.layout_.getMapping_(getStatus());
+    var capslockButton = getButton(KBD_CAPSLOCK_CODE);
+    if (capslockButton) {
+      capslockButton.value = self.getCapslockTitle_();
+      capslockButton.defaultValue = capslockButton.value;
+    }
+    if (mapping) {
+      for (var i in mapping) {
+        var value = mapping[i];
+        if (typeof value == 'string') {
+          var button = getButton(i.charCodeAt(0));
+          if (button) {
+            button.value = mapping[i];
+          }
+        }
+      }
+    }
+  };
+
+
+  /**
+   * Processes capslock being pressed.
+   * @private
+   */
+  function doCapslock() {
+    myState ^= KBD_CAPS;
+    self.reassignButtons_();
+    layer.redirectFocus_();
+  };
+
+
+  /**
+   * Processes shift state change.
+   * @param newShift {Boolean} A new value of keyboard shift status
+   * @return true if status did not change
+   */
+  function doShift(newShift) {
+    if (newShift == isShiftState()) {
+      return true;
+    }
+    var newValue = newShift ? KBD_SHIFT : 0;
+    myState = myState & ~KBD_SHIFT | newValue;
+    self.reassignButtons_();
+    layer.redirectFocus_();
+    return false;
+  };
+
+
+  /**
+   * Processes altGr state change
+   * @param opt_newAltGr {Number} A new value of keyboard altGr status (0/1)
+   * @return true if status did not change
+   */
+  function doAltGr(opt_newAltGr) {
+    var newValue = GKBD.isDef_(opt_newAltGr) ? opt_newAltGr : !isAltGrState();
+    if (newValue) {
+      myState |= KBD_ALTCTRL;
+    } else {
+      myState &= ~KBD_ALTCTRL;
+    }
+
+    self.reassignButtons_();
+    layer.redirectFocus_();
+  };
+
+
+  /**
+   * Returns unified English keycode for an event
+   * 'unified' means that some browsers map some keyboard keys to different
+   * codes; 'English' means that the actual keyboard may be French or German;
+   * this is specified on this.oemId_ variable.
+   * @param event Keyboard event
+   * @return key code
+   * @private
+   */
+  function getEventCode(event) {
+    var code = event.which || event.keyCode || event.charCode;
+    var remap = KBD_remap[self.oemId_];
+    if (remap) {
+      code = remap[String.fromCharCode(code)] || code;
+    }
+    return KBD_mergeCodes[code] || code;
+  };
+
+
+  /**
+   * Wraps event listener for standard keyboard processing
+   * @param listener function
+   * @return a function that provides event, and sets event return value.
+   */
+  function wrapEventListener(listener) {
+    return function(event) {
+      event = event || KBD_window.event;
+      return event.returnValue = listener(event);
+    };
+  }
+
+
+  /**
+   * Processes "key up" events
+   * @param event keyboard event
+   * @return true if event processing if finished here, true if need more
+   */
+  var onKeyUp = wrapEventListener(function(event) {
+    if (!isCtrlPressed(event)){
+      myState &= ~KBD_CTRL;
+    }
+
+    if (!isAltPressed(event)) {
+      myState &= ~KBD_ALT;
+    }
+
+    var code = getEventCode(event);
+    if (code == KBD_APPLE_CODE || (myState & KBD_APPLE)) {
+      myState &= ~KBD_APPLE;
+      return true;
+    }
+
+    if (isSpecialEvent(event)) {
+      if (isMetaPressed(event)) {
+        doAltGr(0);
+      } else if (isCtrlPressed(event)){
+        myState &= ~KBD_CTRL;
+      } else if (isAltPressed(event)) {
+        myState &= ~KBD_ALT;
+      }
+      self.reassignButtons_();
+      return true;
+    }
+    isPressed = false;
+    isDown = false;
+
+    if (code == KBD_CTRL_CODE) {
+      myState &= ~KBD_CTRL;
+      self.reassignButtons_();
+    } else if (code == KBD_ALT_CODE) {
+      myState &= ~KBD_ALT;
+      self.reassignButtons_();
+    }
+
+    doShift(code != KBD_SHIFT_CODE && isShiftPressed(event));
+
+    if (code == KBD_CAPSLOCK_CODE) {
+      doCapslock();
+    }
+
+    return false;
+  });
+
+  /**
+   * Processes "key down" events
+   * @param event Keyboard event
+   * @return true if event processing if finished here, true if need more
+   */
+  var onKeyDown = wrapEventListener(function(event) {
+    var target = event.target || event.srcElement;
+    // Note regarding this "redirectfocus".
+    // In NS9, if the tab where it is all happening is not visible,
+    // the event is being ignored.
+    layer.redirectFocus_();
+    var focusSwitcher = KBD_window['_kbdSI'];
+    if (target && focusSwitcher && BUTTON_CLASSNAME != target['className']) {
+      focusSwitcher(target);
+    }
+
+    var code = getEventCode(event);
+    if (code == KBD_CAPSLOCK_CODE) {
+      return true;
+    }
+
+    if (code == KBD_APPLE_CODE || (myState & KBD_APPLE)) {
+      myState |= KBD_APPLE;
+      return true;
+    }
+
+    var changed = false;
+
+    if (isMetaPressed(event)) {
+      doAltGr(1);
+      changed = true;
+    }
+
+    if (isCtrlPressed(event) || code == KBD_CTRL_CODE){
+      changed |= !(myState & KBD_CTRL);
+      myState |= KBD_CTRL;
+    }
+
+    if (isAltPressed(event) || code == KBD_ALT_CODE) {
+      changed |= !(myState & KBD_ALT);
+      myState |= KBD_ALT;
+    }
+
+    if (changed) {
+      self.reassignButtons_();
+      return true;
+    }
+
+    if ((isSpecialEvent(event) ||
+        code == KBD_CTRL_CODE ||
+        code == KBD_ALT_CODE)
+        && !isAltGrEvent(event)) {
+      return true;  // Pass non ctrl-alt events up the chain
+    }
+
+    if (code == KBD_SHIFT_CODE) {
+      isPressed = true;
+      return event.returnValue = doShift(true);
+    }
+
+    isDown = true;
+    currentCode = code;
+    var button = getButton(code);
+    isPressed = button ? true : false;
+    // this additional shift processing is needed
+    // for the browsers that do not return Shift Down event,
+    // but instead provide shift bit with the regular key event.
+    // In this case we have to both react to shift change and process the key.
+    doShift(isShiftPressed(event));
+
+    if (button) {
+      button.onclick();
+    } else {
+      cleanBuffer();
+    }
+//    alert("od returns " + !isPressed)
+    return !isPressed;
+  });
+
+  /**
+   * Processes a 'key pressed' event. In most cases this method is not called,
+   * since 'key up' and 'key down' do all the job - but on some occasions
+   * in some browsers we have to deal with this event, too.
+   *
+   * @param event Keyboard event
+   * @return true if event processing if finished here, true if need more
+   */
+  var onKeyPress = wrapEventListener(function(event) {
+    if (myState & KBD_APPLE) {
+      return true;
+    }
+
+    if (myState == KBD_CTRL) {
+      return true;
+    }
+
+    if (isPressed || !isDown) {
+      isPressed = false;
+      return false;
+    }
+
+    // curious linux Firefox behavior; ignore capslock
+    if (currentCode != KBD_CAPSLOCK_CODE) {
+      var button = getButton(currentCode);
+      if (button) {
+        if (isDown) {
+          cleanBuffer();
+        } else {
+          button.onclick();
+          isDown = false;
+        }
+        return false;
+      }
+    }
+
+    cleanBuffer();
+    isPressed = false;
+    return true;
+  });
+
+
+  /**
+   * These three variables save original keyboard listeners
+   */
+  var savedOnkeyup;
+  var savedOnkeydown;
+  var savedOnkeypress;
+
+
+  self.startListening_ = function() {
+    if (KBD_document.onkeyup != onKeyUp) {
+      savedOnkeyup = KBD_document.onkeyup;
+      KBD_document.onkeyup = onKeyUp;
+    }
+    if (KBD_document.onkeydown != onKeyDown) {
+      savedOnkeydown = KBD_document.onkeydown;
+      KBD_document.onkeydown = onKeyDown;
+    }
+    if (KBD_document.onkeypress != onKeyPress) {
+      savedOnkeypress = KBD_document.onkeypress;
+      KBD_document.onkeypress = onKeyPress;
+    }
+  };
+
+
+  /**
+   * Stops listening to key events.
+   */
+  self.stopListening_ = function() {
+    if (KBD_document.onkeyup == onKeyUp) {
+      KBD_document.onkeyup = savedOnkeyup;
+    }
+    if (KBD_document.onkeydown == onKeyDown) {
+      KBD_document.onkeydown = savedOnkeydown;
+    }
+    if (KBD_document.onkeypress == onKeyPress) {
+      KBD_document.onkeypress = savedOnkeypress;
+    }
+  };
+
+
+  /**
+   * Visualizes button click. Flashes button color for 70 ms.
+   * Implementation notes. Flashing layer background color does not work on Mac.
+   * Flashing button background color leads to dropping "default button style"
+   * on windows.
+   * @param button the button to highlight
+   */
+  function visualizeClick(button) {
+    button.style.color = 'ffffff';
+    button.style.padding = 0;
+    // Get the cached timeout action or create a new one; save it.
+    // Caching the function saves us from creating a new instance every
+    // button click - which would be essentially a memory leak.
+    button.flash = button.flash ||
+        function() {
+          button.style.color = '000000';
+        };
+    KBD_window.setTimeout(button.flash, 70);
+  }
+};
+
+// Copyright 2006 Google Inc.
+// All Rights Reserved.
+/**
+ * #fileoverview This file contains an implementation of Keyboard Layer class.
+ *
+ * It is a singleton, and the instance is called GKBD.KBDl_.
+ * All layer-related functionality, all communications with consumer input
+ * fields for keyboard input, and cookie extange is here. It is 'C' in MVC.
+ * Some code is borrowed from common.js, with the sole purpose of minimizing
+ * the size of the binary.
+ *
+ *  @author vpatryshev@google.com
+ *
+ */
+
+/**
+ * Popular constants
+ */
+var RELATIVE = 'relative';
+var ABSOLUTE = 'absolute';
+var FIXED    = 'fixed';
+var HIDDEN   = 'hidden';
+var VISIBLE  = 'visible';
+var ENDROWENDTABLE = '</tr></table>';
+
+/**
+ * Converts a nonnegative number to a string, 62-based.
+ * This function is used for packing keyboard location coordinates.
+ * @see #toBase62
+ *
+ * @param n (Number)
+ * @return a string representing the number
+ */
+function toBase62(n) {
+  var buf = [];
+  if (n <= 0) {
+    return "0";
+  }
+  while (n > 0) {
+    var d = n % 62;
+    buf.push(String.fromCharCode(d + (d < 10 ? 48 : d < 36 ? 55 : 61)));
+    n = Math_floor(n / 62);
+  }
+  return buf.reverse().join('');
+}
+
+
+/**
+ * Converts a string containing a 62-based number, to a number.
+ * @see #toBase62
+ * @param s (String) the string containing the number.
+ * @return converted number
+ */
+function fromBase62(s) {
+  var n = 0;
+  if (!s) {
+    return 0;
+  }
+  for (var i = 0; i < s.length; i++) {
+    var c = s.charCodeAt(i);
+    var d = c - (c < 58 ? 48 : c < 91 ? 55 : 61);
+    n = n * 62 + d;
+  }
+  return n;
+}
+
+/** Gets keyboad cookie.
+ * @return a string or the empty string if no cookie found.
+ * This function was customized from common.js.
+ */
+function getCookie() {
+  var nameeq = 'KBD=';
+  var cookie = String(KBD_document.cookie);
+
+  for (var pos = -1; (pos = cookie.indexOf(nameeq, pos + 1)) >= 0;) {
+    var i = pos;
+    // walk back along string skipping whitespace and looking for a ; before
+    // the name to make sure that we don't match cookies whose name contains
+    // the given name as a suffix.
+    while (i --> 0) {
+      var ch = cookie.charAt(i);
+      if (ch == ';') {
+        i = -1;  // indicate success
+        break;
+      } else if (' \t'.indexOf(ch) < 0) {
+        break;
+      }
+    }
+    if (i == -1) {  // first cookie in the string, or we found a ;
+      var end = cookie.indexOf(';', pos);
+      if (end < 0) { end = cookie.length; }
+      return cookie.substring(pos + nameeq.length, end);
+    }
+  }
+  return "";
+}
+
+/**
+ * Builds a chunk of html that works like a link and is styled according to
+ * Google style requirements.
+ * @param content (String) the text
+ * @param opt_onclick (String) on click callback function name
+ * @return a html chunk, span that behaves like a link
+ */
+GKBD.buildFakeLink_ = function(content, opt_onclick) {
+  return ['<a style=' +
+       '"text-decoration:none;cursor:pointer;font-size:80%;color:',
+       GKBD.linkColor,
+        '" ' +
+       'onmouseover="this.style.textDecoration=\'underline\'" ' +
+       'onmouseout="this.style.textDecoration=\'none\'" ',
+       (opt_onclick ? ('onclick="' + opt_onclick + '">') : '>'),
+       content, '</a>'].join('');
+};
+
+
+/**
+ * Known keyboard visibility states.
+ * v - active, fully visible
+ * M - minimized, active
+ * m - minimized, inactive
+ * h - hidden, inactive
+ */
+var visibilities = 'vMmh';
+
+
+/**
+ * Keyboard layer widths, per visibility state.
+ */
+var WIDTH = {'v': 425, 'M':330, 'm': 280, 'h': 0};
+
+
+/**
+ * Keyboard layer class.
+ *
+ * @constructor
+ */
+GKBD.KBDLayer = function() {
+  var self = this;
+  var container;
+  var defaultLayout;
+  var keyboard;
+  var isListening = false;
+  var oemText = '';
+  var groups = {};
+  var homeX = 1;
+  var homeY = 1;
+  var x = self.x_ = -1;
+  var y = self.y_ = -1;
+  var targetX = -1;
+  var targetY = -1;
+
+  self.scrollX = 0;
+  self.scrollY = 0;
+  self.canMinimize_ = true;
+  self.titleAlignmnent_ = 'left';
+  self.relX_ = self.relY_ = 0;
+  self.defaultVisibility_ = self.visibility_ = self.hiddenVisibility_ = 'h';
+  self.layouts_ = {};
+  self.closeActionContent_ = null;
+  self.openActionContent_ = null;
+  self.historySize_ = 1;
+  // TODO(vpatryshev) make it work
+  self.textColor = 'black';
+  // TODO(vpatryshev) make it work
+  self.linkColor = GKBD.linkColor = 'blue';
+  self.bgColor = '#eaf2ff';
+  self.frameColor = '#d7e6ff';
+  self.scale_ = 1;
+  self.positioning_ = FIXED;
+  self.hasTitle_ = true;
+  self.fixedWidth_ = false;
+
+  /**
+   * Configures the keyboard layout.
+   * @param configuration (Object) A hash of configuraiton parameters
+   */
+  self.configure = function(configuration) {
+    for (var item in configuration) {
+      if (configuration.hasOwnProperty(item) && GKBD.isDef_(self[item])) {
+        self[item] = configuration[item];
+      } else {
+        // silently ignore, since some web apps have weird js extensions
+      }
+    }
+    GKBD.linkColor = self.linkColor;
+  };
+
+  /**
+   * Builds the layer for keyboard
+   */
+  function buildKeyboardLayer() {
+    if (forId('kbd')) return;
+    var newdiv = KBD_document.createElement('div');
+    newdiv.setAttribute('id','kbd');
+    var style = newdiv.style;
+    style.position = self.positioning_;
+    style.visibility = 'hidden';
+    style.width = "380px";
+    style.zIndex = 20001; // livejournal + 1
+    style.backgroundColor = self.frameColor;
+    newdiv.innerHTML = '<div dir="ltr" id="kbda"><div id="kbd_0"/></div>';
+    KBD_client.appendChild(newdiv);
+  }
+
+
+  /**
+   * Setup queue contains the methods that should be called on setup.
+   * The default one connects events and listener objects.
+   * The advantages of having a queue for setup are that, first, you do setup
+   * only once; and two, to add more setup functionality elsewhere in the code,
+   * one just has to push one more function into this queue.
+   */
+  self.setupQueue_ = [function() {
+    buildKeyboardLayer();
+    self.keyboard_ =
+          keyboard =
+        new GKBD.Keyboard(self, groups, self.layouts_, defaultLayout);
+    self.keyboard_.localScale_ = self.scale_;
+    container = forId('kbd');
+    containerStyle = container.style;
+    containerStyle.position = self.positioning_;
+    var oldOnresize = KBD_window.onresize;
+
+    KBD_window.onresize = function() {
+      // Snap to home position on resize: need it on IE.
+      var wasNearHome = self.isNearHome_();
+      self.reposition_();
+      if (wasNearHome) {
+        self.goHome_();
+      }
+      if (oldOnresize) oldOnresize();
+    };
+
+    keyboard.draw_();
+    keyboard.setLayout_(defaultLayout);
+
+    /**
+     * Saves the keyboard layer state in the keyboard cookie.
+     */
+    self.save_ = function() {
+      KBD_document.cookie = 'KBD=' + serialize() + ';expires=July 19, 2051';
+    };
+
+    if (GKBD.isIE) {
+      containerStyle.position = ABSOLUTE;
+    }
+
+    if (containerStyle.position == ABSOLUTE) {
+      var onscroll = function() {
+        self.scrollX = KBD_document_element && KBD_document_element.scrollLeft;
+        if (!self.scrollX) self.scrollX = KBD_client.scrollLeft;
+        self.scrollY = KBD_document_element && KBD_document_element.scrollTop;
+        if (!self.scrollY) self.scrollY = KBD_client.scrollTop;
+        self.moveTo_(x, y);
+      };
+      if (KBD_window.attachEvent) {
+        KBD_window.attachEvent('onscroll', onscroll);
+      } else {
+        var oldOnscroll = KBD_window.onscroll;
+        if (!oldOnscroll) {
+          KBD_window.onscroll = onscroll;
+        } else if (oldOnscroll != onscroll) {
+          KBD_window.onscroll = function() {
+            onscroll();
+            oldOnscroll();
+          }
+        }
+      }
+    }
+  }];
+
+
+  /**
+   * Setup method. Initializes the keyboard, after the document is loaded.
+   */
+  self.setup = function() {
+    while (self.setupQueue_.length > 0) {
+      self.setupQueue_.shift()(this);
+    }
+
+    containerStyle.backgroundColor = self.frameColor;
+  };
+
+
+  /**
+   * @return keyboard's x coordinate
+   */
+  self.left = function() {
+    return container.offsetLeft;
+  };
+
+
+  /**
+   * @return keyboard's y coordinate
+   */
+  self.top = function() {
+    return container.offsetTop;
+  };
+
+
+  /**
+   * Returns client height in various possible environments
+   * @author: rlemon
+   * @see http://www.codingforums.com/archive/index.php?t-77296.html
+   */
+  function getClientHeight(){
+    var h = 30000;
+    if(KBD_document.innerHeight) {
+      h = KBD_document.innerHeight;
+    }
+    if(KBD_client){
+      h = Math_min(h, KBD_client.clientHeight);
+    }
+    if(KBD_document_element.clientHeight){
+      h = Math_min(h, KBD_document_element.clientHeight);
+    }
+    return h;
+  }
+
+
+  /**
+   * Returns client width
+   */
+  self.clientWidth_ = function() {
+    return KBD_client.clientWidth;
+  }
+
+  /**
+   * Calculates the layer size, from container layer size
+   */
+  function calculateSize() {
+    self.height = elementHeight(container);
+    self.width_ = elementWidth(container);
+    homeX = self.clientWidth_() - self.width_;
+    homeY = getClientHeight() - self.height;
+    targetX = Math_floor(homeX * (1 - self.relX_) + .5);
+    targetY = Math_floor(homeY * (1 - self.relY_) + .5);
+  };
+
+
+  /**
+   * Serializes the keyboard layer state, together with the keyboard state.
+   * What is stored: layer position; layer visibility, and keyboard state.
+   * Some people ask: why serialize? The reason is simple: when the user opens
+   * another page, it is natural to expect that keyboard remains where it was,
+   * in exactly the same state.
+   */
+  function serialize() {
+    return keyboard.serialize_() + '-' +
+        toBase62(Math_floor(2000 * self.relX_) * 4804 +
+                 Math_floor(1200 * self.relY_) * 4 +
+                 visibilities.indexOf(self.visibility_));
+  };
+
+
+  /**
+   * Tries to deserializes the keyboard layer state.
+   * @param data {String} serialized format from a cookie:
+   *             First come keyboard state, then '-',
+   *             then position and visibility.
+   *             Position and visibility are andcoded like in {@see serialize}.
+   */
+  function tryDeserialize(data) {
+    var kbdEnd = data.indexOf('-');
+    var posBegin = kbdEnd + 1;
+    if (kbdEnd < 0) {
+      kbdEnd = 3;
+      posBegin = 3;
+    }
+    keyboard.deserialize_(data.substring(0, kbdEnd));
+    self.relX_ = 0;
+    self.relY_ = 0;
+    var xyv = fromBase62(data.substring(posBegin));
+    var v = visibilities.charAt(xyv % 4);
+    self.deserializePosition_(Math_floor(xyv / 4));
+    self.showAs_(v);
+  };
+
+
+  /**
+   * Deserializes the keyboard layout state; resets to current state if fails.
+   * @param data (@see tryDeserialize_)
+   */
+  function deserialize(data) {
+    self.showAs_(self.defaultVisibility_);
+    if (!data) {
+      keyboard.deserialize_();
+      return;
+    }
+    try {
+      tryDeserialize(data);
+    } catch (ex) {
+      self.showAs_(self.defaultVisibility_);  // just in case
+    }
+
+    if (self.visibility_ != 'h') {
+      keyboard.tryResize_(true);
+    }
+  };
+
+
+  /**
+   * Does nothing for uninitialized layer.
+   */
+  self.save_ = function() {};
+
+
+  /**
+   * Restores the keyboard layer state from the keyboard cookie.
+   */
+  self.restore_ = function() {
+    KBD_document = KBD_window.document;
+    KBD_client = KBD_window['KBD_gadgetClient'] || KBD_document.body;
+    KBD_document_element = KBD_document.documentElement;
+    self.setup();
+    deserialize(getCookie());
+
+    /**
+     * Watches browser text size changes
+     * Does it using timer, since there are no events for text size change.
+     * A Y-combinator would be handy for a function to reference itself.
+     */
+    function watch() {
+      var didResize = keyboard.tryResize_();
+      if (isListening && self.startListening_) self.startListening_();
+      KBD_window.setTimeout(watch, didResize ? 130 : 1300);
+    };
+
+    watch();
+  };
+
+
+  /**
+   * Adds a keyboard layout to the layer.
+   * @param groupName {String} Layout group name.
+   * @param layout New layout to add.
+   * @return the layout
+   */
+  self.addLayout_ = function(groupName, layout) {
+    layout.group = groupName;
+    if (!self.layouts_[layout.getId_()]) {
+      self.layouts_[layout.getId_()] = layout;
+      groups[groupName] = groups[groupName] || [];
+      groups[groupName].push(layout);
+    }
+    return layout;
+  };
+
+
+  /**
+   * Adds a layout group to the collection of of layouts
+   * @param groupName {String} E.g. West-European (EN-US is one)
+   * @param source An array of layout sources (@see layout.js)
+   */
+  function addGroup(groupName, source) {
+    for (var i = 0; i < source.length; i++) {
+      self.addLayout_(groupName, new GKBD.Layout(source[i]));
+    }
+  };
+
+
+  /**
+   * Adds groups of layouts.
+   * @param groups An associative array of groups and their arrays of layouts
+   */
+  self.addGroups_ = function(groups) {
+    for (var name in groups) {
+      addGroup(name, groups[name]);
+    }
+  };
+
+
+  /**
+   * Sets default keyboard layout.
+   * @param layout The layout that is assigned to be default.
+   */
+  self.setDefaultLayout_ = function(layout) {
+    if (keyboard) {
+      keyboard.setDefaultLayout_(layout);
+    }
+    defaultLayout = layout;
+  };
+
+
+  /**
+   * Sets current layout.
+   * @param layout the layout to set.
+   */
+  self.setLayout_ = function(layout) {
+    if (keyboard) {
+      keyboard.setLayout_(layout);
+      self.save_();
+    }
+  };
+
+
+  /**
+   * Switches to another keyboard layout. E.g. from Ruritainan to Aramaic.
+   * @param id {String} Layout id (which is a two-letter language code).
+   */
+  self.switchTo_ = function(id) {
+    if (isListening) {
+      keyboard.switchTo_(id);
+      if (self.consumer_) {
+        self.consumer_.lang = id;
+      }
+      self.save_();
+    }
+    self.redirectFocus_();
+  };
+
+
+  /**
+   * Redirect focus to current consumer. This may be nessesary after, say,
+   * a user clicks the keyboard button - the focus then in on the button,
+   * and it is not what the user expects.
+   */
+  self.redirectFocus_ = function() {
+    if (self.consumer_) {
+      self.consumer_.focus();
+   }
+  };
+
+
+  /**
+   * Replaces a group of characters in the input field with a new group.
+   * We need this to implement input methods, e.g. to make 'dead keys' work.
+   *
+   * @param n {Number} Number of chars to replace (back from cursor position)
+   * @param chars {String} Characters to insert
+   */
+  self.replaceChars_ = function(n, chars){
+    var subject = self.consumer_;
+    if (!subject) return;
+    self.redirectFocus_();
+    var value = subject.value;
+//    alert("chars " + chars + " to " + value);
+    var newLength = value.length - n;
+    var from  = subject.selectionStart;
+
+    if (GKBD.isDef_(KBD_document.selection) && KBD_document.selection) {
+      var range = KBD_document.selection.createRange();
+      if (range.parentElement() == subject) {
+        range.moveStart('character', -n);
+        range.text = chars;
+      }
+      range.collapse(false);
+      range.select();
+    } else if (from || from=='0') {
+      var to = subject.selectionEnd;
+      var head = from > n ? value.substring(0, from - n) : '';
+      subject.value = head + chars + value.substring(to, value.length);
+      subject.selectionEnd =
+          subject.selectionStart = from + chars.length - n;
+    } else {
+      subject.value = newLength < 0 ?
+                      chars :
+                      value.substring(0, newLength) + chars;
+    }
+  };
+
+
+  /**
+   * Sets up keyboard title element.
+   *
+   * @return the title element of keyboard layer.
+   */
+  function setupTitle() {
+    var titleArea = forId('kbd_t');
+    if (titleArea) {
+      self.setTitleMouseActions_(titleArea);
+      forId('kbd_ta').onclick = function() {
+        if (!isEnabled()) {
+          minimize();
+        }
+      };
+    }
+    return titleArea;
+  };
+
+
+  self.setTitleMouseActions_ = function(element) {
+    // do nothing by default
+  };
+
+
+  /**
+   * Sets keyboard title.
+   *
+   * @param fullText {String} The full title text.
+   * @param shortText (String) The short title text.
+   * @param opt_oemText (String) physical keyboard layout name
+   *                             (empty for generic).
+   */
+  self.setTitle_ = function(fullText, shortText, opt_oemText) {
+    self.titleText = isEnabled() ? fullText : shortText;
+    oemText = opt_oemText || '';
+    drawTitle();
+  };
+
+
+  /**
+   * @return keyboard oem hint text
+   */
+  function getOemIdContent() {
+    return oemText ?
+      ('<font size="-2"><div style="color:' + self.textColor +
+       ';border:solid 1px;' +
+       'height:1em;width:1.5em">&nbsp;' + oemText + '&nbsp;</div></font>') :
+      '';
+  };
+
+
+  /**
+   * Returns title context. Need this declared as a function, so that mixins
+   * could override the behavior and be able to return fancy titles.
+   * @return title text
+   */
+  self.getTitleContent_ = function() {
+    return self.titleText;
+  };
+
+
+  /**
+   * Redraws keyboad title
+   */
+  function drawTitle() {
+    var titleArea = setupTitle();
+    if (titleArea) {
+      titleArea.innerHTML = self.getTitleContent_();
+      var oemIdArea = forId('kbd_oi');
+      if (oemIdArea) {
+        oemIdArea.innerHTML = getOemIdContent();
+      }
+    }
+  };
+
+
+  /**
+   * Sets listeners for keyboard buttons.
+   */
+  self.setListeners_ = function() {
+    var hideButton = forId('kbd_h');
+    if (hideButton) {
+      hideButton.onclick = function() {
+        self.hide_();
+      };
+    }
+
+    var minmaxButton = forId('kbd_mm');
+    if (minmaxButton) {
+      minmaxButton.onclick = function() {
+        if (self.visibility_ == 'v') {
+          minimize();
+        } else if (self.visibility_ == 'M') {
+          maximize();
+        }
+      };
+    }
+
+    keyboard.setListeners_();
+  };
+
+
+  /**
+   * Draws minmax action text/icon
+   */
+  self.drawMinMax_ = function() {
+    return isHidden() ? self.openActionContent_ : self.closeActionContent_;
+  };
+
+
+  self.buildContent_ = function(text) {
+    return [
+      '<center style="margin: 0 0;font-family:arial,sans-serif;">' +
+      '<table id="kbdt" border="0" width="100%" style="border:none;">' +
+      '<tr>' +
+      '<td>' +
+      '<table id="kbd_ta" border="0" width="100%" style="font-size:',
+      Math_round(self.scale_ * 100),
+      '%',
+      '">' +
+      '<tr>' +
+      '<td style="font-size:',
+      self.titleHeight_,
+      '"><span id="kbd_tx" style="visibility:hidden;margin:0px;padding:0px">I</span></td>' +
+      '<td id="kbd_t" align="',
+      self.titleAlignmnent_,
+      '" style="font-size:',
+      self.titleHeight_,
+      (self.titleCursor_ ? ';cursor:' + self.titleCursor_: ''),
+      self.hasTitle_ ? '' : ';display:none',
+      '">',
+      '</td><td align="left" id="kbd_oi" width="3px">',
+      self.hasTitle_ ? ('</td>' + self.drawMinMax_()) : '',
+      ENDROWENDTABLE,
+      '</td>' +
+      '</tr>' +
+      '<tr valign="top">' +
+      '<td align="center">' +
+      '<div id="kbd_mka" style="display:',
+      (self.visibility_ == 'v' ? 'block': 'none'),
+      '">' +
+      '<table border="0" style="border:none;background-color:',
+      self.bgColor,
+      '">' +
+      '<tr><td align="center">',
+      text,
+      '</td>',
+     ENDROWENDTABLE,
+     '</div>' +
+     '</td>',
+     ENDROWENDTABLE,
+     '</center>'
+    ].join('');
+  }
+
+
+  /**
+   * Sets keyboard layer content
+   *
+   * @param text  {String} The html for the keyboard (and we add the rest)
+   * @param scale {Number} display scale (1 is normal, 0.8 is smaller, etc) -
+   *                       helps resize for various text sizes
+   */
+  self.setContent_ = function(text) {
+    self.titleHeight_ = px(15 * self.scale_);
+    var htmlContainer = forId('kbd_0');
+    if (!htmlContainer) {
+      alert("kbd_0 not found");
+      return;
+    }
+    htmlContainer.innerHTML = self.buildContent_(text);
+    drawTitle();
+    self.setListeners_();
+//forId('htmlhere').value = text;//forId('kbd').innerHTML;
+  };
+
+
+  /**
+   * Saves relative keyboard position
+   */
+  self.saveRelativePosition_ = function() {
+    calculateSize();
+    var previousX = self.relX_;
+    var previousY = self.relY_;
+    self.relX_ = Math_min(1, 1 - (x - self.scrollX) / homeX);
+    self.relY_ = Math_min(1, 1 - (y - self.scrollY) / homeY);
+
+    if (previousX != self.relX_ &&
+        previousY != self.relY_) {
+      self.save_();
+    }
+  };
+
+
+  /**
+   * Moves keyboard to a different location
+   * @param xNew {Number}
+   * @param yNew {Number}
+   */
+  self.moveTo_ = function(xNew, yNew) {
+    x = self.x_ = Math_min(homeX, Math_max(0, xNew));
+    y = self.y_ = Math_min(homeY, Math_max(0, yNew));
+    containerStyle.left = px(x + self.scrollX);
+    containerStyle.top  = px(y + self.scrollY);
+//alert("m2 "+ containerStyle.left + ", " + containerStyle.top + ":" + x + "," + y)
+  };
+
+
+  /**
+   * Repositions the keyboard according to its relative coordinates.
+   */
+  self.reposition_ = function() {
+    calculateSize();
+    var patience = 3;
+//alert("target is " + targetX + "," + targetY)
+    while (patience-- > 0 && (targetX != x || targetY != y)) {
+//        alert("repos: " + x +", " + y + ", target " + targetX + "," + targetY)
+      self.moveTo_(targetX, targetY);
+      calculateSize();
+    }
+  };
+
+
+  /**
+   * Resizes the layer according to scale
+   * @param scale {Number} the scale; 1 is normal size
+   */
+  self.resize_ = function(scale) {
+    if (self.visibility_ != 'h') {
+//        var width = elementWidth(forId("kbdt"));
+//        if (width < 0)
+      var width = self.fixedWidth_ ||
+                  WIDTH[self.visibility_] * keyboard.localScale_ * scale + 10;
+alert("new width is " + width)
+      containerStyle.width = px(width);
+      containerStyle.height = px(elementHeight(forId('kbd_0')));
+      self.reposition_();
+    }
+  };
+
+  /**
+   * Checks whether the keyboard is near its bottom right corner
+   * @return true if keyboard is located near home position
+   */
+  self.isNearHome_ = function() {
+    calculateSize();
+    var dist = Math_abs(homeX - x) + Math_abs(homeY - y);
+    return dist < 90;
+  };
+
+
+  /**
+   * Moves keyboard to its home position (bottom right corner)
+   */
+  self.goHome_ = function() {
+    calculateSize();
+//alert("gh " + homeX + "," + homeY)
+    self.moveTo_(homeX, homeY);
+    self.reposition_();
+    self.saveRelativePosition_();
+  };
+
+
+  /**
+   * Toggles keyboard visibility
+   */
+  self.toggle_ = function() {
+    if (containerStyle.visibility == VISIBLE) {
+      self.hide_();
+    } else if (self.visibility_ == 'M') {
+      minimize();
+    } else {
+      maximize();
+    }
+  };
+
+
+  /**
+   * Wraps keyboard listener for standard keyboard processing
+   * @param listener funciton
+   * @return a function that provides event, and sets event return value.
+   */
+  function wrapKeyboardListener(listener) {
+    return function(event) {
+      event = event || KBD_window.event;
+      return event.returnValue = listener(event);
+    };
+  };
+
+
+  /**
+   * @return true if keyboard is enabled.
+   */
+  function isEnabled() {
+    return 'vM'.indexOf(self.visibility_) >= 0;
+  };
+
+  /**
+   * Starts listening to keyboard-related events.
+   */
+  self.startListening_ = function() {
+    if (!isListening && isEnabled()) {
+      keyboard.startListening_();
+      isListening = true;
+    }
+  };
+
+  /**
+   * Checks whether keyboard is in listening state
+   * @return true if it is listening to key events
+   */
+  self.isListening_ = function() {
+    return isListening;
+  };
+
+  /**
+   * Detects whether the state hides the keyboard.
+   * @param opt_visibility state to check.
+   *        If missing, current state is tested.
+   */
+  function isHidden(opt_visibility) {
+    return 'hm'.indexOf(opt_visibility || self.visibility_) >= 0;
+  };
+
+
+  /**
+   * This function makes sense for the keyboard that has icons.
+   * @param visibility keyboard visibility status
+   */
+  self.setMinMaxButton_ = function(visibility) {
+  };
+
+  /**
+   * Displays the layer either in full ('v') or minimized ('m' or 'M') mode.
+   * @param visibility (String)
+   */
+  self.showAs_ = function(visibility) {
+    self.setup();
+
+    if (isHidden(visibility)) {
+      self.visibility_ = self.hiddenVisibility_;
+      self.stopListening_();
+      self.redirectFocus_();
+      if (self.visibility_ == 'h') {
+        containerStyle.visibility = HIDDEN;
+        keyboard.updateTitle_();
+        return;
+      }
+    } else {
+      keyboard.reassignButtons_();
+    }
+
+    if (visibility == 'M' && !self.canMinimize_) {
+      visibility = 'v';
+    }
+    self.visibility_ = visibility;
+    keyboard.updateTitle_();
+    var contentLayer = forId('kbd_mka');
+    if (!contentLayer) {
+      alert("kbd_mka not found");
+      return;
+    }
+    contentLayer.style.display = visibility == 'v' ? 'block' : 'none';
+    self.reposition_();
+    self.startListening_();
+    keyboard.scale_ = 1;
+    self.setMinMaxButton_(visibility);
+    keyboard.tryResize_(true);
+    self.redirectFocus_();
+    containerStyle.visibility = VISIBLE;
+  };
+
+  /**
+   * Maximizes the keyboard.
+   */
+  function maximize() {
+    self.showAs_('v');
+    self.save_();
+  };
+
+  /**
+   * Minimizes the keyboard, keeping it active, but showing title only.
+   */
+  function minimize() {
+    self.showAs_(self.canMinimize_ ? 'M' : 'v');
+    self.save_();
+  };
+
+
+  /**
+   * Stops listening to key events.
+   */
+  self.stopListening_ = function() {
+    keyboard.stopListening_();
+    isListening = false;
+  };
+
+
+  /**
+   * Hides and deactivates the keyboard
+   */
+  self.hide_ = function() {
+    self.showAs_(self.hiddenVisibility_);
+    self.save_();
+  };
+
+
+  /**
+   * Shows and activates the keyboard
+   */
+  self.show_ = function() {
+    self.showAs_('v');
+    self.save_();
+  };
+};
+
+/**
+ * The singleton instance of keyboard layer.
+ */
+var KBDl_ = GKBD.KBDl_ = new GKBD.KBDLayer();
+
+KBD_window._kbdConf = GKBD.KBDl_.configure;
+
+/**
+ * In the non-draggable version, the only position avaliable is home
+ * (missionary) position.
+ */
+KBDl_.deserializePosition_ = KBDl_.goHome_;
+
+
+/**
+ * Sets a document element to which to send typed or clicked characters.
+ * Such an element is called 'consumer'.
+ * This is our "API" - an element that wants keyboard input should have
+ * onfocus="_kbdSI(this);..."
+ *
+ * @param element An input element that will take keyboard keys.
+ */
+KBD_window._kbdSI = function(element) {
+  if (typeof element == 'string') element = forId(element);
+  if (element && element != KBDl_.consumer_) {
+    KBDl_.consumer_ = element;
+
+    if (element.prompt) element.prompt=null;
+    if (element.lang) {
+      KBDl_.switchTo_(element.lang);
+    }
+  }
+};
+
+
+/**
+ * hides the keyboard
+ */
+KBD_window._kbdHide = function() {
+  KBDl_.hide_();
+};
+
+KBD_window._kbdShow = function() {
+  KBDl_.show_();
+}
+
+
+/**
+ * Switches layout; {see KBDl_.switchTo}
+ */
+KBD_window._kbdS2 = function(id) {
+  KBDl_.switchTo_(id);
+};
+
+KBD_window._kbdToggle = KBDl_.toggle_;
+
+/**
+ * Stores the previous value of window.onload.
+ */
+var oldOnload = KBD_window.onload;
+
+/**
+ * Initialize the keyboard layer.
+ */
+if (navigator.userAgent.toLowerCase().indexOf('opera') < 0) {
+  KBD_window.onload = function() {
+    KBDl_.restore_();
+    if (oldOnload) {
+      try {
+        oldOnload();
+      } catch(e) {
+        // alert(e.message + " in " + oldOnload);
+      }
+    }
+  };
+}
+
+
+// Copyright 2006 Google Inc.
+// All Rights Reserved.
+
+/**
+ * This file contains onscreen keyboard layout class. Layout data are passed
+ * to its constructor as an associative array, and parsed into a structure
+ * that is more efficient to use. Roughly speaking, layout consists of some
+ * identification data (name, id, etc), key mapping, and transformation.
+ * Transformation rules are used to convert sequences of key inputs to one or
+ * more characters in the input field.
+ *
+ * @author vpatryshev@google.com
+ */
+
+/**
+ * Creates a function that returns the specified value.
+ * @param value the value to return.
+ *
+ * @return a function that always returns the value specified.
+ */
+function returnValue(value) {
+  return function() {
+    return value;
+  }
+}
+
+
+/**
+ * Builds a &lt;abbr&gt; element out of title and text.
+ * This method is used here and in keyboard.js, to generate pieces of
+ * keyboard html.
+ *
+ * @param text (String)
+ * @param title (String)
+ */
+GKBD.abbr_ = function(text, title) {
+  return title == text ? text :
+         text.indexOf('<abbr') >= 0 ? text :
+         ['<abbr style="border-style:none" title="',
+          title,
+          '">',
+          text,
+          '</abbr>'].join('');
+};
+
+
+/**
+ * Keyboard layout constructor
+ *
+ * @param source - an associative array with layout descriptor,
+ *                has the following entries:
+ *        id: a complex structure, a sequence of colon-separated components.
+ *            The first component either contains layout id, or can consist of
+ *            two components:
+ *            layout id followed by a short id, separated by a comma,
+ *            e.g. RU_LATN,ru.
+ *            next goes name: layout name, in plain English (e.g. 'Japanese').
+ *            next goes optional native name - layout name in the language
+ *            of this layout. @see #parseId for more details.
+ *        capslock: an associative array with titles for capslock button
+ *                  (e.g. {'':'\u7247\u4eee\u540d','l':'\u5e73\u4eee\u540d'}
+ *                  for hiragana/katakana: keys correspond to keyboard states)
+ *        mappings: an associative array with keycode mapping
+ *                  for various shift/capslock/AltGr states;
+ *                  for detailed description @see #copyMapping
+ *        transformation: a transformation map for key combinations
+ *                        @see #addTransformation for detailed description
+ * @constructor
+ */
+
+GKBD.Layout = function(source) {
+  /**
+   * All possible modifier combinations for key mapping:
+   * 's' for shift, 'l' for capslock, 'c' for AltGr
+   */
+  var MODIFIERS = ['', 's', 'l', 'c', 'sc', 'sl', 'cl', 'scl'];
+
+  /**
+   * The array of keyboard key codes, all four rows
+   */
+  var CODES =
+    ['\u00c0','1','2','3','4','5','6','7','8','9','0','m','=',
+     'Q','W','E','R','T','Y','U','I','O','P','\u00db','\u00dd','\u00dc',
+     'A','S','D','F','G','H','J','K','L',';','\u00de',
+     'Z','X','C','V','B','N','M','\u00bc','\u00be','\u00bf'];
+
+  var self = this;
+  self.nativeName_ = source.name;
+  var titleProvider = source.titleProvider;
+  var tooltip = source.tooltip;
+  var shortId = "??";
+  var defaultTitle = "??";
+  var mappings = {};
+  var transformation = {};
+  var view2char = {};
+  var shortTitle = source.shortTitle;
+
+  for (var i = 0; i < MODIFIERS.length; i++) {
+    mappings[MODIFIERS[i]] = {};
+  }
+
+  /**
+   * Parses layout id.
+   * the layout id may have the following structure:
+   * a) id,shortid - id is used for officially referencing the layout file;
+   *                 shortid is used for storing layout name in a cookie.
+   * b) id,shortid:name[:nativeName] - in addition to ids, we provide
+   *                 layout name and layout's native name, in the language.
+   *
+   & @param fullId (String) - the full id
+   *
+   * Parsed id is stored in the 'id' attribute; shortId, name, nativeName
+   * are stored in internal variables and used in various methods.
+   */
+  function parseId(fullId) {
+    var bigid;
+    if (fullId.indexOf(':') > 0) {
+      var data = fullId.split(/:/);
+      bigid = data[0].split(/,/);
+      var name = data[1];
+      self.nativeName_ = data[data.length > 2 ? 2 : 1];
+    } else {
+      bigid = fullId.split(/,/);
+    }
+
+    self.id = bigid[0];
+    shortId = bigid.length > 1 ? bigid[1] : self.id;
+    defaultTitle = GKBD.abbr_(self.nativeName_, name);
+  }
+
+
+  /**
+   * @return layout title.
+   */
+  self.getTitle_ = function() {
+    return titleProvider ? titleProvider() : defaultTitle;
+  };
+
+
+  /**
+   * Builds keyboard title text.
+   * @param switchMap (Array) contains a mapping, id->title, for all layouts
+   * @return html content for the title
+   */
+  self.titleTextBuilder_ = function(switchMap) {
+    return function() {
+      var buf = [GKBD.abbr_("<b>&nbsp;&nbsp;&nbsp;" + self.nativeName_ + "</b>",
+          tooltip)];
+      for (var key in switchMap) {
+        if (shortId != key && typeof switchMap[key] == 'string') {
+          if (buf.length > 0) buf.push('&nbsp;&nbsp;');
+          buf.push(
+              GKBD.buildFakeLink_(switchMap[key], '_kbdS2(\'' + key + '\');'));
+        }
+      }
+      return buf.join('');
+    }
+  }
+
+
+  /**
+   * @return short title for this layout.
+   */
+  self.getShortTitle_ = function() {
+    return shortTitle || self.getTitle_();
+  };
+
+  /**
+   * @return an id to use within the program
+   */
+  self.getId_ = function() {
+    return shortId;
+  };
+
+
+  /**
+   * Copies into itself key mappings for all modifiers.
+   *
+   * @param sourceMappings an associative array that, for each modifier
+   * (or a set of modifiers, represented as a comma-separated string)
+   * has an associative array that maps key codes to layout characters.
+   * E.g. {'':{'A':'\u0430','B':'\u0431},"s,sl":{'A':'\u0410','B':'\u0411'}}
+   * In this example, keys 'A' and 'B' are mapped to Russian small letters
+   * 'a' and 'b', but for shift (and for shift+capslock), to capital letters.
+   * @private
+   */
+//  var missing = [];
+//  for (var i = 0x2793; i < 0x27bf; i++) {
+//    missing[String.fromCharCode(i)] = 1;
+//  }
+  function showm() {
+//    var b = [];
+//    for (var i in missing) {
+//      if (missing[i] == 1)b.push(i + " " + i.charCodeAt(0).toString(16));
+//    }
+//    alert(shortId + "\n" + b.join(" "));
+  }
+  function copyMappings(sourceMappings) {
+    for (var mm in sourceMappings) {
+      var source = sourceMappings[mm];
+      if (typeof source == 'function') continue;
+      var list = mm.split(/,/);
+      if (list.join(',') != mm) {
+        list.push(''); // A hack for IE: it splits 'a,b,' into ['a','b']
+      }
+
+      var parsed = {};
+      if (source) {
+        var allChars = source[''];
+        if (allChars) {
+          // the case when each key is mapped to exactly one char
+          for (var i = 0; i < allChars.length; i++) {
+//delete missing[allChars.charAt(i)];
+            parsed[CODES[i]] = allChars.charAt(i);
+          }
+        } else {
+          for (var sourceChars in source) {
+            var targetChars = source[sourceChars];
+            if (typeof targetChars == 'string') {
+              if (sourceChars.length == 1) {
+                // the case of Tamil, with more than 1 char per key
+                parsed[sourceChars.charAt(0)] = targetChars;
+              } else {
+                // one-to-one map
+                for (var i = 0; i < sourceChars.length; i++) {
+                  parsed[sourceChars.charAt(i)] = targetChars.charAt(i);
+                }
+              }
+            }
+          }
+        }
+      }
+      for (var i = 0; i < list.length; i++) {
+        var m = list[i];
+        if (m == '-') m = '';
+        var mapping = mappings[m];
+
+        for (var j = 0; j < CODES.length; j++) {
+          var c = CODES[j];
+          mapping[c] = parsed[c] ? parsed[c] : '';
+        }
+      }
+    }
+    showm();
+  };
+
+
+  /**
+   * Initializes a layout from a source (see constructor)
+   * @param source an associative array describing the layout
+   * @private
+   */
+  self.init_ = function(source) {
+    if (!source.mappings) {
+      return;
+    }
+
+    copyMappings(source.mappings);
+    if (source.capslock) {
+      self.capslockTitles_ = source.capslock;
+    }
+
+    if (source.view2char) {
+      view2char = source.view2char;
+    }
+
+    addTransformation(source.transform);
+
+    self.sequence_ = "";
+    self.init_ = self.load_ = returnValue(true);
+  };
+
+
+  /**
+   * Adds a transformation to keyboard layout.
+   *
+   * @param sourceTransformation.
+   *
+   * A transformation consists of a map (associative array) that maps
+   * character sequences to other character sequences (most probably,
+   * to single characters). For instance, '^' followed by 'o' is mapped to
+   * 'o circonflex' in French keyboard layout.
+   *
+   * As a result of interpeting sourceTransformation a trie structure is
+   * created in this transformation associative array; leading key segments
+   * are mapped to '-'. E.g. 'SHH' -> '?' produces three entries:
+   * 'S'->'-', 'SH'->'-', 'SHH'->'\b\b\b?'.
+   *
+   * @private
+   */
+  self.DEBUG = false;
+  function addTransformation(sourceTransformation) {
+    if (!sourceTransformation) { return; }
+
+    for (var key in sourceTransformation) {
+      var value = sourceTransformation[key];
+      if (typeof value == 'string') addTransformationForKey('', key, value);
+    }
+  };
+
+  function addTransformationForKey(prefix, key, value) {
+    var from = key.indexOf('[');
+    if (from < 0) {
+      addSimpleTranformationForKey(prefix + key, value);
+    } else {
+      var to = key.indexOf(']');
+      var pre = key.substring(0, from);
+      var range = key.substring(from + 1, to);
+      var post = key.substring(to + 1);
+      for (var i = 0; i < range.length; i++) {
+        addTransformationForKey(prefix + pre + range.charAt(i), post, value);
+      }
+    }
+  }
+
+  var maxKeySize = 0;
+
+  function addSimpleTranformationForKey(key, value) {
+    maxKeySize = Math_max(maxKeySize, key.length)
+    for (var pos = 1; pos < key.length; pos++) {
+      var subkey = key.substring(0, pos);
+
+      if (!GKBD.isDef_(transformation[subkey])) {
+        transformation[subkey] = '-';
+      }
+    }
+    transformation[key] = value.replace('\000', key.charAt(0))
+                               .replace('\001', key.charAt(1))
+                               .replace('\002', key.charAt(2));
+//    alert("trans " + show(key) + "->" + show(transformation[key]))
+  }
+
+  /**
+   * Returns mapping table for specified caps and shift
+   *
+   * @param status {String} keyboard status, a sequence of 'l', 's', 'c' for
+   *                        capslock, shift, altgr.
+   * @return the mapping for the status
+   */
+  self.getMapping_ = function(status) {
+    return mappings[status];
+  };
+
+//self.DEBUG = 1;
+  /**
+   * Transforms a character, together with previously accumulated ones, into
+   * another character or a sequence.
+   *
+   * @param c (String) the character to add to accumulated sequence
+   * @return the transformed sequence
+   *
+   * E.g. if we typed '^' in French, it returns '^', but if we type 'o' after
+   * that, it will return '(backspace)(o circonflex)'
+   * @private
+   */
+  self.transform_ = function(chars) {
+    if (view2char[chars]) chars = view2char[chars];
+
+    // find the first character listed as the head of transformation key
+    if (!GKBD.isDef_(transformation['*'])) {
+      for (var i = 0;
+        i < self.sequence_.length &&
+        !GKBD.isDef_(transformation[self.sequence_.charAt(i)]);
+        i++) {
+      }
+    }
+
+    if (i >= self.sequence_.length) {
+//      if (self.DEBUG)alert("got chars '" + show(chars) + "'");
+      return self.sequence_ = chars; // could not find this sequence
+    }
+
+    if (i > 0) self.sequence_ = self.sequence_.substring(i);
+
+//    if (self.DEBUG)alert("seq: '" + show(self.sequence_) + "'");
+
+    for (var i = 0; i < chars.length; i++) {
+      self.sequence_ += chars.charAt(i);
+      var subsequence = self.sequence_;
+      var node = transformation[subsequence];
+//      if (self.DEBUG)alert("node for seq '" + show(subsequence) + "': " + (GKBD.isDef_(node) ? ("'" + show(node) + "'"): "none"));
+
+      while (!GKBD.isDef_(node) && subsequence.length > 0) {
+        subsequence = subsequence.substring(1);
+        node = transformation[subsequence];
+      }
+//      if (self.DEBUG)alert("node for shorter seq " + show(subsequence) + ": " + (GKBD.isDef_(node) ? ("'" + show(node) + "'") : 'none') + ' seq still ' + self.sequence_);
+
+      // if this is the terminal node, return the result
+      if (GKBD.isDef_(node) && node != '-') {
+        var newChars = node + chars.substring(i + 1);
+        var result = '\b\b\b\b\b\b\b'.substring(0, subsequence.length - 1) +
+                     newChars;
+        var to = self.sequence_.length - subsequence.length;
+        var from = Math_max(0, to + newChars.length - maxKeySize);
+        self.sequence_ = self.sequence_.substring(from, to) + newChars;
+//        if (self.DEBUG)alert('result is ' + show(result) + ', seq is "' + self.sequence_ + '" ' + from + " " + to);
+        return result;
+      }
+    }
+    // could not find transform
+    return chars;
+  };
+
+  self.cleanBuffer_ = function() {
+    self.sequence_ = '';
+  }
+
+
+  // Extract packed id information, @see #parseId
+  parseId(source.id);
+
+  // now start initializing
+  if (source.mappings) {
+    self.init_(source);
+  }
+};
+
+
+/**
+ * Configuration for this keyboard
+ */
+GKBD.KBDl_.configure( {
+  canMinimize_        : false,
+  defaultVisibility_  : 'm',
+  hiddenVisibility_   : 'm',
+  openActionContent_  : '<td align="right">' +
+      GKBD.buildFakeLink_('\u0646\u0634\u0637') +
+      '</td>',
+  closeActionContent_ : '<td border=1 align=right>' +
+      GKBD.buildFakeLink_('\u063a\u064a\u0631 \u0646\u0634\u0637',
+          '_kbdHide();') +
+      '</td>'});
+
+function KBD_loadme(data) {
+  var layout = GKBD.KBDl_.addLayout_("-", new GKBD.Layout(data));
+  layout.getTitle_ = layout.titleTextBuilder_({});
+  GKBD.KBDl_.setDefaultLayout_(layout);
+}
+
+KBD_loadme(
+  {
+    id:'AR,AR:Arabic:\u0644\u0648\u062d\u0629 ' +
+       '\u0645\u0641\u0627\u062b\u064a\u062d ' +
+       '\u0627\u0644\u0644\u063a\u0629 ' +
+       '\u0627\u0644\u0639\u0631\u0628\u064a',
+    tooltip: 'Arabic keyboard',
+    mappings: {
+      'scl,sc,sl,s': {
+        '\u00c01234567890m=': '\u0651!@#$%^&*)(_+',
+        'QWER': '\u064e\u064b\u064f\u064c',
+        'T':'\u0644\u0625',
+        'YUIOP\u00db\u00dd\u00dc': '\u0625\u2018\u00f7\u00d7\u061b<>|',
+        'ASDF' : '\u0650\u064d][',
+        'G':'\u0644\u0623',
+        'HJKL;\u00de':'\u0623\u0640\u060c\"',
+        'ZXCV': '~\u0652}{',
+        'B':'\u0644\u0622',
+        'NM\u00bc\u00be\u00bf': '\u0622\u2019,.\u061f'
+      },
+      'cl,l,c,': {
+        '\u00c01234567890m=': '\u06301234567890-=',
+        'QWERTYUIOP\u00db\u00dd\u00dc':
+          '\u0636\u0635\u062b\u0642\u0641\u063a' +
+          '\u0639\u0647\u062e\u062d\u062c\u062f\\',
+        'ASDFGHJKL;\u00de':
+          '\u0634\u0633\u064a\u0628\u0644\u0627\u062a\u0646\u0645\u0643\u0637',
+        'ZXCV': '\u0626\u0621\u0624\u0631',
+        'B':'\u0644\u0627',
+        'NM\u00bc\u00be\u00bf': '\u0649\u0629\u0648\u0632\u0638'
+      }
+    }
+  }
+);
+var p = 10;
+function onMove(x, y) {
+  var layer = GKBD.KBDl_;
+  var k = layer.keyboard_;
+  var newScale = .8 * layer.clientWidth_() / layer.width_; // silver hack
+  if ((p --> 0) && (Math.abs(1 - newScale / k.localScale_) > .02)) {
+    alert("W: " + layer.clientWidth_() + "/" + layer.width_ + "; New scale " + newScale + ": " + Math.abs(1 - newScale / k.localScale_));
+    k.localScale_ = newScale;
+    k.resizeTo_(newScale);
+  }
+}
+
+_kbdConf({
+  defaultVisibility_  : 'v',
+  scale_:0.8,
+  positioning_: 'relative',
+  hasTitle_: false,
+  fixedWidth_: '100%',
+  moveTo_: onMove
+});
+
+moduleId = KBD_gadgetClient.id.split("_")[1];
+_IG_AddModuleEventHandler(moduleId, "zip", _kbdHide);
+_IG_AddModuleEventHandler(moduleId, "unzip", _kbdShow);
+_IG_AddEventHandler("resize", function() { alert("Yes"); onMove(0, 0);});
+</script>
+
+</body>
+]]></Content>
+</Module>

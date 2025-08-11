@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN">
+<html>
+  <head>
+    <title>goog.date</title>
+  </head>
+
+  <body bgcolor=white>
+    provides date objects, and parsing, formatting, manipulation routines.
+
+    <address>msamuel@google.com</address>
+
+    <p>This module hews as closely as possible to 
+    <a href="http://joda-time.sourceforge.net/api-release/index.html"
+     >Joda Time</a> naming conventions without pulling in the entire Joda API.
+    </p>
+
+    <p>It's main differences are
+    <ul>
+    <li>only supports the proleptic Gregorian calendar</li>
+    <li>does not attempt to represent times more granular than a second</li>
+    <li>instead of having a mutable type per value type, it has a single catch
+        all builder type.</li>
+    <li>all formatting and parsing functions operate in the user's locale,
+        and using a global set of preferences.</li>
+    <li>ignores Eras.  Since we only support the Gregorian calendar, we ignore
+        eras.  <tt>xyz AD -> year xyz</tt>, and <tt>xyz BC -> 1 - xyz</tt>
+    <li>does not support leap seconds.  Every minute has 60 seconds.
+    </ul>
+
+    <p>This package also supports partial dates, times, date-times, and periods
+    to make it easier to partially user given information, and infer the missing
+    pieces from context.  Operations that work on partial versions take
+    arguments typed as such.</p>
+    
+    <h3>Concepts</h3>
+    <dl>
+      <dt>TimeOfDay
+        <dd>A fieldwise representation of the time within a day.
+      <dt>Date
+        <dd>A fieldwise representation of a day.
+      <dt>DateTime
+        <dd>A fieldwise representation of a point in time.
+      <dt>Duration
+        <dd>A fieldwise representation of the difference between two times
+      <dt>Period
+        <dd>A half-open range of times or dates
+      <dt>TimeZone
+        <dd>A function that maps date-times to date-times.
+    </dl>
+
+    <h3>Value Types</h3>
+<pre>
+Temporal
+  |
+  |\--------DTBuilder (<b>mutable</b> builder used to generate other types)
+  |
+  |                -- all other value types are immutable --
+  |
+  |\-+------PartialDate
+  |  |
+  |  \------PartialDateTime
+  |
+  |                -- a Date is a PartialDate but you rarely want to mix
+  |                   the partial and complete dates, and most calendrical
+  |                   calculations can only be performed on dates.
+  |                   Combined with javascripts
+  |                   inability to do multiple inheritance, it's more
+  |                   important that DateTime extend Date than DateTime
+  |                   extend PartialDateTime.
+  |
+  \--+------Date
+  |  |
+  |  \------DateTime
+  |
+  |\-+------PartialDuration
+  |  |
+  |  \------Duration
+  |
+  \--+------PartialTimeOfDay
+     |
+     \------TimeOfDay
+
+DateTimeZone
+
+PartialPeriod
+  |
+  \---------Period
+</pre>
+
+    <h3>Utility Modules</h3>
+    <dl>
+      <dt>cal
+        <dd>date calculation and normalization routines that implement a
+        proleptic gregorian calendar.
+      <dt>codec
+        <dd>routines for parsing complete structured values given a supplied
+        timezone, and for formatting partial and complete dates given a
+        timezone.
+      <dt>humlang
+        <dd>parsing and formatting of partial values from human language text.
+        Also contains calendar symbols (day and month names).
+      <dt>tz
+        <dd>timezone registry, fuzzy lookup, and operations.
+      <dt>prefs
+        <dd>user date formatting and timezone preferences
+      <dt>recur
+        <dd>module for representing periodic series of dates/date-times/periods
+    </dl>
+
+    <h3>Conventions</h3>
+    <p>All date fields (year, month, day, etc.) are stored as they are normally
+    represented in 24 hour time.  Specifically, months and days of the month
+    are 1-indexed, and hours, minutes and seconds are 0-indexed.
+    Positive years map directly to AD/CE, and BC/BCE map to their negation plus
+    1.  This is inconsistent with the javascript date object, but is consistent
+    with Joda Time, and makes debugging dates much easier.</p>
+
+  </body>
+</html>

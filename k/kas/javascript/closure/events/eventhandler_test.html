@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<!--
+Copyright 2006 Google Inc.
+ All Rights Reserved.
+-->
+<html>
+<head>
+<title>Testing goog.events.EventHandler</title>
+<script type="text/javascript" src="../../../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+<script type="text/javascript" src="../base.js"></script>
+<script type="text/javascript">
+  goog.require('goog.events');
+  goog.require('goog.events.EventHandler');
+</script>
+</head>
+<body>
+
+<div id="a"></div>
+<div id="b"></div>
+<div id="c"></div>
+<div id="d"></div>
+
+<script type="text/javascript">
+
+	var a = document.getElementById('a');
+	var b = document.getElementById('b');
+	var c = document.getElementById('c');
+	var d = document.getElementById('d');
+
+
+  function testEventHandlerClearsListeners() {
+    assertEquals('No event listeners should be registered at the start', 0,
+      goog.object.getCount(goog.events.listeners_));
+    
+    function tmp() {}
+    
+    goog.events.listen(a, 'click', tmp);
+		
+    assertEquals('1 listener should be registered now', 1,
+      goog.object.getCount(goog.events.listeners_));
+    
+		var eh = new goog.events.EventHandler();
+		eh.listen(a, 'click');
+		eh.listen(a, 'keypress');
+		eh.listen(b, 'mouseover');
+		eh.listen(c, 'mousedown');
+		eh.listen(d, 'click');
+		eh.listen(d, 'mousedown');
+		
+    assertEquals('7 listeners should be registered now', 7,
+      goog.object.getCount(goog.events.listeners_));
+      
+		eh.unlisten(d, 'mousedown');
+		
+    assertEquals('6 listeners should be registered now', 6,
+      goog.object.getCount(goog.events.listeners_));
+		
+		eh.dispose();
+		
+    assertEquals('1 listener should be left', 1,
+      goog.object.getCount(goog.events.listeners_));
+      
+    goog.events.unlisten(a, 'click', tmp);
+		
+    assertEquals('No event listeners should be registered at the end', 0,
+      goog.object.getCount(goog.events.listeners_));
+  }
+
+</script>
+</body>
+</html>

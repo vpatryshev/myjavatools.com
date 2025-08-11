@@ -1,0 +1,295 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./Generic%20Data%20Model_files/filelist.xml">
+<title>Generic Data Model</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Julia Feld</o:Author>
+  <o:LastAuthor>Julia Feld</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>137</o:TotalTime>
+  <o:Created>2001-04-09T08:05:00Z</o:Created>
+  <o:LastSaved>2001-04-09T08:05:00Z</o:LastSaved>
+  <o:Pages>2</o:Pages>
+  <o:Words>603</o:Words>
+  <o:Characters>3438</o:Characters>
+  <o:Company>Griffinwerk</o:Company>
+  <o:Lines>28</o:Lines>
+  <o:Paragraphs>6</o:Paragraphs>
+  <o:CharactersWithSpaces>4222</o:CharactersWithSpaces>
+  <o:Version>9.2720</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+h1
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	font-size:16.0pt;
+	font-family:Arial;
+	mso-font-kerning:16.0pt;}
+h2
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:2;
+	font-size:14.0pt;
+	font-family:Arial;
+	font-style:italic;}
+h3
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:3;
+	font-size:13.0pt;
+	font-family:Arial;}
+h4
+	{mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:-9.0pt;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:4;
+	font-size:11.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:"Times New Roman";
+	font-weight:normal;
+	font-style:italic;}
+h5
+	{mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:-9.0pt;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:5;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	font-weight:normal;
+	font-style:italic;}
+p.MsoBodyText, li.MsoBodyText, div.MsoBodyText
+	{margin:0in;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+code
+	{mso-ascii-font-family:"Courier New";
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:"Courier New";
+	mso-bidi-font-family:"Times New Roman";}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+</head>
+
+<body lang=EN-US style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<p class=MsoBodyText><i>Vladimir Patryshev<o:p></o:p></i></p>
+
+<h1>Generic Data Model</h1>
+
+<h2>Introduction</h2>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='text-align:justify'>4 years ago I had a problem
+designing a database that was supposed to hold data from various
+questionnaires; the questions were slightly varying every time and had no
+regular structure, reflecting the weird ways of thinking of marketing people.
+The solution was to produce something more or less generic, storing “entities”
+and “attributes” separately.</p>
+
+<p class=MsoNormal style='text-align:justify'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='text-align:justify'>Later, one lucky day, I met XML,
+now a ubiquitous format able to store virtually all worth storing in computer
+readable form. Well, yes, XML has DTD. DTD, I think, was invented by Engineers,
+not by linguists. DTD is intrinsically anti-diachronic. If there were DTDs in
+real life, we would have to throw away our dear old books, would not we?</p>
+
+<p class=MsoNormal style='text-align:justify'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoBodyText>However, if we discard DTD, XML has enough flexibility to
+enable storing evolving data, without bothering to specify them strictly in
+advance. XML has certain limitations. An element can be a member of only one
+collection. As a result, it is hard to distinguish between the key that
+uniquely identifies the element and the element identifier within the
+collection. The approach used by Naming Service in CORBA looks more generic and
+simple.</p>
+
+<p class=MsoNormal style='text-align:justify'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h2>Tables</h2>
+
+<p class=MsoNormal>The model consists of three tables<code><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:"Times New Roman"'>:
+</span></code><code><span style='mso-ansi-font-size:12.0pt;font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>ENTITY</span></code>, <code><span
+style='mso-ansi-font-size:12.0pt;font-family:"Courier New";mso-bidi-font-family:
+"Times New Roman"'>ATTRIBUTE</span></code>, <code><span style='mso-ansi-font-size:
+12.0pt;font-family:"Courier New";mso-bidi-font-family:"Times New Roman"'>CONTEXT</span></code>.
+</p>
+
+<h3>ENTITY Table</h3>
+
+<p class=MsoNormal>This is the main table in the database:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><code><span style='font-size:11.0pt;mso-bidi-font-size:10.0pt;
+font-family:"Courier New";mso-bidi-font-family:"Times New Roman"'>create table
+ENTITY (PK long, CLASS varchar, CREATED timestamp);<o:p></o:p></span></code></p>
+
+<p class=MsoBodyText><code><span style='mso-ansi-font-size:12.0pt;font-family:
+"Courier New";mso-bidi-font-family:"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></code></p>
+
+<p class=MsoNormal>All the entities that we are going to have stored in our
+database have a representative in ENTITY table. An entity represents an object
+of our model. An object has an inalienable property, class. The term ‘type’
+would probably suit better. An entity cannot change its class; actually, all
+the fields in entity record are read-only. </p>
+
+<h3><code><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-family:
+"Courier New";mso-bidi-font-family:Arial'>ATTRIBUTE Table<o:p></o:p></span></code></h3>
+
+<p class=MsoNormal>This table contains attributes of the entities. Records consist
+of name-value pairs and reference ENTITY table:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-right:-9.0pt'><code><span style='font-size:
+11.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:
+"Times New Roman"'>create table ATTRIBUTE (ENTITY long, NAME varchar, VALUE
+varchar);<o:p></o:p></span></code></p>
+
+<p class=MsoNormal style='margin-right:-9.0pt'><code><span style='font-size:
+11.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></code></p>
+
+<p class=MsoNormal style='margin-right:-9.0pt'>The usage of this table is
+probably obvious. Note that if NAME is null, it means that the attribute
+contains the <i>value</i> of the entity itself. Two other fields are non-null.</p>
+
+<p class=MsoNormal style='margin-right:-9.0pt'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h3><code><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-family:
+"Courier New";mso-bidi-font-family:Arial'>CONTEXT Table<o:p></o:p></span></code></h3>
+
+<p class=MsoNormal>On one hand, this table can be considered as containing all
+the collections of the database; but on the other hand, the purpose of this
+table is wider. It contains all the naming contexts, and it can be used for
+navigation as well as for storing master-detail relationships.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-right:-9.0pt'><code><span style='font-size:
+11.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:
+"Times New Roman"'>create table CONTEXT (NAME varchar, OWNER long, MEMBER long,
+MEMBERID varchar);<o:p></o:p></span></code></p>
+
+<p class=MsoNormal style='margin-right:-9.0pt'><code><span style='font-size:
+11.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></code></p>
+
+<p class=MsoNormal style='margin-right:-9.0pt'>Here NAME is the name of the
+context. If you are interested in collections, it is probably the name of collection
+owned by OWNER. OWNER is obviously the entity that owns the context, the
+“master”. MEMBER points to the member of the collection; in this case MEMBERID
+is irrelevant. But we can consider this as a Hash, in which case MEMBERID
+becomes a key, and MEMBER is the corresponding value. In the Naming Service
+paradigm, MEMBERID is the name of the entity MEMBER in the context NAME.</p>
+
+<p class=MsoNormal style='margin-right:-9.0pt'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h2>Import From XML</h2>
+
+<p class=MsoNormal>XML data model is a submodel of this generic model, so that
+for any XML there is a monomorphism importing it into Generic Database. I am
+currently implementing a Java class that will be able to do this operation.
+Details seem to be obvious: nodes (elements) become entities, element type
+becoming the entity class; attributes go to attribute table, including the element
+value which become an anonymous attribute. The document structure is reflected
+in CONTEXT table, NAME and MEMBERID are irrelevant (but can be generated using
+a kind of heuristics).</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h2>Export To XML</h2>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>In general, it is impossible. There is no obvious way to
+reproduce in XML multiple contexts, context names and member ids. But the data
+imported from XML are exported to the same XML (up to an isomorphism).</p>
+
+<h2>Conclusion</h2>
+
+<p class=MsoNormal style='margin-right:-9.0pt'>What you are reading is a draft,
+containing only general ideas. I only implore you not to bother about
+efficiency. Physical implementation can be a very different issue. First, all
+the data that need fast access can be stored in additional tables. Second,
+these three tables can be a view, and the implementation can be done reflecting
+the actual data structures (this idea was proposed by V.S.)</p>
+
+<p class=MsoNormal style='margin-right:-9.0pt'><code><span style='font-size:
+11.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></code></p>
+
+<p class=MsoNormal style='margin-right:-9.0pt'><code><span style='font-size:
+11.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:
+"Times New Roman"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></code></p>
+
+<h5>Monday, April 09, 2001</h5>
+
+</div>
+
+</body>
+
+</html>

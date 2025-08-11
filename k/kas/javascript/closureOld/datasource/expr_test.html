@@ -1,0 +1,119 @@
+<!--
+Copyright 2006 Google Inc.
+ All Rights Reserved.
+-->
+
+<html>
+<head>
+<title>Closure Unit Tests - goog.ds.Expr</title>
+<script type="text/javascript" src="../../../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+<script type="text/javascript" src="../base.js"></script>
+<script type="text/javascript">
+  goog.require('goog.ds.JsonDataSource');
+  goog.require('goog.ds.XmlDataSource');
+  goog.require('goog.ds.Expr');
+</script>
+</head>
+
+<script type="text/javascript">
+  var jsDs;
+  var jsObj = {
+    Success: true,
+    Errors: [],
+    Body: {
+      Contacts: [
+        {
+          Name: 'Dan Pupius',
+          Email: 'pupius@google.com',
+          EmailCount: 305
+        },
+        {
+          Name: 'Erik Arvidsson',
+          Email: 'arv@google.com'
+        },
+        {
+          Name: 'Vadim Spivak',
+          Email: 'vadims@google.com',
+          EmailCount: 305
+        },
+        {
+          Name: 'Evan Gilbert',
+          Email: 'uidude@google.com'
+        },
+        {
+          Name: 'Aaron Whyte',
+          Email: 'awhyte@google.com'
+        },
+        {
+          Name: 'Greg Baker',
+          Email: 'baker@google.com'
+        }
+      ]
+    }
+	};
+
+  function setUp() {
+    jsDs = new goog.ds.JsDataSource(jsObj, 'JS', null);
+    var dm = goog.ds.DataManager.getInstance();
+    dm.addDataSource(jsDs, true);
+  }
+
+  function testBasicStuff() {
+    assertNotNull('Get Body', goog.ds.Expr.from('$JS/Body').getNode());
+  }
+  
+  function testArrayExpressions() {
+    assertEquals(6, goog.ds.Expr.from('$JS/Body/Contacts/*').getNodes().getCount());
+    assertEquals('Dan Pupius',
+        goog.ds.Expr.from('$JS/Body/Contacts[0]/Name').getValue());
+    assertEquals(305, goog.ds.Expr.from('$JS/Body/Contacts[2]/EmailCount').getValue());
+    assertEquals(6, goog.ds.Expr.from('$JS/Body/Contacts/*/count()').getValue());
+    assertEquals(0, goog.ds.Expr.from('$JS/Errors/*/count()').getValue());
+  }
+
+  function testAttributes() {
+    assertTrue(goog.ds.Expr.from('@type').isAttribute_);
+    assertTrue(goog.ds.Expr.from('@type').isJustAttribute_);
+    assertFalse(goog.ds.Expr.from('node/@type').isJustAttribute_);
+    assertFalse(goog.ds.Expr.from('Boo').isAttribute_);
+    assertEquals('type', goog.ds.Expr.from('@type').attributeName_);
+  }
+  
+  function testCommonExpressions() {
+    assertTrue(goog.ds.Expr.from('').isCurrent_);
+    assertTrue(goog.ds.Expr.from('.').isCurrent_);
+    assertFalse(goog.ds.Expr.from('Bob').isCurrent_);
+    assertTrue(goog.ds.Expr.from('*|text()').isAllChildNodes_);
+    assertFalse(goog.ds.Expr.from('Bob').isAllChildNodes_);
+    assertTrue(goog.ds.Expr.from('@*').isAllAttributes_);
+    assertFalse(goog.ds.Expr.from('Bob').isAllAttributes_);
+    assertTrue(goog.ds.Expr.from('*').isAllElements_);
+    assertFalse(goog.ds.Expr.from('Bob').isAllElements_);
+  }
+  
+  function testIndexExpressions() {
+    assertTrue(goog.ds.Expr.from('node[5].child').hasIndex_);
+    assertEquals(5, goog.ds.Expr.from('node[5].child').index_);
+  }
+  
+  
+// For using the debugger
+function runTests() {
+  setUp();
+  var fns = [ testExpressions, testArrayExpressions, testAttributes,
+      testCommonExpressions, testIndexExpressions];
+  for (var i = 0; i < fns.length; i++) {
+    fns[i]();
+  }
+}
+
+</script>
+
+</head>
+<body>
+<h1>goog.ds</h1>
+<form>
+<button onclick='runTests()'>Run tests</button>
+</form>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Onscreen Keyboard Test Suite. Unittest for kbdlayer.js</title>
+<!--
+Javascript unittest file. See instructions in the body.
+Script paths are relative to location of this file.
+Author: vpatryshev
+-->
+  <script src="../../../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+  <script>
+    if (!jsUnitFixTop) {
+      alert("Sorry, could not find jsUnitCore.js; please check your paths...");
+    }
+  </script>
+
+  <script src="tools/jstools.js"></script>
+  <script src="header.js"></script>
+  <script src="debug.js"></script>
+  <script src="unittest_util.js"></script>
+  <script src="keyboard.js"></script>
+  <script src="kbdlayer.js"></script>
+  <script src="kbdlayerdrag.js"></script>
+  <script src="kbdlayout.js"></script>
+  <script src="keyboard_special.js"></script>
+  <script src="layout/Special/_A.js"></script>
+  <script src="layout/Special/_D.js"></script>
+  <script src="layout/Special/_M.js"></script>
+  <script src="layout/EastEuropean/EL.js"></script>
+  <script type="text/javascript" src="export.js"></script>
+</head>
+<body>
+This is a javascript unittest for <code>kbdlayer.js</code><br>
+To run the test, you have to open in your browser the following file:<br>
+<code>google3/third_party/java/jsunit/jsunit2.2/testRunner.html</code><br>
+and enter the location of this test file into the file name field,
+and click 'Run' button.
+<textarea rows="2" cols="50" id="testarea"></textarea>
+<script type="text/javascript">
+var JS_TOOLS = jstools("tools");
+
+/**
+ * Sample variable defined in externs.js
+ */
+var _IG_AddModuleEventHandler = undefined;
+var input;
+
+
+function setUp() {
+  _IG_AddModuleEventHandler = undefined;
+  input = document.getElementById('testarea');
+  input.value = '';
+  input.focus();
+}
+
+function tearDown() {
+}
+
+function testPresence() {
+  assertNotUndefined(GKBD.Layout);
+}
+
+function decorateLayoutLink(text, id) {
+  return '<a onmouseover="this.style.textDecoration=\'underline\'" ' +
+         'onmouseout="this.style.textDecoration=\'none\'" id="s2' + id + '"' +
+         ' onclick="_kbdS2(\'' + id + '\');">' + text + '</a>';
+}
+
+function testInitialTitle() {
+  var expected =
+      '<abbr title=""><b>&nbsp;Greek</b></abbr>&nbsp;&nbsp;' +
+      decorateLayoutLink('Arrows', '_A') + '&nbsp;&nbsp;' +
+      decorateLayoutLink('Ding', '_D') + '&nbsp;&nbsp;' +
+      decorateLayoutLink('Math', '_M');
+  GKBD.layer.showAs_('v');
+  expectEqual('Initial title', expected, removeSomeStyle(GKBD.layer.getTitleContent_()));
+}
+
+function loadScript(path) {
+  var script = document.createElement("script");
+  script.src = path;
+  document.body.appendChild(script);
+  JS_TOOLS.sleep(500);
+}
+
+function loadScripts(var_args) {
+  for (var i = 0; i < arguments.length; i++) {
+    loadScript(arguments[i]);
+  }
+  GKBD.onload();
+}
+
+function testLoading_justOne() {
+  loadScript('externs.js');
+  assertFalse(_IG_AddModuleEventHandler === undefined);
+}
+
+function testLoading() {
+  assertTrue( typeof window._kbdInit === 'function');
+  window._kbdInit();
+  GKBD.layer.showAs_('v');
+  GKBD.layer.switchTo_('_A');
+  pressAndRelease('Z');
+  GKBD.layer.switchTo_('EL');
+  var expected = '\u21d9';
+  assertEquals('Got ' + showString(input.value) +
+               ' instead of ' + showString(expected),
+      expected,
+      input.value);
+  loadScripts(
+      'header.js',    
+      'unittest_util.js',
+      'keyboard.js',
+      'kbdlayer.js',
+      'kbdlayerdrag.js',
+      'kbdlayout.js',
+      'layout/EastEuropean/RU.js',
+      'export.js');
+  window._kbdInit();
+  GKBD.layer.showAs_('v');
+  GKBD.layer.switchTo_('RU');
+  pressAndRelease('Z');
+  expected += '\u042f';
+  assertEquals(expected, input.value);
+}
+</script>
+</body>
+</html>

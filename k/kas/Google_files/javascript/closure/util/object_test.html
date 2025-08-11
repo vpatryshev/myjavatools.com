@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+
+<!--
+Copyright 2006 Google Inc.
+ All Rights Reserved.
+-->
+
+<html>
+<head>
+<title>goog.objectap</title>
+<script type="text/javascript" src="../../../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+<script type="text/javascript" src="../base.js"></script>
+<script type="text/javascript">
+  goog.require('goog.object');
+  goog.require('goog.structs.Map');
+</script>
+</head>
+<body>
+<script type="text/javascript">
+
+goog.globalize(goog.object);
+
+function stringifyObject(m) {
+  var keys = getKeys(m);
+  var s = '';
+  for (var i = 0; i < keys.length; i++) {
+    s += keys[i] + get(m, keys[i]);
+  }
+  return s;
+}
+
+function getMap() {
+  var m = new Map;
+  m.put('a', 0);
+  m.put('b', 1);
+  m.put('c', 2);
+  m.put('d', 3);
+  return m;
+}
+
+function getObject() {
+  return {
+    a: 0,
+    b: 1,
+    c: 2,
+    d: 3
+  };
+}
+
+function testKeys() {
+  var m = getObject();
+  assertEquals('getKeys, The keys should be a,b,c', getKeys(m).join(','),
+      'a,b,c,d');
+}
+
+function testValues() {
+  var m = getObject();
+  assertEquals('getValues, The values should be 0,1,2',
+      getValues(m).join(','), '0,1,2,3');
+}
+
+function testContainsKey() {
+  var m = getObject();
+  assertTrue("containsKey, Should contain the 'a' key", containsKey(m, 'a'));
+  assertFalse("containsKey, Should not contain the 'e' key",
+      containsKey(m, 'e'));
+}
+
+function testContainsValue() {
+  var m = getObject();
+  assertTrue('containsValue, Should contain the value 0', containsValue(m, 0));
+  assertFalse('containsValue, Should not contain the value 4',
+      containsValue(m, 4));
+  assertTrue('isEmpty, The map should not be empty', !isEmpty(m));
+}
+
+function testClear() {
+  var m = getObject();
+  clear(m);
+  assertTrue('cleared so it should be empty', isEmpty(m));
+  assertTrue("cleared so it should not contain 'a' key", !containsKey(m, 'a'));
+}
+
+function testPutAll() {
+  var m = {};
+  putAll(m, {a:0,b:1,c:2,d:3});
+  assertTrue('putAll so it should not be empty', !isEmpty(m));
+  assertTrue("putAll so it should contain 'c' key", containsKey(m, 'c'));
+
+  var m2 = {};
+  putAll(m2, m);
+  assertTrue('putAll so it should not be empty', !isEmpty(m2));
+  assertTrue("putAll so it should contain 'c' key", containsKey(m2, 'c'));
+}
+
+function testClone() {
+  var m = getObject();
+  var m2 = clone(m);
+  assertTrue('clone so it should not be empty', !isEmpty(m2));
+  assertTrue("clone so it should contain 'c' key", containsKey(m2, 'c'));
+}
+
+function testForEach() {
+  var m = getObject();
+  var s = '';
+  forEach(m, function(val, key, m2) {
+    assertNotUndefined(key);
+    assertEquals(m, m2);
+    s += key + val;
+  });
+  assertEquals(s, 'a0b1c2d3');
+}
+
+function testFilter() {
+  var m = getObject();
+
+  var m2 = filter(m, function (val, key, m3) {
+    assertNotUndefined(key);
+    assertEquals(m, m3);
+    return val > 1;
+  });
+  assertEquals(stringifyObject(m2), 'c2d3');
+}
+
+
+function testMap() {
+  var m = getObject();
+  var m2 = map(m, function (val, key, m3) {
+    assertNotUndefined(key);
+    assertEquals(m, m3);
+    return val * val;
+  });
+  assertEquals(stringifyObject(m2), 'a0b1c4d9');
+}
+
+function testSome() {
+  var m = getObject();
+  var b = some(m, function (val, key, m2) {
+    assertNotUndefined(key);
+    assertEquals(m, m2);
+    return val > 1;
+  });
+  assertTrue(b);
+  var b = some(m, function (val, key, m2) {
+    assertNotUndefined(key);
+    assertEquals(m, m2);
+    return val > 100;
+  });
+  assertFalse(b);
+}
+
+function testEvery() {
+  var m = getObject();
+  var b = every(m, function (val, key, m2) {
+    assertNotUndefined(key);
+    assertEquals(m, m2);
+    return val >= 0;
+  });
+  assertTrue(b);
+  b = every(m, function (val, key, m2) {
+    assertNotUndefined(key);
+    assertEquals(m, m2);
+    return val > 1;
+  });
+  assertFalse(b);
+}
+
+function testContains() {
+  var m = getObject();
+  assertTrue(contains(m, 3));
+  assertFalse(contains(m, 4));
+}
+
+</script>
+</body>
+</html>
+

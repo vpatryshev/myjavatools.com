@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+ <ModulePrefs title="Keyboard"
+  Author="Google Engineering"
+  author_affiliation="Google, Inc."
+  author_location="Mountain View, CA"
+  category="tools"
+  description="Keyboard"
+  height="300"
+  singleton="true">
+ </ModulePrefs>
+<Content type="html-inline"><![CDATA[
+<!-- Copyright 2007 Google Inc.  All Rights Reserved. -->
+<span id="KBD_anchor"></span>
+<span topmargin="3" alink="#ff0000" bgcolor="#ffffff" link="#0000cc" marginheight="3" text="#000000" vlink="#551a8b">
+<center><textarea rows="3" cols="30" id="typehere" onfocus="_kbdSI(this)"></textarea></center>
+<script>
+var KBD_gadgetClient = document.getElementById("KBD_anchor").parentNode;
+//-------------------------------------------------------------------
+// bin script here
+

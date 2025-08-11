@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+
+<!--
+Copyright 2006 Google Inc.
+ All Rights Reserved.
+
+ To run, navigate a web browser to
+ file:///<client_root>/google3/third_party/java/jsunit/jsunit2.2/testRunner.html
+ and enter this filename into the textbox.
+-->
+
+<html>
+<head>
+<title>goog.structs</title>
+<script type="text/javascript" src="../../../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+<script type="text/javascript" src="../base.js"></script>
+<script type="text/javascript">
+  goog.require('goog.debug.Logger');
+
+</script>
+</head>
+<body>
+
+
+<script type="text/javascript">
+
+goog.globalize();
+goog.globalize(goog.debug);
+
+
+function getDebug(sb, logger, level) {
+  var spacer = '';
+  if (level) {
+    spacer = (new Array(level + 1)).join(' ');
+  }
+  sb[sb.length] = spacer;
+  var name = logger.getName();
+  if (name) {
+    sb[sb.length] = name;
+  } else {
+    sb[sb.length] = 'ROOT';
+  }
+  sb[sb.length] = '\n';
+  var children = logger.getChildren();
+  for (var key in children) {
+    getDebug(sb, children[key], level + 1);
+  }
+};
+
+
+function testParents() {
+  var l1 = Logger.getLogger('goog.test');
+  var l2 = Logger.getLogger('goog.bar');
+  var l3 = Logger.getLogger('goog.bar.foo');
+  var l4 = Logger.getLogger('goog.bar.baaz');
+  var rootLogger = LogManager.getRoot();
+  var googLogger = Logger.getLogger('goog');
+  assertEquals(rootLogger, googLogger.getParent());
+  assertEquals(googLogger, l1.getParent());
+  assertEquals(googLogger, l2.getParent());
+  assertEquals(l2, l3.getParent());
+  assertEquals(l2, l4.getParent());
+}
+
+function testLogging() {
+  var root = LogManager.getRoot();
+  var handler = new TestHandler();
+  var f = handler.onPublish.bind(handler);
+  root.addHandler(f);
+  var l4 = Logger.getLogger('goog.bar.baaz');
+  l4.log(goog.debug.Logger.Level.WARNING, 'foo');
+  assertNotNull(handler.logRecord);
+  assertEquals(goog.debug.Logger.Level.WARNING, handler.logRecord.getLevel());
+  assertEquals('foo', handler.logRecord.getMessage());
+  handler.logRecord = null;
+  root.removeHandler(f);
+  l4.log(goog.debug.Logger.Level.WARNING, 'foo');
+  assertNull(handler.logRecord);
+}
+
+function testFiltering() {
+  var root = LogManager.getRoot();
+  var handler = new TestHandler();
+  var f = handler.onPublish.bind(handler);
+  root.addHandler(f);
+  var l3 = Logger.getLogger('goog.bar.foo');
+  l3.setLevel(goog.debug.Logger.Level.WARNING);
+  var l4 = Logger.getLogger('goog.bar.baaz');
+  l4.setLevel(goog.debug.Logger.Level.INFO);
+  l4.log(goog.debug.Logger.Level.WARNING, 'foo');
+  assertNotNull(handler.logRecord);
+  assertEquals(goog.debug.Logger.Level.WARNING, handler.logRecord.getLevel());
+  assertEquals('foo', handler.logRecord.getMessage());
+  handler.reset();
+  l3.log(goog.debug.Logger.Level.INFO, 'bar');
+  assertNull(handler.logRecord);
+  l3.log(goog.debug.Logger.Level.WARNING, 'baaz');
+  assertNotNull(handler.logRecord);
+  handler.reset();
+  l3.log(goog.debug.Logger.Level.SEVERE, 'baaz');
+  assertNotNull(handler.logRecord);
+};
+
+function TestHandler() {
+  this.logRecord = null;
+}
+
+TestHandler.prototype.onPublish = function(logRecord) {
+  this.logRecord = logRecord;
+};
+
+
+TestHandler.prototype.reset = function() {
+  this.logRecord = null;
+}
+
+
+
+</script>
+</body>
+</html>
+

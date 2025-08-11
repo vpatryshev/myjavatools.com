@@ -1,0 +1,166 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  Copyright 2006 Google Inc.
+  All Rights Reserved
+  Author: jonp@google.com (Jon Perlow)
+  FOR INTERNAL USE ONLY
+
+  File for testing menu. Not a unit test unfortunatey because there's no good
+  way yet to unit test DHTML.
+-->
+<html>
+<head>
+<title>Nested Popup Test</title>
+<!-- Following URL is for development inside google3 -->
+<script type="text/javascript" src="javascript/closure/base.js"></script>
+<script type="text/javascript">
+  if (typeof goog == 'undefined') {
+    alert('Closure failed to load');
+  } else {
+    goog.require('goog.ui.Popup'); // something weird happens if this line is commented out - vpatryshev 09/30/2006
+  }
+</script>
+
+<style>
+
+.popup {
+  position:absolute;
+  background-color:#e0ecff;
+  color:black;
+  visibility:hidden;
+  width:100px;
+  height:100px;
+  font-size: 80%;
+  border:solid red 1px;
+  -moz-outline:0;
+  outline:0;
+}
+
+button {
+  border: solid black 1px;
+
+}
+
+</style>
+
+
+</head>
+<body>
+  <div id='popup1' class='popup' tabindex="0">Popup #1</div>
+  <div id='popup2' class='popup' tabindex="1">Popup #2</div>
+  <div id='popup3' class='popup' tabindex="1">Popup #3</div>
+  <div id='popup4' class='popup' tabindex="1">Popup #4</div>
+  <div id='popup5' class='popup' tabindex="1">Popup #5</div>
+  <div id='popup6' class='popup' tabindex="1">Popup #6</div>
+
+  <h3>Positioning relative to an anchor element</h3>
+  <form>
+  <div> Button Corner</div>
+  <input type="radio" name="button_corner" value="tl"/>Top Left<br/>
+  <input type="radio" name="button_corner" value="tr"/>Top Right<br/>
+  <input type="radio" name="button_corner" value="bl" checked/>Bottom Left<br/>
+  <input type="radio" name="button_corner" value="br"/>Bottom Right<br/>
+  <br/>
+
+  <div>Popup Corner</div>
+  <input type="radio" name="menu_corner" value="tl" checked/>Top Left<br/>
+  <input type="radio" name="menu_corner" value="tr"/>Top Right<br/>
+  <input type="radio" name="menu_corner" value="bl"/>Bottom Left<br/>
+  <input type="radio" name="menu_corner" value="br"/>Bottom Right<br/>
+  <br/>
+  Margin:
+  Top: <input id="margin_top" size=2 value="0"/>
+  Right: <input id="margin_right" size=2 value="0"/>
+  Bottom: <input id="margin_bottom" size=2 value="0"/>
+  Left: <input id="margin_left" size=2 value="0"/>
+
+
+  <br/>
+  <br/>
+  <br/>
+  </form>
+
+  <button id="btn" onclick="showPopup()">
+    Press me!
+  </button>
+
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+
+  <hr>
+  <textarea rows="10" cols="50" id="debug"></textarea>
+
+
+
+  <script>
+    function elem(i) {
+      return document.getElementById('popup' + i);
+    }
+
+    var showingBecauseOfBox = false;
+
+    goog.events.listen(document, goog.events.types.MOUSEMOVE, onMouseMove);
+    //goog.events.listen(absBox, goog.events.types.MOUSEOUT, onAbsBoxMouseOut);
+
+    function showPopup() {
+      var btn = document.getElementById('btn');
+      var buttonCorner = toCorner(
+          getCheckedValue(document.forms[0].elements['button_corner']));
+      var menuCorner = toCorner(
+          getCheckedValue(document.forms[0].elements['menu_corner']));
+
+      var t = parseInt(document.getElementById('margin_top').value);
+      var r = parseInt(document.getElementById('margin_right').value);
+      var b = parseInt(document.getElementById('margin_bottom').value);
+      var l = parseInt(document.getElementById('margin_left').value);
+      var margin = new goog.math.Box(t, r, b, l);
+
+      function mkPopup(elnum, reference, level, ord, parent) {
+        var el = elem(elnum);
+        var popup = new goog.ui.Popup(el);
+        if (parent) {
+          parent.attach(popup);
+        }
+        popup.setPinnedCorner(menuCorner);
+        var margin = new goog.math.Box(t * (level + ord + 1), 0, 0, l * (level + 1));
+        popup.setMargin(margin);
+        popup.setPosition(new goog.ui.Popup.AnchoredPosition(reference, buttonCorner));
+        popup.setVisible(true);
+        return popup;
+      }
+
+      var popup1 = mkPopup(1, btn, 0, 0);
+      var popup2 = mkPopup(2, elem(1), 1, 0, popup1);
+      var popup3 = mkPopup(3, elem(1), 1, 1, popup1);
+      var popup4 = mkPopup(4, elem(2), 2, 0, popup2);
+      var popup5 = mkPopup(5, elem(3), 2, 0, popup3);
+      var popup6 = mkPopup(6, elem(3), 2, 1, popup3);
+    }
+alert("?")
+
+    function getCheckedValue(radioObj) {
+      for (var i = 0; i < radioObj.length; i++) {
+        if (radioObj[i].checked) {
+          return radioObj[i].value;
+        }
+      }
+    }
+
+    function toCorner(val) {
+      switch (val) {
+        case "tl":
+          return goog.ui.Popup.Corner.TOP_LEFT;
+        case "tr":
+          return goog.ui.Popup.Corner.TOP_RIGHT;
+        case "bl":
+          return goog.ui.Popup.Corner.BOTTOM_LEFT;
+        case "br":
+          return goog.ui.Popup.Corner.BOTTOM_RIGHT;
+      }
+    }
+  </script>
+</body>
+</html>
+

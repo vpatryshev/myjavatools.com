@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<!--
+Copyright 2006 Google Inc.
+ All Rights Reserved.
+-->
+
+<html>
+<head>
+<title>goog.io.cookies</title>
+<script type="text/javascript" src="../../../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+<script type="text/javascript" src="../base.js"></script>
+<script type="text/javascript">
+  goog.require('goog.io.cookies');
+</script>
+</head>
+<body>
+<script type="text/javascript">
+
+goog.globalize();
+globalize(goog.io.cookies);
+
+function testSet() {
+  set('a', 'b');
+  assertEquals(get('a'), 'b');
+  remove('a');
+  assertEquals(get('a'), null);
+}
+
+// TODO(arv): Test path, domain and maxAge.
+//            However the document.cookie string is magical which makes this
+//            very hard to test
+
+</script>
+</body>
+</html>
+

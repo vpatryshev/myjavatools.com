@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+  <title>Receiving Files Via HTTP</title>
+</head>
+<body>
+In my previous article I wrote about sending HTTP requests with form
+data, including files from Java. Now I would like to talk about the
+other end of the line: how to handle form data, including multipart,
+including files, on the server side. I will use the three examples from
+that article, <a href="http://www.devx.com/Java/Article/17679/0/page/1">http://www.devx.com/Java/Article/17679/0/page/1</a>,
+to demonstrate my point.<br>
+Usually people would expect a
+servlet to process multipart requests, since it is too much for a JSP
+to handle. But with a properly designed decorator class for
+HttpServletRequest you can actually handle anything right inside your
+jsp. <br>
+<br>
+For instance, when you, in your jsp, extract request information the
+first two requests, <code> &lt;form method="get"
+action="hi.iq/register.jsp"&gt; Name: &lt;input type="text" name="name"
+value="J.Doe"&gt; email: &lt;input type="text" name="email"
+value="abuse@spamcop.com"&gt; &lt;input type="submit"&gt; &lt;/form&gt;
+</code><br>
+and <code> &lt;form method="post" action="hi.iq/register.jsp"&gt;
+Name: &lt;input type="text" name="name" value="J.Doe"&gt; email:
+&lt;input type="text" name="email" value="abuse@spamcop.com"&gt;
+&lt;input type="submit"&gt; &lt;/form&gt; </code> from that article,
+you do not need any decorator, since the request, represented in in
+your jsp by <code>request</code>, an instance of class <code>javax.servlet.HttpServletRequest</code>,
+handles both GET and POST, so that you can conveniently extract the
+values of form fields <code>name</code>
+and <code>email</code> using <code>request.getParameter("name")</code>
+and
+<code>request.getParameter("email")</code>.<br>
+It is very different with multipart request.
+a) http://www.open-eis.com/javadoc/c4u/core/form/Request.html(does not
+subclass; talks about "MultipartRequest")
+b) http://www.geocrawler.com/archives/3/196/2002/12/0/10267988/ -
+"subclassing - too many methods; how to get via "normal"
+HttpServletRequest..."
+c) http://www.projector.de/GoodiesE/Utilities.html - Good people from
+Projector; a specialized servlet for file uploads
+d)
+http://www.abilizer.com/content/developers/6_0/docs/api/system/paw/system/util/MultipartRequest.html
+e) struts - ? ?
+f) http://www.oop-reserch.com/mime_size.html - even a "simple example"
+is too huge to read
+g)
+http://forum.java.sun.com/thread.jsp?thread=311728&amp;forum=33&amp;message=1249587
+- list of choices
+</body>
+</html>

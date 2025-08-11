@@ -1,0 +1,221 @@
+<html>
+<head>
+  <meta name="author" content="Vlad Patryshev"/>
+  <meta name="description" content="Java Trivia Cue Card">
+  <meta name="keywords" content="Java Trivia">
+
+  <title>Java Trivia</title>
+
+  <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+    _uacct = "UA-81536-1";
+    urchinTracker();
+  </script>
+</head>
+<body>
+<b>Index</b>:
+<a href="#AnonymousClass">Anonymous Class</a>
+<a href="#Assign">Assign</a>
+<a href="#Hiding">Hiding</a>
+<a href="#Implementing">Implementing</a>
+<a href="#InnterClass">Inner Class</a>
+<a href="#Load">Load</a>
+<a href="#LocalClass">Local Class</a>
+<a href="#Lock">Lock</a>
+<a href="#MemberClass">Member Class</a>
+<a href="#NestedClass">Member Class</a>
+<a href="#Obscuring">Obscuring</a>
+<a href="#Overriding">Overriding</a>
+<a href="#Read">Read</a>
+<a href="#Scope">Scope</a>
+<a href="#Shadowing">Shadowing</a>
+<a href="#Store">Store</a>
+<a href="#ThreadsAndLocks">Threads and Locks</a>
+<a href="#Use">Use</a>
+<a href="#Unlock">Unlock</a>
+<a href="#Write">Write</a>
+<br>
+<table>
+<tr valign="top"><td ><font size="+1"><b>
+<a name="Scope"></a>
+<a href="http://java.sun.com/docs/books/jls/second_edition/html/names.doc.html#103228">
+Scope</a></b></font>
+</td>
+<td>&nbsp;</td>
+<td>The region of a program where the entity can be referred to using a simple name (unless it is <a href="#shadowing">shadowed</a>)).
+</td>
+</tr>
+<tr valign="top">
+<td><a name="Shadowing"></a><b><a href="http://java.sun.com/docs/books/jls/second_edition/html/names.doc.html#34133">Shadowing</a></b>
+</td>
+<td>&nbsp;</td>
+<td>A declarations is shadowed in part of its scope by another declaration of the same name, so a simple name cannot refer to the declared entity.
+</td>
+<td><pre><font size="-1">int x = 1;
+{
+  int x = 0;
+}
+</font></pre>
+</td>
+</tr>
+<tr valign="top">
+<td><a name="Obscuring"></a><b><a href="http://java.sun.com/docs/books/jls/second_edition/html/names.doc.html#62307">Obscuring</a></b>
+</td>
+<td>&nbsp;</td>
+<td>The same name at times may be interpreted as a variable, a type or a package. Then a variable is preferred to a type, and a type is preferred to a package.
+</td>
+<td><pre><font size="-1">Object x = 1;
+{
+  int Object = 0;
+}
+</font></pre>
+</td>
+</tr>
+<tr valign="top">
+<td><a name="Hiding"></a><b><a href="http://java.sun.com/docs/books/jls/second_edition/html/classes.doc.html#36999">Hiding</a></b>
+</td>
+<td>&nbsp;</td>
+<td>A member of a subclass hides the member of a superclass having the same name.
+</td>
+<td rowspan="3"><pre><font size="-1">abstract class A {
+  int b;
+  static void c() {};
+  void d() {};
+  abstract String x();
+};
+class B extends A {
+  byte b /* <b>hides</b> A.b */;
+  static int c() { return 7; } /* <b>hides</b> A.c() */
+  void d() {} /* <b>overrides</b> A.d() */
+  String x() { return "X"; } /* <b>implements</b> A.x() */
+};
+</font></pre>
+</td>
+</tr>
+<tr valign="top">
+<td><a name="Overriding"></a><b><a href="http://java.sun.com/docs/books/jls/second_edition/html/names.doc.html#31700">Overriding</a></b>
+</td>
+<td>&nbsp;</td>
+<td>A method of a subclass overrides the (non-abstract) method of a superclass having the same name and signature.
+</td>
+</tr>
+</tr>
+<tr valign="top">
+<td><a name="Implementing"></a><b><a href="http://java.sun.com/docs/books/jls/second_edition/html/names.doc.html#31700">Implementing</a></b>
+</td>
+<td>&nbsp;</td>
+<td>A non-abstract method of a subclass implements the abstract method of a superclass having the same name and signature.
+</td>
+</tr>
+
+<tr valign="top"><td ><font size="+1"><b>
+<a name="Classes"></a>
+<a href="http://java.sun.com/docs/books/jls/second_edition/html/classes.doc.html#228205">
+Classes</a></b></font>
+</td>
+<tr valign="top">
+<td><a name="AnonymousClass"></a><b><a href="http://java.sun.com/docs/books/jls/second_edition/html/expressions.doc.html#252044">Anonymous Class</a></b>
+</td>
+<td>&nbsp;</td>
+<td>A class declared and instantiated by an instance creation expression.
+</td>
+</tr>
+<tr valign="top">
+<td><a name="InnerClass"></a><b><a href="http://java.sun.com/docs/books/jls/second_edition/html/classes.doc.html#246255">Inner Class</a></b>
+</td>
+<td>&nbsp;</td>
+<td>A non-staic <a href="#NestedClass">nested class</a>.
+</td>
+</tr>
+<tr valign="top">
+<td><a name="LocalClass"></a><b><a href="http://java.sun.com/docs/books/jls/second_edition/html/statements.doc.html#247773">Local Class</a></b>
+</td>
+<td>&nbsp;</td>
+<td>A <a href="#NestedClass">nested class</a> that has a name and is not a member class.
+</td>
+</tr>
+<tr valign="top">
+<td><a name="MemberClass"></a><b><a href="http://java.sun.com/docs/books/jls/second_edition/html/classes.doc.html#247539">Member Class</a></b>
+</td>
+<td>&nbsp;</td>
+<td>A class whose declaration is directly enclosed within another class or interface declaration.
+</td>
+</tr>
+<tr valign="top">
+<td><a name="NestedClass"></a><b><a href="http://java.sun.com/docs/books/jls/second_edition/html/classes.doc.html#246201">Nested Class</a></b>
+</td>
+<td>&nbsp;</td>
+<td>A class declared within a body of another class.
+</td>
+</tr>
+
+
+<tr valign="top"><td ><font size="+1"><b>
+<a name="ThreadsAndLocks"></a>
+<a href="http://java.sun.com/docs/books/jls/second_edition/html/memory.doc.html">
+Threads and Locks</a></b></font>
+</td>
+<td>&nbsp;</td>
+<td>To synchronize threads, Java uses monitors, which are allow only one thread at a time to execute a region of code protected by the monitor. The behavior of monitors is explained in terms of locks; there is a lock associated with each object.
+</td>
+</tr>
+<tr valign="top">
+<td><a name="Use"></a><b>Use</b>
+</td>
+<td>&nbsp;</td>
+<td>(thread) Transfers contents of variable's thread copy to the execution engine (instruction uses the value of a variable)
+</td>
+</tr>
+<tr valign="top">
+<td><a name="Assign"></a><b>Assign</b>
+</td>
+<td>&nbsp;</td>
+<td>(thread) Transfers value from execution engine into the variable's thread copy (assignment instruction).
+</td>
+</tr>
+<tr valign="top">
+<td><a name="Read"></a><b>Read</b>
+</td>
+<td>&nbsp;</td>
+<td> (main memory) Transmits contents of variable's master copy to thread memory (to be used by <a href"#Load">load</a>)
+</td>
+</tr>
+<tr valign="top">
+<td><a name="Load"></a><b>Load</b>
+</td>
+<td>&nbsp;</td>
+<td> (thread) Puts a value from main memory (<a href="#Read">read</a>) into variable's thread copy
+</td>
+</tr>
+<tr valign="top">
+<td><a name="Store"></a><b>Store</b>
+</td>
+<td>&nbsp;</td>
+<td>(thread) transmits contents of variable's thread copy to main vmemory (to be used by <a href="#Write">write</a>)
+</td>
+</tr>
+<tr valign="top">
+<td><a name="Write"></a><b>Write</b>
+</td>
+<td>&nbsp;</td>
+<td>(main memory) puts a value from thread memory (<a href="#Store">store</a>) into variable's master copy
+</td>
+</tr>
+<tr valign="top">
+<td><a name="Lock"></a><b>Lock</b>
+</td>
+<td>&nbsp;</td>
+<td>(thread tightly synchronized with main memory) causes a thread to acquire one claim on a particular lock
+</td>
+</tr>
+<tr valign="top">
+<td><a name="Unlock"></a><b>Unlock</b>
+</td>
+<td>&nbsp;</td>
+<td>(thread tightly synchronized with main memory) causes a thread to release one claim on a particular lock
+</td>
+</tr>
+</table>
+</body>
+</html>

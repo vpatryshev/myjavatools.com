@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+
+<!--
+Copyright 2006 Google Inc.
+ All Rights Reserved.
+-->
+
+<html>
+<head>
+<title>goog.array</title>
+<script type="text/javascript" src="../../../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+<script type="text/javascript" src="../base.js"></script>
+<script type="text/javascript">
+  goog.require('goog.array');
+</script>
+</head>
+<body>
+<script type="text/javascript">
+
+goog.globalize(goog.array);
+
+// Array
+function testArrayIndexOf() {
+  assertEquals(indexOf([0, 1, 2, 3], 1), 1);
+  assertEquals(indexOf([0, 1, 1, 1], 1), 1);
+}
+
+function testArrayLastIndexOf() {
+  assertEquals(lastIndexOf([0, 1, 2, 3], 1), 1);
+  assertEquals(lastIndexOf([0, 1, 1, 1], 1), 3);
+}
+
+function testArrayForEach() {
+  var s = '';
+  var a = ['a', 'b', 'c', 'd'];
+  forEach(a, function(val, index, a2) {
+    assertEquals(a, a2);
+    // TODO(arv): Should assert index is Number
+    s += val + index;
+  });
+  assertEquals(s, 'a0b1c2d3');
+}
+
+function testArrayFilter() {
+  var a = [0, 1, 2, 3];
+  var a = filter(a, function (val, index, a2) {
+    assertEquals(a, a2);
+    // TODO(arv): Should assert index
+    return val > 1;
+  });
+  assertEquals(a.join(''), '23');
+}
+
+function testArrayMap() {
+  var a = [0, 1, 2, 3];
+  assertEquals(map(a, function (val, index, a2) {
+    assertEquals(a, a2);
+    // TODO(arv): Should assert index
+    return val * val;
+  }).join(''), '0149');
+}
+
+function testArraySome() {
+  var a = [0, 1, 2, 3];
+  var b = some(a, function (val, index, a2) {
+    assertEquals(a, a2);
+    // TODO(arv): Should assert index
+    return val > 1;
+  });
+  assertTrue(b);
+  b = some(a, function (val, index, a2) {
+    assertEquals(a, a2);
+    // TODO(arv): Should assert index
+    return val > 100;
+  });
+  assertFalse(b);
+}
+
+function testArrayEvery() {
+  var a = [0, 1, 2, 3];
+  var b = every(a, function (val, key, a2) {
+    assertEquals(a, a2);
+    // TODO(arv): Should assert key
+    return val >= 0;
+  });
+  assertTrue(b);
+  b = every(a, function (val, key, a2) {
+    assertEquals(a, a2);
+    // TODO(arv): Should assert key
+    return val > 1;
+  });
+  assertFalse(b);
+}
+
+function testArrayContains() {
+  var a = [0, 1, 2, 3];
+  assertTrue('contain, Should contain 3', contains(a, 3));
+  assertFalse('contain, Should not contain 4', contains(a, 4));
+}
+
+function testArrayInsert() {
+  var a = [0, 1, 2, 3];
+
+  insert(a, 4);
+  assertEquals('insert, Should append 4', a[4], 4);
+  insert(a, 3);
+  assertEquals('insert, Should not append 3', a.length, 5);
+  assertNotEquals('insert, Should not append 3', a[a.length - 1], 3);
+}
+
+function testArrayInsertAt() {
+  var a = [0, 1, 2, 3];
+
+  insertAt(a, 4, 2);
+  assertEquals('insertAt, insert in middle', a.join(''), '01423');
+  insertAt(a, 5, 10);
+  assertEquals('insertAt, too large value should append', a.join(''), '014235');
+  insertAt(a, 6);
+  assertEquals('insertAt, null/undefined value should insert at 0', a.join(''), '6014235');
+  insertAt(a, 7, -2);
+  assertEquals('insertAt, negative values start from end', a.join(''), '60142735');
+  }
+
+function testArrayInsertBefore() {
+  var a = ['a', 'b', 'c', 'd'];
+  insertBefore(a, 'e', 'b');
+  assertEquals('insertBefore, with existing element', a.join(''), 'aebcd');
+  insertBefore(a, 'f', 'x');
+  assertEquals('insertBefore, with non existing element', a.join(''), 'aebcdf');
+}
+
+function testArrayRemove() {
+  var a = ['a', 'b', 'c', 'd'];
+  remove(a, 'c');
+  assertEquals('remove, remove existing element', a.join(''), 'abd');
+  remove(a, 'x');
+  assertEquals('remove, remove non existing element', a.join(''), 'abd');
+}
+
+function testArrayRemoveAt() {
+  var a = [0, 1, 2, 3];
+  removeAt(a, 2);
+  assertEquals('removeAt, remove existing index', a.join(''), '013');
+  a = [0, 1, 2, 3];
+  removeAt(a, 10);
+  assertEquals('removeAt, remove non existing index', a.join(''), '0123');
+  a = [0, 1, 2, 3];
+  removeAt(a, -2);
+  assertEquals('removeAt, remove with negative index', a.join(''), '013');
+}
+
+function testArrayClone() {
+  var a = [0, 1, 2, 3];
+  var a2 = clone(a);
+  assertEquals('clone, should be equal', a.join(''), a2.join(''));
+}
+
+function testArraySplice() {
+  var a = [0, 1, 2, 3];
+  a.splice(1, 0, 4);
+  assertEquals(a.join(''), '04123');
+  a.splice(1, 1, 5);
+  assertEquals(a.join(''), '05123');
+  a.splice(1, 1);
+  assertEquals(a.join(''), '0123');
+  // var args
+  a.splice(1, 1, 4, 5, 6);
+  assertEquals(a.join(''), '045623');
+}
+
+function testArraySlice() {
+  var a = [0, 1, 2, 3];
+  a = a.slice(1 , 3);
+  assertEquals(a.join(''), '12');
+  a = [0, 1, 2, 3];
+  a = a.slice(1 , 6);
+  assertEquals('slice, with too large end', a.join(''), '123');
+  a = [0, 1, 2, 3];
+  a = a.slice(1 , -1);
+  assertEquals('slice, with negative end', a.join(''), '12');
+  a = [0, 1, 2, 3];
+  a = a.slice(-2 , 3);
+  assertEquals('slice, with negative start', a.join(''), '2');
+}
+
+</script>
+</body>
+</html>
+

@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Onscreen Keyboard Test Suite. Unittest for keyboard_ua.js</title>
+<!--
+Javascript unittest file. See instructions in the body.
+Script paths are relative to location of this file.
+Author: vpatryshev
+-->
+  <script src="bin/d_ua_002.js"></script>
+  <script src="javascript/keyboard/unittest_util.js"></script>
+  <script src="../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+</head>
+<body>
+This is a javascript unittest for <code>keyboard_ua.js</code><br>
+To run the test, you have to open in your browser the following file:<br>
+<code>google3/third_party/java/jsunit/jsunit2.2/testRunner.html</code><br>
+and enter the location of this test file into the file name field,
+and click 'Run' button.
+<textarea rows="2" cols="50" id="testarea"></textarea>
+</body>
+<script type="text/javascript">
+var titleInactive =
+    '<span> ' +
+    '\u043a\u043b\u0430\u0432\u0456\u0430\u0442\u0443\u0440\u0430</span>';
+
+var titleActiveRu =
+    '<abbr title="Russian keyboard">' +
+    '&nbsp;&nbsp;&nbsp;\u0420\u0443\u0441\u0441\u043a\u0430\u044f&nbsp;' +
+    '\u043a\u043b\u0430\u0432\u0438\u0430\u0442\u0443\u0440\u0430</abbr>' +
+    '&nbsp;&nbsp;' +
+    '<a ' +
+    'onmouseover="this.style.textDecoration=\'underline\'" ' +
+    'onmouseout="this.style.textDecoration=\'none\'" ' +
+    'onclick="_kbdS2(\'UK\');">' +
+    '\u0443\u043a\u0440</a>';
+
+var titleActiveUk =
+    '<abbr title="Ukrainian keyboard">&nbsp;' +
+    '&nbsp;&nbsp;\u0423\u043a\u0440\u0430\u0457\u043d\u0441\u044c\u043a\u0430' +
+    '&nbsp;\u043a\u043b\u0430\u0432\u0456\u0430\u0442\u0443\u0440\u0430' +
+    '</abbr>&nbsp;&nbsp;' +
+    '<a ' +
+    'onmouseover="this.style.textDecoration=\'underline\'" ' +
+    'onmouseout="this.style.textDecoration=\'none\'" ' +
+    'onclick="_kbdS2(\'RU\');">\u0440\u0443\u0441</a>';
+
+function setUp() {
+  var input = document.getElementById('testarea');
+  input.value = '';
+  input.focus();
+}
+
+function testRestore() {
+  _kbdHide();
+  checkInactiveTitle();
+  document.cookie = 'KBD=0UK3;expires=November 07, 2051';
+  window.onload();
+  checkInactiveTitle();
+}
+
+function testSave1() {
+  activateKeyboard();
+  _kbdS2('RU');
+  assertEquals('0RU-0', getCookie());
+  _kbdS2('UK');
+  assertEquals('0UK-0', getCookie());
+}
+
+function testTitleInactive() {
+  checkInactiveTitle(titleInactive);
+}
+
+function testTitleActiveUk() {
+  activateKeyboard();
+  _kbdS2('UK');
+  checkActiveTitle(titleActiveUk);
+}
+
+function testTitleActiveRu() {
+  activateKeyboard();
+  _kbdS2('RU');
+  checkActiveTitle(titleActiveRu);
+}
+
+function testInputUa1() {
+  activateKeyboard();
+  _kbdS2('UK');
+  var input = document.getElementById('testarea');
+  assertEquals('', input.value);
+  pressAndRelease('S');
+  assertEquals("got " + show(input.value), '\u0406', input.value);
+}
+
+function testInputUa2() {
+  activateKeyboard();
+  _kbdS2('UK');
+  var input = document.getElementById('testarea');
+  assertEquals('', input.value);
+  pressAndRelease('\u00de');
+  assertEquals("got " + show(input.value), '\u0454', input.value);
+}
+
+function testTypeUa() {
+  activateKeyboard();
+  _kbdS2('UK');
+  var input = document.getElementById('testarea');
+  assertEquals('', input.value);
+  type('op\u00db\u00ddasdfghjkl;\u00dem\u00bc\u00be');
+  var expected =
+      '\u0449\u0437\u0445\u0457\u0444\u0456\u0432\u0430' +
+      '\u043f\u0440\u043e\u043b\u0434\u0436\u0454\u044c\u0431\u044e';
+  assertEquals("Got " + show(input.value) + "\nvs " + show(expected),
+               expected,
+               input.value);
+}
+
+function testInputRu() {
+  activateKeyboard();
+  _kbdS2('RU');
+  var input = document.getElementById('testarea');
+  assertEquals('', input.value);
+  pressAndRelease('F');
+  assertEquals('\u0410', input.value);
+  pressAndRelease('Z');
+  assertEquals('\u0410\u042f', input.value);
+}
+
+function testTypeRu() {
+  activateKeyboard();
+  _kbdS2('RU');
+  var input = document.getElementById('testarea');
+  assertEquals('', input.value);
+  type('Heccrfz rkfdbfnehf');
+  assertEquals('\u0420\u0443\u0441\u0441\u043a\u0430\u044f' +
+               '\u043a\u043b\u0430\u0432\u0438\u0430\u0442\u0443\u0440\u0430',
+               input.value);
+}
+</script>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+
+<!--
+Copyright 2006 Google Inc.
+ All Rights Reserved.
+-->
+
+<html>
+<head>
+<title>goog.dom.style Tests</title>
+<script type="text/javascript" src="../../../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+<script type="text/javascript" src="../base.js"></script>
+<script type="text/javascript">
+  goog.require('goog.style');
+</script>
+<style type="text/css">
+#styleTest1 {
+  width:120px;font-weight:bold;
+}
+</style>
+</head>
+<body>
+  <div id="testEl">
+    <span>Test Element</span>
+  </div>
+
+  <div><div><div id="testEl2"></div></div></div>
+
+  <span id="span1" class="test1"></span>
+  <span id="span2" class="test1"></span>
+  <span id="span3" class="test2"></span>
+  <span id="span4" class="test3"></span>
+  <span id="span5" class="test1"></span>
+
+  <p id="p1"></p>
+
+  <div id="styleTest1"></div>
+  <div id="styleTest2" style="width:100px;font-weight:bold"></div>
+  <div id="styleTest3"></div>
+
+  <!-- Paragraph to test element child and sibling -->
+  <p id="p2">
+    <!-- Comment -->
+    a
+    <b id="b1">c</b>
+    d
+    <!-- Comment -->
+    e
+    <b id="b2">f</b>
+    g
+    <!-- Comment -->
+  </p>
+
+  <iframe name="frame" src="../util/math_test.html"></iframe>
+
+<script type="text/javascript">
+
+  goog.globalize(goog);
+  goog.globalize(goog.dom);
+  goog.globalize(goog.style);
+
+  function testSetStyle() {
+    var el = $('span1');
+    setStyle(el, 'fontWeight', 'bold');
+    assertEquals('Should be bold', el.style.fontWeight, 'bold');
+  }
+
+  function testSetStyleWithNonCamelizedString() {
+    var el = $('span5');
+    setStyle(el, 'font-weight', 'bold');
+    assertEquals('Should be bold', el.style.fontWeight, 'bold');
+  }
+
+  function testGetStyle() {
+    var el = $('styleTest3');
+    setStyle(el, 'width', '80px');
+    setStyle(el, 'fontWeight', 'bold');
+
+    assertEquals(getStyle(el, 'width'), '80px');
+    assertEquals(getStyle(el, 'fontWeight'), 'bold');
+    assertEquals(getStyle(el, 'font-weight'), 'bold');
+  }
+
+  function testToCamelCase() {
+    assertEquals(toCamelCase('-one-two-three'), 'OneTwoThree');
+    assertEquals(toCamelCase('one-two-three'), 'oneTwoThree');
+    assertEquals(toCamelCase('one-two'), 'oneTwo');
+    assertEquals(toCamelCase('one'), 'one');
+    assertEquals(toCamelCase('oneTwo'), 'oneTwo');
+  }
+
+  function testTotoSelectorCase() {
+    assertEquals(toSelectorCase('OneTwoThree'), '-one-two-three');
+    assertEquals(toSelectorCase('oneTwoThree'), 'one-two-three');
+    assertEquals(toSelectorCase('oneTwo'), 'one-two');
+    assertEquals(toSelectorCase('one'), 'one');
+    assertEquals(toSelectorCase('one-two'), 'one-two');
+  }
+
+  function testSetPosition() {
+    var el = $('testEl');
+
+    setPosition(el, 100, 100);
+    assertEquals('100px', el.style.left);
+    assertEquals('100px', el.style.top);
+
+    setPosition(el, '50px', '25px');
+    assertEquals('50px', el.style.left);
+    assertEquals('25px', el.style.top);
+
+    setPosition(el, '10ex', '25px');
+    assertEquals('10ex', el.style.left);
+    assertEquals('25px', el.style.top);
+
+    setPosition(el, '10%', '25%');
+    assertEquals('10%', el.style.left);
+    assertEquals('25%', el.style.top);
+
+    // ignores stupid units
+    setPosition(el, 0, 0);
+    setPosition(el, '10rainbows', '25rainbows');
+    assertEquals('0px', el.style.left);
+    assertEquals('0px', el.style.top);
+
+
+    setPosition(el, new goog.math.Coordinate(20,40));
+    assertEquals('20px', el.style.left);
+    assertEquals('40px', el.style.top);
+  }
+
+  function testGetPageOffset() {
+    // Not sure how to test this, so just check it returns values for now,
+    // without erroring
+    var pos = getPageOffset($('testEl2'));
+    assertTrue('Should be defined at least', goog.isDef(pos.x));
+    assertTrue('Should be defined at least', goog.isDef(pos.y));
+  }
+
+  function testSetSize() {
+    var el = $('testEl');
+
+    setSize(el, 100, 100);
+    assertEquals('100px', el.style.width);
+    assertEquals('100px', el.style.height);
+
+    setSize(el, '50px', '25px');
+    assertEquals('should be "50px"', '50px', el.style.width);
+    assertEquals('should be "25px"', '25px', el.style.height);
+
+    setSize(el, '10ex', '25px');
+    assertEquals('10ex', el.style.width);
+    assertEquals('25px', el.style.height);
+
+    setSize(el, '10%', '25%');
+    assertEquals('10%', el.style.width);
+    assertEquals('25%', el.style.height);
+
+    // ignores stupid units
+    setSize(el, 0, 0);
+    setSize(el, '10rainbows', '25rainbows');
+    assertEquals('0px', el.style.width);
+    assertEquals('0px', el.style.height);
+
+    setSize(el, new goog.math.Size(20,40));
+    assertEquals('20px', el.style.width);
+    assertEquals('40px', el.style.height);
+  }
+
+  function testGetSize() {
+    var el = $('testEl');
+    setSize(el, 100, 100);
+
+    var dims = getSize(el);
+    assertEquals(100, dims.width);
+    assertEquals(100, dims.height);
+
+    setStyle(el, 'display', 'none');
+    dims = getSize(el);
+    assertEquals(100, dims.width);
+    assertEquals(100, dims.height);
+  }
+
+
+</script>
+</body>
+</html>

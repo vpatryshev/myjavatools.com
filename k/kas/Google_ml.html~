@@ -1,0 +1,55 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>Google</title>
+<style>
+<!--
+body,td,a,p,.h{font-family:arial,sans-serif;}
+body {overflow:hidden}
+div.content {height:100%; overflow:auto;}
+.h{font-size: 20px;}
+.q{color:#0000cc;}
+td.bt{width:18;height:18;}
+//-->
+</style>
+<script type="text/javascript">
+<!--
+function sf(){document.f.q.focus();}
+
+function rwt(el,ct,cd,sg){
+  var x = "&ei=mnazQ4i1IKmaYL_jzYME"+sg;
+  el.href="/url?sa=t&ct="+escape(ct)+"&cd="+escape(cd)+"&url="+escape(el.href).replace(/\+/g,"%2B")+x;
+  el.onmousedown="";
+  return true;
+}
+// -->
+</script>
+</head><body onload="sf()" topmargin="3" alink="#ff0000" bgcolor="#ffffff" link="#0000cc" marginheight="3" text="#000000" vlink="#551a8b">
+
+<div id="content">
+<center><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td align="right" nowrap="nowrap"><font size="-1"><b>vpatryshev@gmail.com</b>&nbsp;|&nbsp;<a href="http://www.google.com/url?sa=p&amp;pref=ig&amp;pval=2&amp;q=http://www.google.com/ig%3Fhl%3Den" onmousedown="return rwt(this,'pro','hppphou:def','&sig2=7lVxdnMkszRPtD3I0qEeag')">Personalized Home</a>&nbsp;|&nbsp;<a href="http://www.google.com/searchhistory/?hl=en">Search History</a>&nbsp;|&nbsp;<a href="https://www.google.com/accounts/ManageAccount">My Account</a>&nbsp;|&nbsp;<a href="http://www.google.com/accounts/Logout?continue=http://www.google.com/">Sign out</a></font></td></tr><tr height="4"><td><img alt="" height="1" width="1"></td></tr></tbody></table><img src="Google_files/images/logo_plain.png" alt="Google" height="110" width="276"><br><br>
+<form action="http://google.com/search" name="f"><script><!--
+function qs(el) {if (window.RegExp && window.encodeURIComponent) {var ue=el.href;var qe=encodeURIComponent(document.f.q.value);if(ue.indexOf("q=")!=-1){el.href=ue.replace(new RegExp("q=[^&$]*"),"q="+qe);}else{el.href=ue+"&q="+qe;}}return 1;}
+// -->
+</script>
+<table border="0" cellpadding="4" cellspacing="0"><tbody><tr><td nowrap="nowrap"><font size="-1"><b>Web</b>&nbsp;&nbsp;&nbsp;&nbsp;<a id="1a" class="q" href="http://www.google.com/imghp?hl=en&amp;tab=wi" onclick="return qs(this);">Images</a>&nbsp;&nbsp;&nbsp;&nbsp;<a id="2a" class="q" href="http://groups.google.com/grphp?hl=en&amp;tab=wg" onclick="return qs(this);">Groups</a>&nbsp;&nbsp;&nbsp;&nbsp;<a id="4a" class="q" href="http://news.google.com/nwshp?hl=en&amp;tab=wn" onclick="return qs(this);">News</a>&nbsp;&nbsp;&nbsp;&nbsp;<a id="5a" class="q" href="http://froogle.google.com/frghp?hl=en&amp;tab=wf" onclick="return qs(this);">Froogle</a>&nbsp;&nbsp;&nbsp;&nbsp;<a id="7a" class="q" href="http://www.google.com/lochp?hl=en&amp;tab=wl" onclick="return qs(this);">Local<sup></sup></a><sup><a style="text-decoration: none;"><font color="red">New!</font></a></sup>&nbsp;&nbsp;&nbsp;&nbsp;<!--"/*"/*--><font size="-1"><a class="q" onclick="return window.qs?qs(this):1" href="http://127.0.0.1:4664/&amp;s=ha7U-yuPDHayJGWIl7rQbYj3a4Q">Desktop</a></font>&nbsp;&nbsp;&nbsp;&nbsp;<font size="-1"><a class="q" href="http://search/">Moma</a></font>&nbsp;&nbsp;&nbsp;&nbsp;<b><a href="http://www.google.com/intl/en/options/" class="q">more&nbsp;»</a></b></font></td></tr></tbody></table><table cellpadding="0" cellspacing="0"><tbody><tr><td width="25%">&nbsp;</td><td align="center"><input name="hl" value="en" type="hidden"><input autocomplete="off" maxlength="2048" size="55" name="q" value="" title="Google Search" onfocus="_kbdSI(this);"><br><input value="Google Search" name="btnG" type="submit"><input value="I'm Feeling Lucky" name="btnI" type="submit"></td><td nowrap="nowrap" valign="top" width="25%"><font size="-2">&nbsp;&nbsp;<a href="http://www.google.com/advanced_search?hl=en">Advanced Search</a><br>&nbsp;&nbsp;<a href="http://www.google.com/preferences?hl=en">Preferences</a>
+<br>&nbsp;&nbsp;<a href="language_tools.htm">Language Tools</a>
+<br>&nbsp;&nbsp;<a href="javascript:KBD_toggle();">Keyboard</a>
+
+</font></td>
+</tr></tbody></table>
+
+  <font size="-1"><a href="http://www.google.com/ads/">Advertising&nbsp;Programs</a> - <a href="http://www.google.com/services/">Business Solutions</a> - <a href="http://www.google.com/intl/en/about.html">About Google</a></font><p><font size="-2">©2006 Google</font></p></center>
+      <div class="mAutoComplete" style="border: 1px solid black; padding: 0pt; z-index: 1; left: 419px; top: 200px; width: 354px; position: absolute; background-color: white; font-size: 13px; font-family: arial,sans-serif; visibility: hidden;" id="completeDiv"></div>
+</div>
+
+<div style="position: absolute; left: -10000px; top: -10000px; width: 0pt; height: 0pt; visibility: hidden;">
+
+<iframe src="Google_files/search.htm" id="completionFrame" name="completionFrame"></iframe></div>
+
+</form><br><br>
+<script type="text/javascript" src="bin/d_ml_002.js"></script>
+<!--<script type="text/javascript" src="javascript/keyboard/keyboard.js"></script>
+<script type="text/javascript" src="javascript/keyboard/kbdlayer.js"></script>
+<script type="text/javascript" src="javascript/keyboard/kbdlayout.js"></script>
+<script type="text/javascript" src="javascript/keyboard/layout/Asian/ML.js"></script>-->
+</body></html>

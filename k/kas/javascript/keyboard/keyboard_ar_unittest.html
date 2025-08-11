@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Onscreen Keyboard Test Suite. Unittest for keyboard_ar.js</title>
+<!--
+Javascript unittest file. See instructions in the body.
+Script paths are relative to location of this file.
+Author: vpatryshev
+-->
+  <script src="header.js"></script>
+  <script src="debug.js"></script>
+  <script src="unittest_util.js"></script>
+  <script src="../../../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+  <script>
+    if (!jsUnitFixTop) {
+      alert("Sorry, could not find jsUnitCore.js; please check your paths...");
+    }
+  </script>
+  <script src="keyboard.js"></script>
+  <script src="kbdlayout.js"></script>
+  <script src="kbdlayer.js"></script>
+  <script src="layout/MiddleEastern/AR.js"></script>
+  <script src="export.js"></script>
+</head>
+<body>
+This is a javascript unittest for <code>keyboard_ar.js</code><br>
+To run the test, you have to open in your browser the following file:<br>
+<code>google3/third_party/java/jsunit/jsunit2.2/testRunner.html</code><br>
+and enter the location of this test file into the file name field,
+and click 'Run' button.
+<textarea rows="2" cols="50" id="testarea"></textarea>
+<script type="text/javascript">
+  var kbdRestore = KBD_window._kbdInit;
+
+  var testMsgArabic = '\u0627\u0644\u0639\u0631\u0628\u064a\u0629';
+
+  var titleInactive =
+      addPointerCursor(
+          '<abbr style="border-style:none" title="Arabic keyboard"><b>' +
+          '&nbsp;\u0644\u0648\u062d\u0629 ' +
+          '\u0645\u0641\u0627\u062a\u064a\u062d ' +
+          '\u0627\u0644\u0644\u063a\u0629 ' +
+          '\u0627\u0644\u0639\u0631\u0628\u064a\u0629</b></abbr>');
+
+  var titleActive =
+      '<abbr style="border-style:none" title="Arabic keyboard"><b>' +
+      '&nbsp;\u0644\u0648\u062d\u0629 ' +
+       '\u0645\u0641\u0627\u062a\u064a\u062d ' +
+       '\u0627\u0644\u0644\u063a\u0629 ' +
+       '\u0627\u0644\u0639\u0631\u0628\u064a\u0629</b></abbr>';
+
+  function setUp() {
+    GKBD.layer.setup();
+    var input = document.getElementById('testarea');
+    input.value = '';
+    input.focus();
+  }
+
+  function testPresence() {
+    assertFalse(GKBD.Layout === undefined);
+  }
+
+  function testSaveRestore() {
+    checkSaveRestore(titleInactive, 'KBD=0AR3');
+  }
+
+  function testTitleInactive() {
+    checkInactiveTitle(titleInactive);
+  }
+
+  function testTitleActive() {
+    checkActiveTitle(titleActive);
+  }
+
+  function testTypeAr() {
+    GKBD.layer.showAs_('v');
+    GKBD.layer.switchTo_('AR');
+    var input = document.getElementById('testarea');
+    assertEquals('', input.value);
+    type('QWERTYUIOPqwertyuiop');
+    var expected =
+        '\u064e\u064b\u064f\u064c\u0644\u0625\u0625\u2018\u00f7\u00d7\u061b' +
+        '\u0636\u0635\u062b\u0642\u0641\u063a\u0639\u0647\u062e\u062d';
+    expectEqual("Expecting Arabic input", expected, input.value);
+  }
+
+</script>
+</body>
+</html>

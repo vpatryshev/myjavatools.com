@@ -1,0 +1,256 @@
+<!--
+Copyright 2006 Google Inc.
+ All Rights Reserved.
+-->
+
+<html>
+<head>
+<title>Closure Unit Tests - util/jsonjs</title>
+<script type="text/javascript"
+   src="../../../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+<script type="text/javascript" src="../base.js"></script>
+<script type="text/javascript">
+goog.require('goog.json');
+</script>
+</head>
+<body>
+<script type="text/javascript">
+
+goog.globalize();
+
+function allChars(opt_start, opt_end) {
+  opt_start = opt_start || 0;
+  opt_end = opt_end || 256;
+  var rv = '';
+  for (var i = opt_start; i < opt_end; i++) {
+    rv += String.fromCharCode(i);
+  }
+  return rv;
+}
+
+// serialization
+
+function testStringSerialize() {
+
+  assertEquals('Empty string', json.serialize(''), '""');
+
+  // unicode
+  var str = allChars(0, 10000);
+  try {
+    var a = eval(json.serialize(str));
+  } catch (e) {
+  	assertTrue('serialize failed: err ' + e.message, false);
+  }
+
+  assertEquals('true as a string', json.serialize('true'), '"true"');
+  assertEquals('false as a string', json.serialize('false'), '"false"');
+  assertEquals('null as a string', json.serialize('null'), '"null"');
+  assertEquals('number as a string', json.serialize('0'), '"0"');
+}
+
+function testNullSerialize() {
+  assertEquals('null', json.serialize(null), 'null');
+  assertEquals('undefined', json.serialize(undefined), 'null');
+
+  assertNotEquals('0', json.serialize(0), 'null');
+  assertNotEquals('""', json.serialize(''), 'null');
+  assertNotEquals('false', json.serialize(false), 'null');
+}
+
+function testNumberSerialize() {
+  assertEquals('0', json.serialize(0), '0');
+  assertEquals('12345', json.serialize(12345), '12345');
+  assertEquals('-12345', json.serialize(-12345), '-12345');
+
+  assertEquals('0.1', json.serialize(0.1), '0.1');
+  // the leading zero may not be omitted
+  assertEquals('.1', json.serialize(.1), '0.1');
+
+  // no leading +
+  assertEquals('+1', json.serialize(+1), '1');
+
+  // either format is OK
+  var s = json.serialize(1e50);
+  assertTrue('1e50', s == "1e50" ||
+                     s == "1E50" ||
+                     s == "1e+50" ||
+                     s == "1E+50");
+
+  // either format is OK
+  s = json.serialize(1e-50);
+  assertTrue('1e50', s == "1e-50" || s == "1E-50");
+
+  // These numbers cannot be represented in JSON
+  assertEquals('NaN', json.serialize(NaN), 'null');
+  assertEquals('Infinity', json.serialize(Infinity), 'null');
+  assertEquals('-Infinity', json.serialize(-Infinity), 'null');
+}
+
+function testBooleanSerialize() {
+  assertEquals('true', json.serialize(true), 'true');
+  assertEquals('false', json.serialize(false), 'false');
+
+  assertNotEquals('0', json.serialize(0), 'false');
+  assertNotEquals('"false"', json.serialize('false'), 'false');
+  assertNotEquals('null', json.serialize(null), 'false');
+  assertNotEquals('undefined', json.serialize(undefined), 'false');
+  assertNotEquals('NaN', json.serialize(NaN), 'false');
+
+  assertNotEquals('1', json.serialize(1), 'true');
+  assertNotEquals('"true"', json.serialize('true'), 'true');
+  assertNotEquals('{}', json.serialize({}), 'true');
+  assertNotEquals('[]', json.serialize([]), 'true');
+}
+
+function testArraySerialize() {
+  assertEquals('[]', json.serialize([]), '[]');
+  assertEquals('[1]', json.serialize([1]), '[1]');
+  assertEquals('[1,2]', json.serialize([1,2]), '[1,2]');
+  assertEquals('[1,2,3]', json.serialize([1,2,3]), '[1,2,3]');
+  assertEquals('[[]]', json.serialize([[]]), '[[]]');
+
+  assertNotEquals('{length:0}', json.serialize({length:0}), '[]');
+}
+
+function testObjectSerialize() {
+  assertEquals('{}', json.serialize({}), '{}');
+  assertEquals('{"a":"b"}', json.serialize({a:'b'}), '{"a":"b"}');
+  assertEquals('{"a":"b","c":"d"}',
+               json.serialize({a:'b',c:'d'}),
+               '{"a":"b","c":"d"}');
+  assertEquals('{" ":" "}', json.serialize({' ':' '}), '{" ":" "}');
+
+  assertNotEquals('[0,1]', json.serialize([0,1]), '{"0":"0","1":"1"}');
+}
+
+// parsing
+
+function testStringParse() {
+
+  assertEquals('Empty string', json.parse('""'), '');
+  assertEquals('whitespace string', json.parse('" "'), ' ');
+
+  // unicode
+  var str = allChars(0, 10000);
+  try {
+    var jsonString = json.serialize(str);
+    var a = eval(jsonString);
+    assertEquals('unicode string', json.parse(jsonString), a);
+  } catch (e) {
+  	assertTrue('serialize failed: err ' + e.message, false);
+  }
+
+  assertEquals('true as a string', json.parse('"true"'), 'true');
+  assertEquals('false as a string', json.parse('"false"'), 'false');
+  assertEquals('null as a string', json.parse('"null"'), 'null');
+  assertEquals('number as a string', json.parse('"0"'), '0');
+}
+
+function testNullParse() {
+  assertEquals('null', json.parse('null'), null);
+
+  assertNotEquals('0', json.parse('0'), null);
+  assertNotEquals('""', json.parse('""'), null);
+  assertNotEquals('false', json.parse('false'), null);
+}
+
+function testNumberParse() {
+  assertEquals('0', json.parse('0'), 0);
+  assertEquals('12345', json.parse('12345'), 12345);
+  assertEquals('-12345', json.parse('-12345'), -12345);
+
+  assertEquals('0.1', json.parse('0.1'), 0.1);
+
+  // either format is OK
+  assertEquals(1e50, json.parse('1e50'));
+  assertEquals(1e50, json.parse('1E50'));
+  assertEquals(1e50, json.parse('1e+50'));
+  assertEquals(1e50, json.parse('1E+50'));
+
+  // either format is OK
+  assertEquals(1e-50, json.parse('1e-50'));
+  assertEquals(1e-50, json.parse('1E-50'));
+}
+
+function testBooleanParse() {
+  assertEquals('true', json.parse('true'), true);
+  assertEquals('false', json.parse('false'), false);
+
+  assertNotEquals('0', json.parse('0'), false);
+  assertNotEquals('"false"', json.parse('"false"'), false);
+  assertNotEquals('null', json.parse('null'), false);
+
+  assertNotEquals('1', json.parse('1'), true);
+  assertNotEquals('"true"', json.parse('"true"'), true);
+  assertNotEquals('{}', json.parse('{}'), true);
+  assertNotEquals('[]', json.parse('[]'), true);
+}
+
+function testArrayParse() {
+  function arrayEquals(a1, a2) {
+    if (a1.length != a2.length) {
+      return false;
+    }
+    for (var i = 0; i < a1.length; i++) {
+      if (a1[i] != a2[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  assertTrue('[]', arrayEquals(json.parse('[]'), []));
+  assertTrue('[1]', arrayEquals(json.parse('[1]'), [1]));
+  assertTrue('[1,2]', arrayEquals(json.parse('[1,2]'), [1,2]));
+  assertTrue('[1,2,3]', arrayEquals(json.parse('[1,2,3]'), [1,2,3]));
+  assertTrue('[[]]', arrayEquals(json.parse('[[]]')[0], []));
+
+  // make sure we do not get an array for something that looks like an array
+  assertFalse('{length:0}', 'push' in json.parse('{"length":0}'));
+}
+
+function testObjectParse() {
+  function objectEquals(a1, a2) {
+    for (var key in a1) {
+      if (a1[key] != a2[key]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  assertTrue('{}', objectEquals(json.parse('{}'), {}));
+  assertTrue('{"a":"b"}', objectEquals(json.parse('{"a":"b"}'), {a:'b'}));
+  assertTrue('{"a":"b","c":"d"}',
+             objectEquals(json.parse('{"a":"b","c":"d"}'),
+             {a:'b',c:'d'}));
+  assertTrue('{" ":" "}', objectEquals(json.parse('{" ":" "}'), {' ':' '}));
+
+  // make sure we do not get an Object when it is really an array
+  assertTrue('[0,1]', 'length' in json.parse('[0,1]'));
+}
+
+
+
+function testForValidJson() {
+  function error_(msg, s) {
+    try {
+      json.parse(s);
+      assertTrue(msg + ', Should have raised an exception: ' + s, false);
+    } catch (ex) {
+      // correctly threw
+    }
+  }
+
+  error_('Non closed string', '"dasdas');
+  error_('undefined is not valid json', 'undefined');
+
+  // These numbers cannot be represented in JSON
+  error_('NaN cannot be presented in JSON', 'NaN');
+  error_('Infinity cannot be presented in JSON', 'Infinity');
+  error_('-Infinity cannot be presented in JSON', '-Infinity');
+}
+
+</script>
+</body>
+</html>

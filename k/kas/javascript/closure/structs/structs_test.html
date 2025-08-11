@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+
+<!--
+Copyright 2006 Google Inc.
+ All Rights Reserved.
+-->
+
+<html>
+<head>
+<title>goog.structs</title>
+<script type="text/javascript" src="../../../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+<script type="text/javascript" src="../base.js"></script>
+<script type="text/javascript">
+  goog.require('goog.structs');
+  goog.require('goog.array');
+  goog.require('goog.object');
+
+</script>
+</head>
+<body>
+
+
+<!-- test container with 10 elements inside, 1 hr and 1 h1 with id h1 -->
+<div id="test">
+  <hr>
+  <p>Paragraph 0</p>
+  <p>Paragraph 1</p>
+  <p>Paragraph 2</p>
+  <p>Paragraph 3</p>
+  <p>Paragraph 4</p>
+  <p>Paragraph 5</p>
+  <p>Paragraph 6</p>
+  <p>Paragraph 7</p>
+  <h1 id="h1">Header</h1>
+</div>
+
+
+<script type="text/javascript">
+
+/*
+
+ This one does not test Map or Set
+ It tests Array, Object, String and a NodeList
+
+*/
+
+goog.globalize();
+goog.globalize(goog.structs);
+
+
+function stringifyObject(obj) {
+  var sb = [];
+  for (var key in obj) {
+    sb.push(key + obj[key]);
+  }
+  return sb.join('');
+}
+
+function getTestElement() {
+  return document.getElementById('test');
+}
+
+function getAll() {
+  return getTestElement().getElementsByTagName('*')
+}
+
+var node;
+
+function addNode() {
+  node = document.createElement('span');
+  getTestElement().appendChild(node);
+}
+
+function removeNode() {
+  getTestElement().removeChild(node);
+}
+
+function nodeNames(nl) {
+  var sb = [];
+  for (var i = 0, n; n = nl[i]; i++) {
+    sb.push(n.nodeName.toLowerCase());
+  }
+  return sb.join(',');
+}
+
+var allTagNames1 = 'hr,p,p,p,p,p,p,p,p,h1';
+var allTagNames2 = allTagNames1 + ',span';
+
+function testGetCount() {
+  var arr = ['a', 'b', 'c'];
+  assertEquals('count, should be 3', getCount(arr), 3);
+  arr.push('d');
+  assertEquals('count, should be 4', getCount(arr), 4);
+  goog.array.remove(arr, 'd');
+  assertEquals('count, should be 3', getCount(arr), 3);
+
+  var obj = {a: 0, b: 1, c: 2};
+  assertEquals('count, should be 3', getCount(obj), 3);
+  obj.d = 3;
+  assertEquals('count, should be 4', getCount(obj), 4);
+  delete obj.d;
+  assertEquals('count, should be 3', getCount(obj), 3);
+
+  var s = 'abc';
+  assertEquals('count, should be 3', getCount(s), 3);
+  s += 'd';
+  assertEquals('count, should be 4', getCount(s), 4);
+
+  var all = getAll();
+  assertEquals('count, should be 10', getCount(all), 10);
+  addNode();
+  assertEquals('count, should be 11', getCount(all), 11);
+  removeNode();
+  assertEquals('count, should be 10', getCount(all), 10);
+}
+
+
+function testGetValues() {
+  var arr = ['a', 'b', 'c', 'd'];
+  assertEquals(getValues(arr).join(''), 'abcd');
+
+  var obj = {a: 0, b: 1, c: 2, d: 3};
+  assertEquals(getValues(obj).join(''), '0123');
+
+  var s = 'abc';
+  assertEquals(getValues(s).join(''), 'abc');
+  s += 'd';
+  assertEquals(getValues(s).join(''), 'abcd');
+
+  var all = getAll();
+  assertEquals(nodeNames(getValues(all)), allTagNames1);
+  addNode();
+  assertEquals(nodeNames(getValues(all)), allTagNames2);
+  removeNode();
+  assertEquals(nodeNames(getValues(all)), allTagNames1);
+
+}
+
+function testContains() {
+  var arr = ['a', 'b', 'c', 'd'];
+  assertTrue("contains, Should contain 'a'", contains(arr, 'a'));
+  assertFalse("contains, Should not contain 'e'", contains(arr, 'e'));
+
+  var obj = {a: 0, b: 1, c: 2, d: 3};
+  assertTrue("contains, Should contain '0'", contains(obj, 0));
+  assertFalse("contains, Should not contain '4'", contains(obj, 4));
+
+  var s = 'abc';
+  assertTrue("contains, Should contain 'a'", contains(s, 'a'));
+  assertFalse("contains, Should not contain 'd'", contains(s, 'd'));
+
+  var all = getAll();
+  assertTrue("contains, Should contain 'h1'",
+             contains(all, document.getElementById('h1')));
+  assertFalse("contains, Should not contain 'document.body'",
+              contains(all, document.body));
+}
+
+
+function testClear() {
+  var arr = ['a', 'b', 'c', 'd'];
+  clear(arr);
+  assertTrue('cleared so it should be empty', isEmpty(arr));
+  assertFalse("cleared so it should not contain 'a'", contains(arr, 'a'));
+
+  var obj = {a: 0, b: 1, c: 2, d: 3};
+  clear(obj);
+  assertTrue('cleared so it should be empty', isEmpty(obj));
+  assertFalse("cleared so it should not contain 'a' key", contains(obj, 0));
+
+  // cannot clear a string or a NodeList
+}
+
+function testForEach() {
+  var arr = ['a', 'b', 'c', 'd'];
+  var str = '';
+  forEach(arr, function(val, key, arr2) {
+    assertNotUndefined(key);
+    assertEquals(arr, arr2);
+    str += val;
+  });
+  assertEquals('abcd', str);
+
+  var obj = {a: 0, b: 1, c: 2, d: 3};
+  str = '';
+  forEach(obj, function(val, key, obj2) {
+    assertNotUndefined(key);
+    assertEquals(obj, obj2);
+    str += key + val;
+  });
+  assertEquals('a0b1c2d3', str);
+
+  var s = 'abcd';
+  str = '';
+  forEach(s, function(val, key, s2) {
+    assertNotUndefined(key);
+    assertTrue(s == s2); // assert equals uses === which is wrong
+    str += val;
+  });
+  assertEquals(str, 'abcd');
+
+  var all = getAll();
+  var ns = [];
+  forEach(all, function(val, key, all2) {
+    assertNotUndefined(key);
+    assertEquals(all, all2);
+    ns.push(val);
+  });
+  assertEquals(allTagNames1, nodeNames(ns));
+}
+
+
+function testFilter() {
+  var arr = [0, 1, 2, 3];
+  var arr2 = filter(arr, function (val, key, arr3) {
+    assertNotUndefined(key);
+    assertEquals(arr, arr3);
+    return val > 1;
+  });
+  assertEquals('23', arr2.join(''));
+
+  var obj = {a: 0, b: 1, c: 2, d: 3};
+  obj2 = filter(obj, function (val, key, obj3) {
+    assertNotUndefined(key);
+    assertEquals(obj, obj3);
+    return val > 1;
+  });
+  assertTrue('c2d3' == stringifyObject(obj2)); // jsunit error?
+
+  // filtering array like objects returns Array
+
+  var s = '0123';
+  var s2 = filter(s, function (val, key, s3) {
+    assertNotUndefined(key);
+    assertTrue(s == s3);
+    return Number(val) > 1;
+  });
+  assertEquals('23', s2.join(''));
+
+  var all = getAll();
+  var all2 = filter(all, function (val, key, all3) {
+    assertNotUndefined(key);
+    assertTrue(all == all3); // stupid jsunit
+    return val.tagName.toLowerCase() == 'hr';
+  });
+  assertEquals('hr', all2[0].tagName.toLowerCase());
+  assertEquals(1, getCount(all2));
+}
+
+function testSome() {
+  var arr = [0, 1, 2, 3];
+  var b = some(arr, function (val, key, arr2) {
+    assertNotUndefined(key);
+    assertEquals(arr, arr2);
+    return val > 1;
+  });
+  assertTrue(b);
+  var b = some(arr, function (val, key, arr2) {
+    assertNotUndefined(key);
+    assertEquals(arr, arr2);
+    return val > 100;
+  });
+  assertFalse(b);
+
+  var obj = {a: 0, b: 1, c: 2, d: 3};
+  b = some(obj, function (val, key, obj2) {
+    assertNotUndefined(key);
+    assertEquals(obj, obj2);
+    return val > 1;
+  });
+  assertTrue(b);
+  b = some(obj, function (val, key, obj2) {
+    assertNotUndefined(key);
+    assertEquals(obj, obj2);
+    return val > 100;
+  });
+  assertFalse(b);
+
+  var s = '0123';
+  b = some(s, function (val, key, s2) {
+    assertNotUndefined(key);
+    assertTrue(s == s2);
+    return Number(val) > 1;
+  });
+  assertTrue(b);
+  b = some(s, function (val, key, s2) {
+    assertNotUndefined(key);
+    assertTrue(s == s2);
+    return Number(val) > 100;
+  });
+  assertFalse(b);
+
+  var all = getAll();
+  b = some(all, function (val, key, all2) {
+    assertNotUndefined(key);
+    assertTrue(all == all2);
+    return val.tagName.toLowerCase() == 'hr';
+  });
+  assertTrue(b);
+  b = some(all, function (val, key, all2) {
+    assertNotUndefined(key);
+    assertTrue(all == all2);
+    return val.tagName.toLowerCase() == 'nonexistingtag';
+  });
+  assertFalse(b);
+}
+
+
+function testEvery() {
+  var arr = [0, 1, 2, 3];
+  var b = every(arr, function (val, key, arr2) {
+    assertNotUndefined(key);
+    assertEquals(arr, arr2);
+    return val >= 0;
+  });
+  assertTrue(b);
+  b = every(arr, function (val, key, arr2) {
+    assertNotUndefined(key);
+    assertEquals(arr, arr2);
+    return val > 1;
+  });
+  assertFalse('Array: Not all are larger than 1', b);
+
+  var obj = {a: 0, b: 1, c: 2, d: 3};
+  b = every(obj, function (val, key, obj2) {
+    assertNotUndefined(key);
+    assertEquals(obj, obj2);
+    return val >= 0;
+  });
+  assertTrue(b);
+  b = every(obj, function (val, key, obj2) {
+    assertNotUndefined(key);
+    assertEquals(obj, obj2);
+    return val > 1;
+  });
+  assertFalse('Object: Not all are larger than 1', b);
+
+  var s = '0123';
+  b = every(s, function (val, key, s2) {
+    assertNotUndefined(key);
+    assertTrue(s == s2);
+    return Number(val) >= 0;
+  });
+  assertTrue(b);
+  b = every(s, function (val, key, s2) {
+    assertNotUndefined(key);
+    assertTrue(s == s2);
+    return Number(val) > 1;
+  });
+  assertFalse('String: Not all are larger than 1', b);
+
+  var all = getAll();
+  b = every(all, function (val, key, all2) {
+    assertNotUndefined(key);
+    assertTrue(all == all2);
+    return val.tagName.toLowerCase() != 'nonexistingtag';
+  });
+  assertTrue(b);
+  b = every(all, function (val, key, all2) {
+    assertNotUndefined(key);
+    assertTrue(all == all2);
+    return val.tagName.toLowerCase() != 'hr'
+  });
+  assertFalse('NodeList: Not all are different from hr', b);
+}
+
+</script>
+</body>
+</html>
+

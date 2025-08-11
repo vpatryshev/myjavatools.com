@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<!--
+Copyright 2006 Google Inc.
+ All Rights Reserved.
+-->
+
+<html>
+<head>
+<title>goog.math Tests</title>
+<script type="text/javascript" src="../../../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+<script type="text/javascript" src="../base.js"></script>
+<script type="text/javascript">
+  goog.require('goog.userAgent');
+</script>
+</head>
+<body>
+
+<script type="text/javascript">
+
+  goog.globalize(goog.userAgent);
+
+  function testCompare() {
+    assertTrue('exact equality broken', compare('1.0', '1.0') == 0)
+    assertTrue('mutlidot equality broken', compare('1.0.0.0', '1.0') == 0);
+    assertTrue('less than broken', compare('1.0.2.1', '1.1') < 0);
+    assertTrue('greater than broken', compare('1.1', '1.0.2.1') > 0);
+
+    assertTrue('b broken', compare('1.1', '1.1b') > 0);
+    assertTrue('b broken', compare('1.1b', '1.1') < 0);
+    assertTrue('b broken', compare('1.1b', '1.1b') == 0);
+
+    assertTrue('b>a broken', compare('1.1b', '1.1a') > 0);
+    assertTrue('a<b broken', compare('1.1a', '1.1b') < 0);
+  }
+
+</script>
+</body>
+</html>

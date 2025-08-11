@@ -1,0 +1,92 @@
+<!--
+  Copyright 2006 Google Inc.
+  All Rights Reserved
+  Author: jonp@google.com (Jon Perlow)
+  FOR INTERNAL USE ONLY
+
+  File for testing menu.
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Menu Test</title>
+<!-- Following URL is for development inside google3 -->
+<script type="text/javascript" src="/javascript/closure/base.js"></script>
+<script type="text/javascript">
+  if (typeof goog == 'undefined') {
+    alert('Closure failed to load');
+  } else {
+    goog.require('goog.ui.AttachableMenu');
+  }
+</script>
+
+<style>
+
+.menu {
+  position:absolute;
+  background-color:#e0ecff;
+  color:black;
+  visibility:hidden;
+  width:35ex;
+  font-size: 80%;
+  cursor: default;
+}
+
+.menu .menu-item {
+  height: 1.5em;
+  line-height:1.5em;
+  vertical-align: middle;
+  margin:2px 2px 2px 2px;
+}
+
+.menu hr {
+  margin:0px 0px 0px 0px;
+}
+
+.menu .menu-item-selected {
+  background-color: #c3d9ff;
+}
+
+</style>
+
+
+</head>
+<body>
+  <button id="btn" style="border:solid black 1px" onclick="showMenu()">
+    Press me!
+  </button>
+
+  <div id='menu1' class='menu' tabindex="0">
+    <div class="menu-item">Available</div>
+    <div class="menu-item">Having fun</div>
+    <hr/>
+    <div class="menu-item">Busy</div>
+    <hr/>
+    <div class="menu-item">Sign out of chat</div>
+  </div>
+
+
+  <script>
+    var btn = document.getElementById('btn');
+    var menuElt = document.getElementById('menu1');
+    var menu = new goog.ui.AttachableMenu(menuElt);
+
+    function showMenu() {
+      menu.setPinnedCorner(goog.ui.Popup.Corner.TOP_LEFT);
+      menu.setPosition(new goog.ui.Popup.AnchoredPosition(btn,
+          goog.ui.Popup.Corner.BOTTOM_LEFT));
+      menu.setVisible(true);
+      goog.events.listen(menu, goog.ui.MenuBase.Events.ITEM_ACTION,
+          onMenuItemClicked);
+
+    }
+
+    function onMenuItemClicked(e) {
+      alert(e.item.innerHTML); 
+    }
+
+
+  </script>
+</body>
+</html>
+

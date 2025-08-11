@@ -1,0 +1,9 @@
+This directory contains a javascript keyboard library that would be
+usable as a small gadget in your web application.
+
+Currently the keyboard library in this directory is under development, 
+and not yet ready for use as a part of your application.
+
+-Vlad Patryshev, 7/26/2006
+
+See http://wiki.corp.google.com/twiki/bin/view/Main/VirtualKeyboard for more details.

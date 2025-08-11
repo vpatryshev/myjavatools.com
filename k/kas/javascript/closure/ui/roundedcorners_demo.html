@@ -1,0 +1,336 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+  Copyright 2006 Google Inc.
+  All Rights Reserved
+  Author: jonp@google.com (Jon Perlow)
+  FOR INTERNAL USE ONLY
+
+  File for demoing roundedcorners.js. Not a unit test unfortunatey because
+  there's no good way yet to unit test DHTML. also requires the
+  RoundedCornerServlet.
+-->
+<html>
+<head>
+<title>Rounded Corners Demo</title>
+
+
+<!-- Following URL is for development inside google3 -->
+<script type="text/javascript" src="/javascript/closure/base.js"></script>
+<script type="text/javascript">
+  if (typeof goog == 'undefined') {
+    alert('Closure failed to load. This must be run off a server. See ' +
+          'com.google.javascript.closure.RoundedCornerServlet for usage.');
+  } else {
+    goog.require('goog.dom');
+    goog.require('goog.Uri');
+    goog.require('goog.userAgent');
+    goog.require('goog.style');
+    goog.require('goog.events');
+    goog.require('goog.ui.RoundedCorners');
+  }
+</script>
+
+<script type="text/javascript">
+  function setCornerStyle(elt, format, corner, color, bgColor, width, height) {
+    var uri = createUri(format, corner, removeHash(color), removeHash(bgColor),
+        width, height);
+    if (goog.userAgent.IE && goog.userAgent.VERSION > 5.5) {
+      goog.style.setStyle(elt, 'filter',
+          'progid:DXImageTransform.Microsoft.AlphaImageLoader(src=\'' +
+             uri + '\', sizingMethod=\'crop\')');
+    } else {
+      goog.style.setStyle(elt, 'background',
+          'url(' + uri + ') no-repeat top left');
+    }
+    goog.style.setSize(elt, width, height);
+  }
+
+  function removeHash(s) {
+    if (goog.string.startsWith(s, "#")) {
+      return s.substring(1);
+    }
+    return s;
+  }
+
+  /**
+   * Returns the image Uri for a specific corner image.
+   * @param {String} corner The corner of the image
+   * @param {String} color The color of the image
+   * @param (Number} width The width of the image
+   * @param {Number} height The height of the image
+   * @return {goog.Uri} The uri.
+   * @private
+   */
+  function createUri(format, corner, color, bgColor, width, height) {
+    // e.g. rc?a=tl&c=#aaa&w=8&h=8
+    var uri = new goog.Uri();
+    uri.setPath('/roundedcorner');
+    uri.setParameterValue('a', corner);
+    uri.setParameterValue('c', color);
+    uri.setParameterValue('bc', bgColor);
+    uri.setParameterValue('w', width);
+    uri.setParameterValue('h', height);
+    uri.setParameterValue('m', format);
+    return uri;
+  };
+
+  var $ = goog.dom.$;
+
+  function init() {
+    goog.events.listen($('format1'), goog.events.types.CHANGE, onChange1);
+    goog.events.listen($('width1'), goog.events.types.BLUR, onChange1);
+    goog.events.listen($('width1'), goog.events.types.KEYUP, onChange1);
+    goog.events.listen($('height1'), goog.events.types.BLUR, onChange1);
+    goog.events.listen($('height1'), goog.events.types.KEYUP, onChange1);
+    goog.events.listen($('color1'), goog.events.types.BLUR, onChange1);
+    goog.events.listen($('color1'), goog.events.types.KEYUP, onChange1);
+    goog.events.listen($('bgcolor1'), goog.events.types.BLUR, onChange1);
+    goog.events.listen($('bgcolor1'), goog.events.types.KEYUP, onChange1);
+    goog.events.listen($('padding1'), goog.events.types.BLUR, onChange1);
+    goog.events.listen($('padding1'), goog.events.types.KEYUP, onChange1);
+
+    onChange1(null);
+
+    goog.events.listen($('format2'), goog.events.types.CHANGE, onChange2);
+    goog.events.listen($('width2'), goog.events.types.BLUR, onChange2);
+    goog.events.listen($('width2'), goog.events.types.KEYUP, onChange2);
+    goog.events.listen($('height2'), goog.events.types.BLUR, onChange2);
+    goog.events.listen($('height2'), goog.events.types.KEYUP, onChange2);
+    goog.events.listen($('color2'), goog.events.types.BLUR, onChange2);
+    goog.events.listen($('color2'), goog.events.types.KEYUP, onChange2);
+    goog.events.listen($('bgcolor2'), goog.events.types.BLUR, onChange2);
+    goog.events.listen($('bgcolor2'), goog.events.types.KEYUP, onChange2);
+    goog.events.listen($('padding2'), goog.events.types.BLUR, onChange2);
+    goog.events.listen($('padding2'), goog.events.types.KEYUP, onChange2);
+    onChange2(null);
+  }
+
+  function onChange1(e) {
+    var width = Number($('width1').value);
+    var height = Number($('height1').value);
+    var color = $('color1').value;
+    var bgColor = goog.string.trim($('bgcolor1').value);
+    var format = $('format1').value;
+    var padding = $('padding1').value;
+
+    if (width > 0 && height > 0 &&
+        (goog.string.isEmpty(color) || isColor(color)) &&
+        (goog.string.isEmpty(bgColor) || isColor(bgColor))) {
+      updateForegroundCase(format, color, bgColor, padding, width, height);
+    }
+  }
+
+  function onChange2(e) {
+    var width = Number($('width2').value);
+    var height = Number($('height2').value);
+    var color = $('color2').value;
+    var bgColor = goog.string.trim($('bgcolor2').value);
+    var format = $('format2').value;
+    var padding = $('padding2').value;
+
+    if (width > 0 && height > 0 &&
+        (goog.string.isEmpty(color) || isColor(color)) &&
+        (goog.string.isEmpty(bgColor) || isColor(bgColor))) {
+      updateBackgroundCase(format, color, bgColor, padding, width, height);
+    }
+  }
+
+  function isColor(color) {
+    if (!goog.string.startsWith(color, '#')) {
+      return false;
+    }
+    color = color.substring(1);
+    if (color.length == 6 || color.length == 3) {
+      for (var i = 0; i < color.length; i++) {
+        if (!isHexDigit(color.substr(i, 1))) {
+          return false;
+        }
+      }
+    } else {
+      return false;
+    }
+    return true;
+  }
+
+  function isHexDigit(c) {
+    var n = parseInt(c, 16);
+    if (isNaN(n)) {
+      return false;
+    }
+    return true;
+  }
+
+  function updateForegroundCase(format, color, bgColor, padding, width,
+                                height) {
+    var roundedCorners = new goog.ui.RoundedCorners('/roundedcorner');
+    roundedCorners.setColor(color);
+    roundedCorners.setBackgroundColor(bgColor);
+    roundedCorners.setBorderThickness(new goog.math.Size(width, height));
+    roundedCorners.setPadding(padding);
+    roundedCorners.setImageFormat(format);
+    roundedCorners.setContent(
+        'This uses a table with images in each corner where the outside part ' +
+        'of the corner is transparent and the inside part of the corner is ' +
+        'the same as the foreground color. It is a little bit more HTML but ' +
+        'can work on any background with PNGs. With GIFs , the background ' +
+        'color must be set.');
+    $('fg').innerHTML = roundedCorners.getBorderHtml();
+  };
+
+  function updateBackgroundCase(format, color, bgColor, padding, width,
+                                height) {
+    var roundedCorners = new goog.ui.RoundedCorners('/roundedcorner');
+    roundedCorners.setColor(color);
+    roundedCorners.setBackgroundColor(bgColor);
+    roundedCorners.setBorderThickness(new goog.math.Size(width, height));
+    roundedCorners.setPadding(padding);
+    roundedCorners.setImageFormat(format);
+    roundedCorners.setContent(
+        'This uses absolutely positioned images in each corner where the ' +
+        'outside part of the image must be the same as the background color ' +
+        'and inside part is the foreground. It is only good for cases where ' +
+        'the background is a fixed known color.');
+    $('bg').innerHTML = roundedCorners.getBackgroundHtml();
+  }
+
+
+
+
+</script>
+
+</head>
+
+<body>
+  <table border=1 style="border-collapse:collapse">
+    <tr>
+      <td valign=top>
+        <table>
+          <tr>
+            <td valign=top>
+            Format:
+            </td>
+            <td>
+              <select id="format1">
+                <option value="png">PNG</option>
+                <option value="gif">GIF</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>
+            Width:
+            </td>
+            <td>
+              <input id="width1" value="8">
+            </td>
+          </tr>
+          <tr>
+            <td>
+            Height:
+            </td>
+            <td>
+              <input id="height1" value="8">
+            </td>
+          </tr>
+          <tr>
+            <td>
+            Padding:
+            </td>
+            <td>
+              <input id="padding1" value="8px">
+            </td>
+          </tr>
+          <tr>
+            <td>
+            Color:
+            </td>
+            <td>
+              <input id="color1" value="#00ff00"> (empty means transparent)
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Background Color
+            </td>
+            <td>
+              <input id="bgcolor1" value=""> (empty means transparent)
+            </td>
+          </tr>
+        </table>
+
+        <div id='fg' style="background-color:#ccc;width:300px;height:300px;padding:10px">
+          <!-- Start HTML for Example -->
+          <!-- End HTML for Example -->
+        </div>
+      </td>
+      <td valign=top>
+        <table>
+          <tr>
+            <td valign=top>
+            Format:
+            </td>
+            <td>
+              <select id="format2">
+                <option value="png">PNG</option>
+                <option value="gif">GIF</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>
+            Width:
+            </td>
+            <td>
+              <input id="width2" value="8">
+            </td>
+          </tr>
+          <tr>
+            <td>
+            Height:
+            </td>
+            <td>
+              <input id="height2" value="8">
+            </td>
+          </tr>
+          <tr>
+            <td>
+            Padding:
+            </td>
+            <td>
+              <input id="padding2" value="8px">
+            </td>
+          </tr>
+          <tr>
+          <tr>
+            <td>
+            Color:
+            </td>
+            <td>
+              <input id="color2" value="#00ff00"> (empty means transparent)
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Background Color
+            </td>
+            <td>
+              <input id="bgcolor2" value="#ccc"> (empty means transparent)
+            </td>
+          </tr>
+        </table>
+
+        <div id='bg' style="background-color:#ccc;width:300px;height:300px;padding:10px">
+          <!-- Start HTML for Example -->
+          <!-- End HTML for Example -->
+        </div>
+      </td>
+    </tr>
+  </table>
+
+
+  <br>
+  <script type="text/javascript">
+    init();
+  </script>
+</body>
+</html>

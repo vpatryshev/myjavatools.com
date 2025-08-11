@@ -1,0 +1,362 @@
+<!--
+Copyright 2006 Google Inc.
+ All Rights Reserved.
+-->
+
+<html>
+<head>
+<title>Closure Unit Tests - util/string,js</title>
+<script type="text/javascript"
+   src="../../../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+<script type="text/javascript" src="../base.js"></script>
+<script type="text/javascript">
+goog.require('goog.string');
+goog.require('goog.jsunit');
+</script>
+</head>
+<body>
+<script type="text/javascript">
+
+/**
+ * Unit test for Closure's 'goog.string'.
+ */
+
+// Globalize goog and goog.string to make the tests easier to write
+goog.globalize();
+goog.globalize(goog.string);
+
+//=== tests for goog.string.collapseWhitespace ===
+
+function testCollapseWhiteSpace() {
+  var f = collapseWhitespace;
+
+  assertEquals('Leading spaces not stripped', f('  abc'), 'abc');
+  assertEquals('Trailing spaces not stripped', f('abc  '), 'abc');
+  assertEquals('Wrapping spaces not stripped', f('  abc  '), 'abc');
+
+  assertEquals('All white space chars not stripped', f('\n\t abc\n\t '), 'abc');
+
+  assertEquals('Spaces not collapsed', f('a   b    c'), 'a b c');
+
+  assertEquals('Tabs not collapsed', f('a\t\t\tb\tc'), 'a b c');
+
+  assertEquals('All check failed', f(' \ta \t \t\tb\t\n  c  \t\n'), 'a b c');
+}
+
+
+//=== tests for goog.string.isEmpty ===
+
+function testIsEmpty() {
+  assert('1. Should be empty', isEmpty(''));
+  assert('2. Should be empty', isEmpty(' '));
+  assert('3. Should be empty', isEmpty('    '));
+  assert('4. Should be empty', isEmpty(' \t\t\n   '));
+
+  assert('1. Should not be empty', !isEmpty(' abc \t'));
+  assert('2. Should not be empty', !isEmpty(' a b c \t'));
+  assert('3. Should not be empty', !isEmpty(';'));
+
+
+  var a;
+  assert('Undefined is not empty', !isEmpty(a));
+  assert('Null is not empty', !isEmpty(null));
+  assert('A random object is not empty', !isEmpty({a:1,b:2}));
+}
+
+
+//=== tests for goog.string.isAlpha ===
+function testIsAlpha() {
+  assertTrue('"a" should be alpha', isAlpha('a'));
+  assertTrue('"n" should be alpha', isAlpha('n'));
+  assertTrue('"z" should be alpha', isAlpha('z'));
+  assertTrue('"A" should be alpha', isAlpha('A'));
+  assertTrue('"N" should be alpha', isAlpha('N'));
+  assertTrue('"Z" should be alpha', isAlpha('Z'));
+  assertTrue('"aa" should be alpha', isAlpha('aa'));
+  assertTrue('null is alpha', isAlpha(null));
+  assertTrue('undefined is alpha', isAlpha(undefined));
+
+  assertFalse('"aa!" is not alpha', isAlpha('aa!s'));
+  assertFalse('"!" is not alpha', isAlpha('!'));
+  assertFalse('"0" is not alpha', isAlpha('0'));
+  assertFalse('"5" is not alpha', isAlpha('5'));
+}
+
+
+
+//=== tests for goog.string.isNumeric ===
+function testIsNumeric() {
+  assertTrue('"8" is a numeric string', isNumeric('8'));
+  assertTrue('"5" is a numeric string', isNumeric('5'));
+  assertTrue('"34" is a numeric string', isNumeric('34'));
+  assertTrue('34 is a number', isNumeric(34));
+
+  assertFalse('"3.14" has a period', isNumeric('3.14'));
+  assertFalse('"A" is a letter', isNumeric('A'));
+  assertFalse('"!" is punctuation', isNumeric('!'));
+  assertFalse('null is not numeric', isNumeric(null));
+  assertFalse('undefined is not numeric', isNumeric(undefined));
+}
+
+
+//=== tests for tests for goog.string.isAlphaNumeric ===
+function testIsAlphaNumeric() {
+  assertTrue('"ABCabc" should be alphanumeric', isAlphaNumeric('ABCabc'));
+  assertTrue('"123" should be alphanumeric', isAlphaNumeric('123'));
+  assertTrue('"ABCabc123" should be alphanumeric', isAlphaNumeric('ABCabc123'));
+  assertTrue('null is alphanumeric', isAlphaNumeric(null));
+  assertTrue('undefined is alphanumeric', isAlphaNumeric(undefined));
+
+  assertFalse('"123!" should not be alphanumeric', isAlphaNumeric('123!'));
+  assertFalse('"  " should not be alphanumeric', isAlphaNumeric('  '));
+}
+
+
+//=== tests for goog.string.isSpace ===
+function testIsSpace() {
+  assertTrue('" " is a space', isSpace(' '));
+
+  assertFalse('"\\n" is not a space', isSpace('\n'));
+  assertFalse('"\\t" is not a space', isSpace('\t'));
+  assertFalse('"  " is not a space, it\'s two spaces', isSpace('  '));
+  assertFalse('"a" is not a space', isSpace('a'));
+  assertFalse('"3" is not a space', isSpace('3'));
+  assertFalse('"#" is not a space', isSpace('#'));
+  assertFalse('null is not a space', isSpace(null));
+}
+
+
+// === tests for goog.string.stripNewlines ===
+function testStripNewLines() {
+  assertEquals('Should replace new lines with spaces',
+               stripNewlines('some\nlines\rthat\r\nare\n\nsplit'),
+               'some lines that are split');
+}
+
+
+// === tests for goog.string.canonicalizeNewlines ===
+function testCanonicalizeNewlines() {
+  assertEquals('Should replace all types of new line with \\n',
+               canonicalizeNewlines('some\nlines\rthat\r\nare\n\nsplit'),
+               'some\nlines\nthat\nare\n\nsplit');
+}
+
+
+// === tests for goog.string.normalizeSpaces ===
+function testNormalizeSpaces() {
+  assertEquals('All whitespace chars should be replaced with a normal space',
+               normalizeSpaces('\xa0 \n\t \xa0 \n\t'),
+               '         ');
+}
+
+
+/// === tests for goog.string.trim ===
+function testTrim() {
+  assertEquals('Should be the same', trim('nothing 2 trim'), 'nothing 2 trim');
+  assertEquals('Remove spaces', trim('   hello  goodbye   '), 'hello  goodbye');
+  assertEquals('Trim other stuff', trim('\n\r hi \r\n'), 'hi');
+}
+
+
+/// === tests for goog.string.trimLeft ===
+function testTrimLeft() {
+  var f = trimLeft;
+  assertEquals('Should be the same', f('nothing to trim'), 'nothing to trim');
+  assertEquals('Remove spaces', f('   hello  goodbye   '), 'hello  goodbye   ');
+  assertEquals('Trim other stuff', f('\n\r hi \r\n'), 'hi \r\n');
+}
+
+
+/// === tests for goog.string.trimRight ===
+function testTrimRight() {
+  var f = trimRight;
+  assertEquals('Should be the same', f('nothing to trim'), 'nothing to trim');
+  assertEquals('Remove spaces', f('   hello  goodbye   '), '   hello  goodbye');
+  assertEquals('Trim other stuff', f('\n\r hi \r\n'), '\n\r hi');
+}
+
+
+// === tests for goog.string.subs ===
+function testStartsWith() {
+  assertTrue('Should start with \'\'', startsWith('abcd', ''));
+  assertTrue('Should start with \'ab\'', startsWith('abcd', 'ab'));
+  assertTrue('Should start with \'abcd\'', startsWith('abcd', 'abcd'));
+  assertFalse('Should not start with \'bcd\'', startsWith('abcd', 'bcd'));
+}
+
+function testEndsWith() {
+  assertTrue('Should end with \'\'', endsWith('abcd', ''));
+  assertTrue('Should end with \'ab\'', endsWith('abcd', 'cd'));
+  assertTrue('Should end with \'abcd\'', endsWith('abcd', 'abcd'));
+  assertFalse('Should not end \'abc\'', endsWith('abcd', 'abc'));
+}
+
+// === tests for goog.string.subs ===
+function testSubs() {
+  assertEquals('Should be the same', subs('nothing to subs'),
+               'nothing to subs');
+  assertEquals('Should be the same', subs('%s', '1'), '1');
+  assertEquals('Should be the same', subs('%s%s%s', '1', 2, true), '12true');
+  function f() {
+    assertTrue('This should not be called', false);
+  }
+  f.toString = function () { return 'f'; };
+  assertEquals('Should not call function', subs('%s', f), 'f');
+}
+
+
+// === tests for goog.string.caseInsensitiveCompare ===
+function testCaseInsensitiveCompare() {
+  var f = caseInsensitiveCompare;
+
+  assert('"ABC" should be less than "def"', f('ABC', 'def') == -1);
+  assert('"abc" should be less than "DEF"', f('abc', 'DEF') == -1);
+
+  assert('"XYZ" should equal "xyz"', f('XYZ', 'xyz') == 0);
+
+  assert('"XYZ" should be greater than "UVW"', f('xyz', 'UVW') == 1);
+  assert('"XYZ" should be greater than "uvw"', f('XYZ', 'uvw') == 1);
+}
+
+
+// === tests for goog.string.urlEncode && .urlDecode ===
+// NOTE: When test was written it was simply an alias for the built in
+// 'encodeURICompoent', therefore this test is simply used to make sure that in
+// the future it doesn't get broken.
+function testUrlEncodeAndDecode() {
+  var input = '<p>"hello there," she said, "what is going on here?</p>';
+  var output = '%3Cp%3E%22hello%20there%2C%22%20she%20said%2C%20%22what%20is' +
+               '%20going%20on%20here%3F%3C%2Fp%3E';
+
+  assertEquals('urlEncode vs encodeURIComponent',
+               encodeURIComponent(input),
+               urlEncode(input));
+
+  assertEquals('urlEncode vs model', urlEncode(input), output);
+
+  assertEquals('urlDecode vs model', urlDecode(output), input);
+
+  assertEquals('urlDecode vs urlEncode', urlDecode(urlEncode(input)), input);
+
+  assertEquals('urlDecode with +s instead of %20s',
+               urlDecode(output.replace(/%20/g, '+')),
+               input);
+}
+
+
+// === tests for goog.string.newLineToBr ===
+function testNewLineToBr() {
+  var str = 'some\nlines\rthat\r\nare\n\nsplit';
+  var html = 'some<br>lines<br>that<br>are<br><br>split';
+  var xhtml = 'some<br />lines<br />that<br />are<br /><br />split';
+
+  assertEquals('Should be html', newLineToBr(str), html);
+  assertEquals('Should be html', newLineToBr(str, false), html);
+  assertEquals('Should be xhtml', newLineToBr(str, true), xhtml);
+
+}
+
+
+// === tests for goog.string.htmlEscape and .unescapeEntities ===
+function testHtmlEscapeAndUnescapeEntities() {
+  var text = '"x1 < x2 && y2 > y1"';
+  var html = '&quot;x1 &lt; x2 &amp;&amp; y2 &gt; y1&quot;';
+
+  assertEquals('Testing htmlEscape', htmlEscape(text), html);
+  assertEquals('Testing unescapeEntities', unescapeEntities(html), text);
+
+  assertEquals('escape -> unescape', unescapeEntities(htmlEscape(text)), text);
+  assertEquals('unescape -> escape', htmlEscape(unescapeEntities(html)), html);
+}
+
+
+// === tests for goog.string.whitespaceEscape ===
+function testWhiteSpaceEscape() {
+  assertEquals('Should be the same',
+               whitespaceEscape('one two  three   four    five     '),
+               'one two &#160;three &#160; four &#160; &#160;five &#160; &#160; ');
+}
+
+
+
+// === tests for goog.string.stripQuotes ===
+function testStripQuoes() {
+  assertEquals('Quotes should be stripped',
+               stripQuotes('"hello"', '"'),
+               'hello');
+
+  assertEquals('Quotes should be stripped',
+               stripQuotes('\'hello\'', '\''),
+               'hello');
+
+  assertEquals('Quotes should not be stripped',
+               stripQuotes('-"hello"', '"'),
+               '-"hello"');
+}
+
+
+// === tests for goog.string.truncate ===
+function testTruncate() {
+  var str = 'abcdefghijklmnopqrstuvwxyz';
+  assertEquals('Should be equal', truncate(str, 5), 'abcde...');
+  assertEquals('Should be equal', truncate(str, 8), 'abcdefgh...');
+
+  var html = 'true &amp;&amp; false == false';
+  assertEquals('Should clip html char', truncate(html, 8), 'true &am...');
+  assertEquals('Should not clip html char',
+               truncate(html, 9, true),
+               'true &amp;&amp; f...');
+}
+
+
+// === goog.string.quote ===
+function testQuote() {
+  var str = allChars();
+  try {
+    var a = eval(quote(str));
+  } catch (e) {
+  	assertTrue('Quote failed: err ' + e.message, false);
+  }
+
+  // empty string
+  str = '';
+  try {
+    var a = eval(quote(str));
+  } catch (e) {
+  	assertTrue('Quote failed: err ' + e.message, false);
+  }
+
+  // unicode
+  var str = allChars(0, 10000);
+  try {
+    var a = eval(quote(str));
+  } catch (e) {
+  	assertTrue('Quote failed: err ' + e.message, false);
+  }
+}
+
+function allChars(opt_start, opt_end) {
+  opt_start = opt_start || 0;
+  opt_end = opt_end || 256;
+  var rv = '';
+  for (var i = opt_start; i < opt_end; i++) {
+    rv += String.fromCharCode(i);
+  }
+  return rv;
+}
+
+function testRegExpEscape() {
+  var s = allChars();
+  var re = new RegExp('^' + regExpEscape(s) + '$');
+  assertTrue('All ASCII', re.test(s));
+  s = '';
+  var re = new RegExp('^' + regExpEscape(s) + '$');
+  assertTrue('empty string', re.test(s));
+  s = allChars(0, 10000);
+  var re = new RegExp('^' + regExpEscape(s) + '$');
+  assertTrue('Unicode', re.test(s));
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<html><head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+    <title>JavaScript Testbed</title>
+</head>
+<body>
+<table border="0">
+    <tr>
+        <td rowspan="3">
+            <textarea rows="20" cols="80" id="in"></textarea>
+        </td>
+        <td valign="top"><font size="-1">JS IDE v.2.0.231712</font><br>
+            <a href="https://tinyurl.com/js-ide">https://tinyurl.com/js-ide</a>
+        </td>
+    </tr><tr>
+    <td>
+        <input type="button" classname="mainButton saveToFileBtn" value="save" onclick="backup()"/><br/>
+        <label for="getFile">Read from backup:</label>
+        <input type="file" name="getFile" id="getFile" value="_backup.jside" accept=".jside"  onchange="readFile(this.files[0])">
+    </td>
+</tr><tr>
+    <td valign="bottom">
+        <input type="button" value="run" onclick="run()"/>
+    </td>
+</tr>
+
+</table>
+<div height="30" width="80" id="out">
+    Use <a href="https://chromewebstore.google.com/detail/downloads-overwrite-alrea/lddjgfpjnifpeondafidennlcfagekbp?pli=1">
+    this chrome plugin</a> to avoid appending (1), (2) etc to the backup file name.
+    <br/>
+    To automatically save before every run, set <code>autosave=true</code>.
+
+</div>
+
+<script type="text/javascript">
+    const input = document.getElementById('in')
+    var autosave = false
+
+    function print(x) {
+      out.innerHTML += `<code>${x}</code>`
+    }
+    function println(x) {
+      out.innerHTML += `<code>${x}</code><br>`
+    }
+    function err(x) {
+      println(`<font color="red">${x}</font>`)
+    }
+    function cls() { out.innerHTML = '' }
+    const backupFileName = '_backup.jside'
+
+    function readFile(file) {
+      let reader = new FileReader()
+      reader.onload = function() {
+        input.value = reader.result
+      }
+
+      reader.onerror = function() {
+        err(reader.error)
+      }
+
+      reader.readAsText(file)
+    }
+
+      function run() {
+        if (autosave) backup()
+        cls()
+        try {
+          eval(input.value)
+        } catch (e) {
+          err(e.message)
+        }
+      }
+
+
+  function backup() {
+    const blob = new Blob(
+      [input.value + '\n'],
+      { type: 'text/javascript;charset=utf-8' })
+    const downloadLink = document.createElement('a')
+    downloadLink.href = URL.createObjectURL(blob)
+    downloadLink.download = backupFileName
+    document.body.appendChild(downloadLink)
+    downloadLink.click()
+    URL.revokeObjectURL(downloadLink.href)
+    document.body.removeChild(downloadLink)
+  }
+</script>
+</body></html>

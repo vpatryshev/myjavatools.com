@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+
+<!--
+Copyright 2006 Google Inc.
+ All Rights Reserved.
+-->
+
+<html>
+<head>
+<title>goog.net.cookies</title>
+<script type="text/javascript" src="../../../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+<script type="text/javascript" src="../base.js"></script>
+<script type="text/javascript">
+  goog.require('goog.net.cookies');
+</script>
+</head>
+<body>
+<script type="text/javascript">
+
+goog.globalize();
+globalize(goog.net);
+
+
+function testSet() {
+  cookies.set('a', 'b');
+  assertEquals(cookies.get('a'), 'b');
+  cookies.remove('a');
+  assertEquals(cookies.get('a'), undefined);
+}
+
+function testGetKeys() {
+  // to be able to assert this we remove all cookies first
+  cookies.clear();
+
+  cookies.set('a', 'A');
+  cookies.set('b', 'B');
+  cookies.set('c', 'C');
+  assertEquals(cookies.getKeys().join(''), 'abc');
+  cookies.remove('a');
+  cookies.remove('b');
+  cookies.remove('c');
+}
+
+function testGetValues() {
+  // to be able to assert this we remove all cookies first
+  cookies.clear();
+
+  cookies.set('a', 'A');
+  cookies.set('b', 'B');
+  cookies.set('c', 'C');
+  assertEquals(cookies.getValues().join(''), 'ABC');
+  cookies.remove('a');
+  cookies.remove('b');
+  cookies.remove('c');
+}
+
+function testContainsKey() {
+  // to be able to assert this we remove all cookies first
+  cookies.clear();
+
+  assertFalse(cookies.containsKey('a'));
+  cookies.set('a', 'A');
+  assertTrue(cookies.containsKey('a'));
+  cookies.set('b', 'B');
+  assertTrue(cookies.containsKey('b'));
+  cookies.remove('b');
+  assertFalse(cookies.containsKey('b'));
+  cookies.remove('a');
+  assertFalse(cookies.containsKey('a'));
+}
+
+function testContainsValue() {
+  // to be able to assert this we remove all cookies first
+  cookies.clear();
+
+  assertFalse(cookies.containsValue('A'));
+  cookies.set('a', 'A');
+  assertTrue(cookies.containsValue('A'));
+  cookies.set('b', 'B');
+  assertTrue(cookies.containsValue('B'));
+  cookies.remove('b');
+  assertFalse(cookies.containsValue('B'));
+  cookies.remove('a');
+  assertFalse(cookies.containsValue('A'));
+}
+
+
+
+
+function testIsEmpty() {
+  // to be able to assert this we remove all cookies first
+  cookies.clear();
+  assertTrue(cookies.isEmpty());
+  cookies.set('a', 'A');
+  assertFalse(cookies.isEmpty());
+  cookies.set('b', 'B');
+  assertFalse(cookies.isEmpty());
+  cookies.remove('b');
+  assertFalse(cookies.isEmpty());
+  cookies.remove('a');
+  assertTrue(cookies.isEmpty());
+}
+
+// TODO(arv): Test path, domain and maxAge.
+//            However the document.cookie string is magical which makes this
+//            very hard to test
+
+</script>
+</body>
+</html>
+

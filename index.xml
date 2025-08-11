@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>myjavatools.com</title>
+    <description>XML library is a simplified XML trinity, reader/writer/container. You may never need more.</description>
+    <link>http://www.myjavatools.com/projects/</link>
+    <language>en-us</language>
+    <item>
+      <description>Lib package, version 1.3.1. Objects, Strings, Files, Tools classes.</description>
+      <pubDate>2004-04-04</pubDate>
+      <link>http://www.myjavatools.com/projects/v.1.3.1/lib/mjlib131.zip</link>
+      <title>Myjavatools Lib ver 1.3.1</title>
+      <author>Vlad Patryshev</author>
+    </item>
+    <item>
+      <description>Lib package, version 1.4.2. Objects, Strings, Files, Web, ZipInput, Tools classes.</description>
+      <pubDate>2004-04-04</pubDate>
+      <link>http://www.myjavatools.com/projects/v.1.4.2/lib/mjlib142.zip</link>
+      <title>Myjavatools Lib ver 1.4.2</title>
+      <author>Vlad Patryshev</author>
+    </item>
+    <item>
+      <description>Web project, two classes to POST and receive multipart HTTP request, including file uploads.</description>
+      <pubDate>2004-04-04</pubDate>
+      <link>http://www.myjavatools.com/projects/v.1.3.1/web/mjweb131.zip</link>
+      <title>Myjavatools Web package</title>
+      <author>Vlad Patryshev</author>
+    </item>
+    <item>
+      <description>Java application that runs code from a URL.</description>
+      <pubDate>2004-04-04</pubDate>
+      <link>http://www.myjavatools.com/projects/run</link>
+      <title>Myjavatools Run</title>
+      <author>Vlad Patryshev</author>
+    </item>
+    <item>
+      <description>Jsp-based command-line text processor.</description>
+      <pubDate>2004-04-04</pubDate>
+      <link>http://www.myjavatools.com/projects/v.1.4.2/jsp22</link>
+      <title>Jsp Macro</title>
+      <author>Vlad Patryshev</author>
+    </item>
+    <item>
+      <description>When dealing with XML, you need a convenient representation of the XML data in memory. This article offers Java programmers a solution to achieve this goal: an easy-to-use package for handling XML data in Java.</description>
+      <pubDate>2004-04-04</pubDate>
+      <link>http://www.myjavatools.com/projects/v.1.4.2/xml/mjxml.zip</link>
+      <title>Practical XML</title>
+      <author>Vlad Patryshev</author>
+    </item>
+    <item>
+      <description>RSS Java class, parses version 0.91, 0.92, 1.0, 2.0, outputs 2.0</description>
+      <pubDate>2004-04-04</pubDate>
+      <link>http://www.myjavatools.com/projects/v.1.4.2/xml/mjxml.zip</link>
+      <title>Myjavatools RSS Class</title>
+      <author>Vlad Patryshev</author>
+    </item>
+    <item>
+      <description>Fixed bug in indexOf(charSequence, CharSequence, int) - vielen dank to Gandulf Kohlweiss, Austria</description>
+      <pubDate>2004-04-10</pubDate>
+      <link>http://www.myjavatools.com/projects/v.1.4.2/lib/mjlib142.zip</link>
+      <title>Bugfix in lib/Strings, ver.1.4.2</title>
+      <author>Vlad Patryshev</author>
+    </item>
+    <item>
+      <description>Added union(Set,Set) and cat(List,List) to Objects.java</description>
+      <pubDate>2004-04-10</pubDate>
+      <link>http://www.myjavatools.com/projects/v.1.4.2/lib/mjlib142.zip</link>
+      <title>Bugfix in lib/Strings, ver.1.4.2</title>
+      <author>Vlad Patryshev</author>
+    </item>
+    <item>
+      <description>Rss can read all RSS versions now</description>
+      <pubDate>2004-05-16</pubDate>
+      <link>http://www.myjavatools.com/projects/v.1.4.2/web/webmjxml.zip</link>
+      <title>Versions 0.93 and 0.94 added to RSS reader</title>
+      <author>Vlad Patryshev</author>
+    </item>
+    <item>
+      <description>web.jar: ClientHttpRequest now handles cookies, thanks to Alexei Trebounskikh's contribution</description>
+      <pubDate>2004-06-23</pubDate>
+      <link>http://www.myjavatools.com/projects/v.1.4.2/lib/mjweb.zip</link>
+      <title>ClientHttpRequest updated to handle cookies</title>
+      <author>Vlad Patryshev</author>
+    </item>
+    <item>
+      <description>BasicXmlData copy constructor now does deep copy</description>
+      <pubDate>2004-07-19</pubDate>
+      <link>http://www.myjavatools.com/projects/v.1.4.2/xml/mjxml.zip</link>
+      <title>BasicXmlData bug fixed, thanks to Asher Szmulevicz</title>
+      <author>Vlad Patryshev</author>
+    </item>
+    <item>
+      <description>1. addItem did not work - fixed; 2. setters did not work - fixed; 3. Static DEFAULT_RSS was being abused by copy constructor - fixed</description>
+      <pubDate>2004-07-19</pubDate>
+      <link>http://www.myjavatools.com/projects/v.1.4.2/xml/mjxml.zip</link>
+      <title>Rss bugs fixed, thanks to Asher Szmulevicz</title>
+      <author>Vlad Patryshev, Asher Szmulevicz</author>
+    </item>
+    <item>
+      <description>JBoss remote deployment failed on certain combinations of JBoss 3.2 and Tomcat 5 - the bypass for Tomcat bug introduced; it is faster too.</description>
+      <pubDate>2004-07-31</pubDate>
+      <link>http://www.myjavatools.com/projects/systemJsp/readme.html</link>
+      <title>JBoss remote deployment - bypasses Tomcat bug</title>
+      <author>Vlad Patryshev</author>
+    </item>
+    <item>
+      <description>The order of data in XML is preserved; new methods added for retrieving data in the order they were read</description>
+      <pubDate>2004-07-31</pubDate>
+      <link>http://www.myjavatools.com/projects/v.1.4.2/xml/mjxml.zip</link>
+      <title>mjxml - elements are ordered now</title>
+      <author>Vlad Patryshev</author>
+    </item>
+    <item>
+      <description>ServerHttpRequest, the class that handles multipart request in a JSP or a servlet: improved performance and robustness, to work around a bug in Tomcat 5.0</description>
+      <pubDate>2004-08-04</pubDate>
+      <link>http://www.livejournal.com/community/myjavatools/596.html</link>
+      <title>ServerHttpRequest Improved</title>
+      <author>Vlad Patryshev</author>
+    </item>
+    <item>
+      <description>Fixed a bug ServerHttpRequest. If a parameter ends with carriage return, the next request parameter was being skipped.</description>
+      <pubDate>2004-08-20</pubDate>
+      <link>http://www.livejournal.com/community/myjavatools/1021.html</link>
+      <title>ServerHttpRequest: bug fixed</title>
+      <author>Vlad Patryshev</author>
+    </item>
+    <item>
+      <description>Updated xml.lib to work with a typical slashdot.com version of RSS version 1.0; RSS preserves xmlns attributes.</description>
+      <pubDate>2004-08-29</pubDate>
+      <link>http://www.livejournal.com/community/myjavatools/1129.html</link>
+      <title>Fixed to accept slashdot.com version of RSS</title>
+      <author>Vlad Patryshev</author>
+    </item>
+    <item>
+      <description>Started cuecards project (Design Patterns is the first)</description>
+      <pubDate>2004-10-03</pubDate>
+      <link>http://www.myjavatools.com/cuecards/designpatterns.html</link>
+      <title>Design Patterns Cue Card</title>
+      <author>Vlad Patryshev</author>
+    </item>
+    <item>
+      <description>Java Trivia Cue Card added (scope, threads and locks)</description>
+      <pubDate>2004-10-10</pubDate>
+      <link>http://www.myjavatools.com/cuecards/javatrivia.html</link>
+      <title>Java Trivia Cue Card</title>
+      <author>Vlad Patryshev</author>
+    </item>
+  <item>
+      <description>Refactoring Cue Card added</description>
+      <pubDate>2005-01-03</pubDate>
+      <link>http://www.myjavatools.com/cuecards/refactoring.html</link>
+      <title>Refactoring Cue Card</title>
+      <author>Vlad Patryshev</author>
+    </item>
+  <item>
+      <description>Lib Foundations, version 5, just uploaded.</description>
+      <pubDate>2005-01-29</pubDate>
+      <link>http://www.myjavatools.com/projects/v.5.0/lib/doc/index.html</link>
+      <title>myjavatools Foundation Flasses with Generics</title>
+      <author>Vlad Patryshev</author>
+    </item>
+  <item>
+      <description>an article regarding foundation classes with generics just uploaded.</description>
+      <pubDate>2005-02-07</pubDate>
+      <link>http://www.myjavatools.com/projects/v.5.0/foundations.html</link>
+      <title>Foundation Flasses with Generics</title>
+      <author>Vlad Patryshev</author>
+    </item>
+  <item>
+      <description>version 5.0 of classes com.myjavatools.lib.Strings,
+        com.myjavatools.lib.Files just uploaded.</description>
+      <pubDate>2005-02-07</pubDate>
+      <link>http://www.myjavatools.com/projects/v.5.0/lib/doc/index.html</link>
+      <title>Strings and Files classes updated for Java v.5</title>
+      <author>Vlad Patryshev</author>
+    </item>
+  <item>
+      <description>The following code samples show the usage for these two methods:
+        for(File subfolder : tree(new File("."))) {...}
+        for(File subfolder : tree(new File("."), filefilter)) {...}
+        for(File file      : files(new File("."))) {...}
+        for(File file      : files(new File("."), filefilter)) {...}
+      </description>
+      <pubDate>2005-02-11</pubDate>
+      <link>http://www.myjavatools.com/projects/v.5.0/lib/doc/index.html</link>
+      <title>methods files(File directory), tree(File directory) added to com.myjavatools.lib.Files</title>
+      <author>Vlad Patryshev</author>
+    </item>
+  <item>
+      <description>Upgrades in com.myjavatools.lib.Files just uploaded:
+      1. chdir() removed;
+      2. setLastModified() added;
+      3. copy() fixed;
+      4. makeFile(String... pathElement)</description>
+      <pubDate>2005-02-21</pubDate>
+      <link>http://www.myjavatools.com/projects/v.5.0/lib/doc/index.html</link>
+      <title>Files class updated for Java v.5</title>
+      <author>Vlad Patryshev</author>
+    </item>
+  <item>
+      <description>
+        An article, "Utility Class Fills in Java's Missing Functionality",
+        has just been published on DevX</description>
+      <pubDate>2005-03-06</pubDate>
+      <link>http://www.devx.com/Java/Article/27367</link>
+      <title>An article about Files class just published on DevX</title>
+      <author>Vlad Patryshev</author>
+    </item>
+  <item>
+      <description>
+        The reader assumed UTF8, and so was unable to read files that have ISO8859-1 encoding,
+        correctly specified in &lt;?xml header.</description>
+      <pubDate>2005-03-06</pubDate>
+      <link>http://www.livejournal.com/community/myjavatools/2013.html?view=989#t989</link>
+      <title>Bug fixed that prevented reading certain RSS feeds with international characters</title>
+      <author>Vlad Patryshev</author>
+    </item>
+  <item>
+      <description>
+        Thanks to Rajeev Chugh from Belgium:
+        Two new entertainment method added to Files class:
+        install(URL url, File location) and
+        install(String urlString, String installDirectoryName), with the obvious functionality
+        </description>
+      <pubDate>2005-03-18</pubDate>
+      <link>http://www.livejournal.com/community/myjavatools/2725.html</link>
+      <title>Two new install() method added to File class</title>
+      <author>Vlad Patryshev</author>
+    </item>
+    <item>
+      <description>XML library, version 5.0 released. Generics.</description>
+      <pubDate>2005-07-06</pubDate>
+      <link>http://www.myjavatools.com/projects/v.5.0/xml/mjxml.zip</link>
+      <title>build 8</title>
+      <author>Vlad Patryshev</author>
+    </item>
+    <item>
+      <description>Pair class - equals() repaired.</description>
+      <pubDate>2005-12-23</pubDate>
+      <link>http://www.myjavatools.com/projects/v.5.0/lib/mjlib.zip</link>
+      <title>build 9</title>
+      <author>Vlad Patryshev</author>
+    </item>
+    <item>
+      <description>Javascript that builds draggable rules on the page; good to check coordinates and sizes of page elements.
+        Also a page, measure.html, that loads any other page in the background, so that you could apply your rules to measure the content.</description>
+      <pubDate>2006-02-05</pubDate>
+      <link>http://www.myjavatools.com/measure/measure.html</link>
+      <title>Javascript rules to measure page elements</title>
+      <author>Vlad Patryshev</author>
+    </item>
+    <item>
+      <description>Version 1.1 of "Run From Web" program - makes sure that the old version of the executable is removed from temp dir.</description>
+      <pubDate>2006-08-21</pubDate>
+      <link>http://www.myjavatools.com/projects/run/index.html</link>
+      <title>Version 1.1. of Run From Web</title>
+      <author>Vlad Patryshev</author>
+    </item>
+    <item>
+      <description>Version 1.2 of "Run From Web" program - added '-newer' flag that lets download executable only if it is newer than the local file.</description>
+      <pubDate>2006-09-25</pubDate>
+      <link>http://www.myjavatools.com/projects/run/index.html</link>
+      <title>Version 1.2. of Run From Web</title>
+      <author>Vlad Patryshev</author>
+    </item>
+
+    <item>
+      <description>Lib Foundations, version 6, just uploaded.</description>
+      <pubDate>2006-12-10</pubDate>
+      <link>http://www.myjavatools.com/projects/v.6.0/lib/doc/index.html</link>
+      <title>myjavatools Foundation Classes, version 6.0</title>
+      <author>Vlad Patryshev</author>
+    </item>
+
+    <item>
+      <description>Web libarary, version 6, just released.</description>
+      <pubDate>2008-04-19</pubDate>
+      <link>http://www.myjavatools.com/projects/v.6.0/lib/doc/index.html</link>
+      <title>myjavatools Foundation Flasses, version 6.0</title>
+      <author>Vlad Patryshev, James Peltzer</author>
+    </item>
+    <item>
+      <description>Categories for Programmers, with Java implementation.</description>
+      <pubDate>2009-02-12</pubDate>
+      <link>http://www.patryshev.com/cat/doc/EasyCategoriesForProgrammers.pdf</link>
+      <title>Categories for Programmers, with Java implementation.</title>
+      <author>Vlad Patryshev</author>
+    </item>
+
+    <item>
+      <description>Files class updated: copy() creates all necessary directories.</description>
+      <pubDate>2009-03-02</pubDate>
+      <link>http://www.myjavatools.com/projects/v.6.0/lib/doc/index.html</link>
+      <title>myjavatools Foundation Classes, version 6.0</title>
+      <author>Vlad Patryshev</author>
+    </item>
+
+</channel>
+</rss>

@@ -1,0 +1,37 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<!-- Sources:
+     http://www.raditha.com/java/javascript.php,
+     http://java.sun.com/j2se/1.5.0/docs/guide/plugin/developer_guide/using_tags.html
+-->
+	 <title>Tools Applet Test</title>
+</head><body>
+<script type="text/javascript" src="jstools.js"></script>
+<script>
+  var JS_TOOLS = jstools("");
+
+  function testSleep(n) {
+    try {
+      document.getElementById('log').value = '' + new Date() + ': Will sleep for ' + n + ' ms.';
+      if (n > 10000 || n < 100) throw "Wait time is wrong: " + n;
+      JS_TOOLS.sleep(n);
+      document.getElementById('log').value += '\n' + new Date() + ': Done sleeping.';
+    } catch (e) {
+      document.getElementById('log').value += '\nOops, ' +e.message;
+    }
+  }
+
+
+  </script>
+...
+  <form>
+
+    time to wait: <input type="text" id="ttw"/>
+    click to wait: <input type="button" value="clickme"
+                          onclick="testSleep(1000 * document.getElementById('ttw').value);"
+      />
+    <br/>
+    <textarea id="log" rows="10" cols="55"></textarea>
+    </form>
+</body></html>

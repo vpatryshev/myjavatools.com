@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+ <ModulePrefs title="__MSG_title__"
+  Author="Google Engineering"
+  author_affiliation="Google, Inc."
+  author_location="Mountain View, CA"
+  author_email="arabickeyboard.feedback@gmail.com"
+  screenshot="http://www.google.com/ig/modules/arabickeyboard/arabickeyboard.png"
+  thumbnail="http://www.google.com/ig/modules/arabickeyboard/arabickeyboard-thm.png"
+  category="tools"
+  description="__MSG_description__"
+  height="300"
+  singleton="true">
+  <Locale lang="ar" messages="http://www.google.com/ig/modules/arabickeyboard/ar_ALL.xml" language_direction="rtl" />
+  <Locale lang="en" messages="http://www.google.com/ig/modules/arabickeyboard/en_ALL.xml" />
+  <Locale messages="http://www.google.com/ig/modules/arabickeyboard/ALL_ALL.xml" />
+ </ModulePrefs>
+<Content type="html-inline"><![CDATA[
+<!-- Copyright 2007 Google Inc.  All Rights Reserved. -->
+<span id="KBD_anchor"></span>
+<span topmargin="3" alink="#ff0000" bgcolor="#ffffff" link="#0000cc" marginheight="3" text="#000000" vlink="#551a8b">
+<center><textarea rows="3" cols="30" dir="rtl" id="typehere" onfocus="_kbdSI(this)"></textarea></center>
+<script>
+var KBD_gadgetClient = document.getElementById("KBD_anchor").parentNode;
+//-------------------------------------------------------------------
+// bin script here
+

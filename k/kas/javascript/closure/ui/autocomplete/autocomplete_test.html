@@ -1,0 +1,223 @@
+<!--
+  Copyright 2006 Google Inc.
+  All rights reserved.
+  Author: Aaron Whyte (awhyte@google.com)
+-->
+
+<html>
+<head>
+
+<!-- script paths are relative to location of this file -->
+<script type="text/javascript"
+ src="../../../../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+<script type="text/javascript" src="../../base.js"></script>
+<script type="text/javascript">
+goog.require('goog.ui.AutoComplete');
+goog.require('goog.util.string');
+goog.require('goog.events.EventTarget');
+</script>
+<script type="text/javascript">
+
+/**
+ * Mock DataStore
+ */
+function MockDS() {
+  this.rows_ = [
+    '"Slartibartfast" <fjordmaster@magrathea.com>',
+    '"Zaphod Beeblebrox" <theprez@universe.gov>',
+    '"Ford Prefect" <ford@theguide.com>',
+    '"Arthur Dent" <has.no.tea@gmail.com>',
+    '"Marvin the Paranoid Android" <marv@googlemail.com>',
+    'the.mice@magrathea.com'
+  ];
+}
+
+MockDS.prototype.requestMatchingRows = function(token, maxMatches,
+                                                matchHandler) {
+  var escapedToken = goog.string.regExpEscape(token);
+  var matcher = new RegExp('(^|\\W+)' + escapedToken);
+  var matches = [];
+  for (var i = 0; i < this.rows_.length && matches.length < maxMatches; ++i) {
+    var row = this.rows_[i];
+    if (row.match(matcher)) {
+      matches.push(row);
+    }
+  }
+  matchHandler(token, matches);
+};
+
+/**
+ * Mock Renderer
+ */
+function MockRend() {
+  this.hilitedId = null;
+  this.selectedId = -1;
+  this.renderedRows = [];
+}
+MockRend.inherits(goog.events.EventTarget);
+
+MockRend.prototype.renderRows = function(rows) {
+  this.renderedRows = rows;
+};
+
+MockRend.prototype.hiliteId = function(id) {
+  this.hilitedId = id;
+};
+
+MockRend.prototype.selectRow = function(row) {
+  this.selectedRow = row;
+};
+
+MockRend.prototype.dismiss = function() {
+  this.renderedIds = [];
+  this.hilitedId = null;
+};
+
+
+/**
+ * Make sure results are truncated (or not) by setMaxMatches.
+ */
+function testMaxMatches() {
+  var ds = new MockDS();
+  var rend = new MockRend();
+  var ac = new goog.ui.AutoComplete(ds, rend, rend);
+
+  ac.setMaxMatches(2);
+  ac.setToken('the');
+  assertEquals(2, rend.renderedRows.length);
+
+  ac.setMaxMatches(4);
+  ac.setToken('the');
+  assertEquals(4, rend.renderedRows.length);
+
+  ac.setMaxMatches(1000);
+  ac.setToken('the');
+  assertEquals(4, rend.renderedRows.length);
+}
+
+/**
+ * Try using next and prev to navigate past the ends
+ */
+function testHiliteNextPrev() {
+  function checkHilitedIndex(index) {
+    assertEquals(ac.getIdOfIndex_(index), rend.hilitedId);
+  }
+
+  var ds = new MockDS();
+  var rend = new MockRend();
+  var ac = new goog.ui.AutoComplete(ds, rend, rend);
+
+  // make sure 'next' and 'prev' don't explode before any token is set
+  ac.hiliteNext();
+  ac.hilitePrev();
+  assertEquals(0, rend.renderedRows.length);
+
+  // check a few times
+  for (var i = 0; i < 3; ++i) {
+    ac.setToken('the');
+    assertEquals(4, rend.renderedRows.length);
+    // check to see if we can select the last of the 4 items
+    checkHilitedIndex(0);
+    ac.hiliteNext();
+    checkHilitedIndex(1);
+    ac.hiliteNext();
+    checkHilitedIndex(2);
+    ac.hiliteNext();
+    checkHilitedIndex(3);
+    // try going over the edge
+    ac.hiliteNext();
+    checkHilitedIndex(3);
+
+    // go back down
+    ac.hilitePrev();
+    checkHilitedIndex(2);
+    ac.hilitePrev();
+    checkHilitedIndex(1);
+    ac.hilitePrev();
+    checkHilitedIndex(0);
+    ac.hilitePrev();
+    checkHilitedIndex(0);
+  }
+}
+
+/**
+ * Hilite using ids, the way mouse-based hiliting would work.
+ */
+function testHiliteId() {
+  var ds = new MockDS();
+  var rend = new MockRend();
+  var ac = new goog.ui.AutoComplete(ds, rend, rend);
+
+  // check a few times
+  for (var i = 0; i < 3; ++i) {
+    ac.setToken('m');
+    assertEquals(3, rend.renderedRows.length);
+    // try hiliting all 3
+    for (var x = 0; x < 3; ++x) {
+      var id = rend.renderedRows[x].id;
+      ac.hiliteId(id);
+      assertEquals(ac.getIdOfIndex_(x), id);
+    }
+  }
+}
+
+/**
+ * Test selecting the hilited row
+ */
+function testSelection() {
+  var ds = new MockDS();
+  var rend = new MockRend();
+  var ac;
+
+  // try with default selection
+  ac = new goog.ui.AutoComplete(ds, rend, rend);
+  ac.setToken('m');
+  ac.selectHilited();
+  assertEquals('"Slartibartfast" <fjordmaster@magrathea.com>',
+               rend.selectedRow);
+
+  // try second item
+  ac = new goog.ui.AutoComplete(ds, rend, rend);
+  ac.setToken('the');
+  ac.hiliteNext();
+  ac.selectHilited();
+  assertEquals('"Ford Prefect" <ford@theguide.com>',
+               rend.selectedRow);
+}
+
+/**
+ * Dismiss when empty and non-empty
+ */
+function testDismiss() {
+  var ds = new MockDS();
+  var rend = new MockRend();
+
+  // dismiss empty
+  var ac = new goog.ui.AutoComplete(ds, rend, rend);
+  ac.dismiss();
+
+  ac = new goog.ui.AutoComplete(ds, rend, rend);
+  ac.setToken('sir not seen in this picture');
+  ac.dismiss();
+
+  // dismiss with contents
+  ac = new goog.ui.AutoComplete(ds, rend, rend);
+  ac.setToken('t');
+  ac.dismiss();
+}
+
+function testDestroy() {
+  var ds = new MockDS();
+  var rend = new MockRend();
+  var ac = new goog.ui.AutoComplete(ds, rend, rend);
+  ac.setToken('the');
+  ac.destroy();
+}
+
+</script>
+
+</head>
+
+<body id='body'>
+</body>
+</html>

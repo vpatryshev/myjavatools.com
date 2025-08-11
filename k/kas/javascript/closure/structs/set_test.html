@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+
+<!--
+Copyright 2006 Google Inc.
+ All Rights Reserved.
+-->
+
+<html>
+<head>
+<title>goog.structs.Set</title>
+<script type="text/javascript" src="../../../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+<script type="text/javascript" src="../base.js"></script>
+<script type="text/javascript">
+  goog.require('goog.structs');
+  goog.require('goog.structs.Set');
+</script>
+</head>
+<body>
+<script type="text/javascript">
+
+goog.globalize();
+goog.globalize(goog.structs);
+goog.globalize(goog.structs.Set);
+
+function stringifySet(s) {
+  return getValues(s).join('');
+}
+
+function testGetCount() {
+  var s = new Set;
+  var a = new String('a'); s.add(a);
+  var b = new String('b'); s.add(b);
+  var c = new String('c'); s.add(c);
+  assertEquals('count, should be 3', s.getCount(), 3);
+  var d = new String('d'); s.add(d);
+  assertEquals('count, should be 4', s.getCount(), 4);
+  s.remove(d);
+  assertEquals('count, should be 3', s.getCount(), 3);
+
+  s = new Set;
+  s.add('a');
+  s.add('b');
+  s.add('c');
+  assertEquals('count, should be 3', s.getCount(), 3);
+  s.add('d');
+  assertEquals('count, should be 4', s.getCount(), 4);
+  s.remove('d');
+  assertEquals('count, should be 3', s.getCount(), 3);
+}
+
+function testGetValues() {
+  var s = new Set;
+  var a = new String('a'); s.add(a);
+  var b = new String('b'); s.add(b);
+  var c = new String('c'); s.add(c);
+  var d = new String('d'); s.add(d);
+  assertEquals(s.getValues().join(''), 'abcd');
+
+  var s = new Set;
+  s.add('a');
+  s.add('b');
+  s.add('c');
+  s.add('d');
+  assertEquals(s.getValues().join(''), 'abcd');
+}
+
+function testContains() {
+  var s = new Set;
+  var a = new String('a'); s.add(a);
+  var b = new String('b'); s.add(b);
+  var c = new String('c'); s.add(c);
+  var d = new String('d'); s.add(d);
+  var e = new String('e');;
+
+  assertTrue("contains, Should contain 'a'", s.contains(a));
+  assertFalse("contains, Should not contain 'e'", s.contains(e));
+
+  s = new Set;
+  s.add('a');
+  s.add('b');
+  s.add('c');
+  s.add('d');
+
+  assertTrue("contains, Should contain 'a'", s.contains('a'));
+  assertFalse("contains, Should not contain 'e'", s.contains('e'));
+}
+
+function testAdd() {
+  var s = new Set;
+  var a = new String('a');
+  var b = new String('b');
+  s.add(a);
+  assertTrue(s.contains(a));
+  s.add(b)
+  assertTrue(s.contains(b));
+
+  s = new Set;
+  s.add('a')
+  assertTrue(s.contains('a'));
+  s.add('b')
+  assertTrue(s.contains('b'));
+}
+
+
+function testClear() {
+  var s = new Set;
+  var a = new String('a'); s.add(a);
+  var b = new String('b'); s.add(b);
+  var c = new String('c'); s.add(c);
+  var d = new String('d'); s.add(d);
+  s.clear();
+  assertTrue('cleared so it should be empty', s.isEmpty());
+  assertTrue("cleared so it should not contain 'a' key", !s.contains(a));
+
+  s = new Set;
+  s.add('a');
+  s.add('b');
+  s.add('c');
+  s.add('d');
+  s.clear();
+  assertTrue('cleared so it should be empty', s.isEmpty());
+  assertTrue("cleared so it should not contain 'a' key", !s.contains('a'));
+}
+
+
+function testAddAll() {
+  var s = new Set;
+  var a = new String('a');
+  var b = new String('b');
+  var c = new String('c');
+  var d = new String('d');
+  s.addAll([a, b, c, d]);
+  assertTrue('addAll so it should not be empty', !s.isEmpty());
+  assertTrue("addAll so it should contain 'c' key", s.contains(c));
+
+  var s2 = new Set;
+  s2.addAll(s);
+  assertTrue('addAll so it should not be empty', !s2.isEmpty());
+  assertTrue("addAll so it should contain 'c' key", s2.contains(c));
+
+
+  s = new Set;
+  s.addAll(['a', 'b', 'c', 'd']);
+  assertTrue('addAll so it should not be empty', !s.isEmpty());
+  assertTrue("addAll so it should contain 'c' key", s.contains('c'));
+
+  s2 = new Set;
+  s2.addAll(s);
+  assertTrue('addAll so it should not be empty', !s2.isEmpty());
+  assertTrue("addAll so it should contain 'c' key", s2.contains('c'));
+}
+
+
+function testConstructor() {
+  var s = new Set;
+  var a = new String('a'); s.add(a);
+  var b = new String('b'); s.add(b);
+  var c = new String('c'); s.add(c);
+  var d = new String('d'); s.add(d);
+  var s2 = new goog.structs.Set(s);
+  assertFalse('constr with Set so it should not be empty', s2.isEmpty());
+  assertTrue('constr with Set so it should contain c', s2.contains(c));
+
+  s = new Set;
+  s.add('a');
+  s.add('b');
+  s.add('c');
+  s.add('d');
+  s2 = new goog.structs.Set(s);
+  assertFalse('constr with Set so it should not be empty', s2.isEmpty());
+  assertTrue('constr with Set so it should contain c', s2.contains('c'));
+}
+
+
+function testClone() {
+  var s = new Set;
+  var a = new String('a'); s.add(a);
+  var b = new String('b'); s.add(b);
+  var c = new String('c'); s.add(c);
+  var d = new String('d'); s.add(d);
+
+  var s2 = s.clone();
+  assertFalse('clone so it should not be empty', s2.isEmpty());
+  assertTrue("clone so it should contain 'c' key", s2.contains(c));
+
+  var s = new Set;
+  s.add('a');
+  s.add('b');
+  s.add('c');
+  s.add('d');
+
+  s2 = s.clone();
+  assertFalse('clone so it should not be empty', s2.isEmpty());
+  assertTrue("clone so it should contain 'c' key", s2.contains('c'));
+}
+
+
+function testForEach() {
+  var s = new Set;
+  var a = new String('a'); s.add(a);
+  var b = new String('b'); s.add(b);
+  var c = new String('c'); s.add(c);
+  var d = new String('d'); s.add(d);
+  var str = '';
+  forEach(s, function(val, key, set) {
+    assertUndefined(key);
+    assertEquals(s, set);
+    str += val;
+  });
+  assertEquals(str, 'abcd');
+
+  s = new Set;
+  s.add('a');
+  s.add('b');
+  s.add('c');
+  s.add('d');
+  str = '';
+  forEach(s, function(val, key, set) {
+    assertUndefined(key);
+    assertEquals(s, set);
+    str += val;
+  });
+  assertEquals(str, 'abcd');
+}
+
+
+function testFilter() {
+  var s = new Set;
+  var a = new Number(0); s.add(a);
+  var b = new Number(1); s.add(b);
+  var c = new Number(2); s.add(c);
+  var d = new Number(3); s.add(d);
+
+  var s2 = filter(s, function (val, key, set) {
+    assertUndefined(key);
+    assertEquals(s, set);
+    return val > 1;
+  });
+  assertEquals(stringifySet(s2), '23');
+
+  s = new Set;
+  s.add(0);
+  s.add(1);
+  s.add(2);
+  s.add(3);
+
+  s2 = filter(s, function (val, key, set) {
+    assertUndefined(key);
+    assertEquals(s, set);
+    return val > 1;
+  });
+  assertEquals(stringifySet(s2), '23');
+}
+
+
+function testSome() {
+  var s = new Set;
+  var a = new Number(0); s.add(a);
+  var b = new Number(1); s.add(b);
+  var c = new Number(2); s.add(c);
+  var d = new Number(3); s.add(d);
+
+  var b = some(s, function (val, key, s2) {
+    assertUndefined(key);
+    assertEquals(s, s2);
+    return val > 1;
+  });
+  assertTrue(b);
+  var b = some(s, function (val, key, s2) {
+    assertUndefined(key);
+    assertEquals(s, s2);
+    return val > 100;
+  });
+  assertFalse(b);
+
+  s = new Set;
+  s.add(0);
+  s.add(1);
+  s.add(2);
+  s.add(3);
+
+  b = some(s, function (val, key, s2) {
+    assertUndefined(key);
+    assertEquals(s, s2);
+    return val > 1;
+  });
+  assertTrue(b);
+  b = some(s, function (val, key, s2) {
+    assertUndefined(key);
+    assertEquals(s, s2);
+    return val > 100;
+  });
+  assertFalse(b);
+}
+
+
+function testEvery() {
+  var s = new Set;
+  var a = new Number(0); s.add(a);
+  var b = new Number(1); s.add(b);
+  var c = new Number(2); s.add(c);
+  var d = new Number(3); s.add(d);
+
+  var b = every(s, function (val, key, s2) {
+    assertUndefined(key);
+    assertEquals(s, s2);
+    return val >= 0;
+  });
+  assertTrue(b);
+  b = every(s, function (val, key, s2) {
+    assertUndefined(key);
+    assertEquals(s, s2);
+    return val > 1;
+  });
+  assertFalse(b);
+
+  s = new Set;
+  s.add(0);
+  s.add(1);
+  s.add(2);
+  s.add(3);
+
+  b = every(s, function (val, key, s2) {
+    assertUndefined(key);
+    assertEquals(s, s2);
+    return val >= 0;
+  });
+  assertTrue(b);
+  b = every(s, function (val, key, s2) {
+    assertUndefined(key);
+    assertEquals(s, s2);
+    return val > 1;
+  });
+  assertFalse(b);
+}
+
+</script>
+</body>
+</html>
+

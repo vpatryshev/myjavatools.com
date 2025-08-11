@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Onscreen Keyboard Test Suite. Unittest for keyboard_tr.js</title>
+<!--
+Javascript unittest file. See instructions in the body.
+Script paths are relative to location of this file.
+Author: vpatryshev
+-->
+  <script src="bin/d_tr_002.js"></script>
+  <script src="javascript/keyboard/unittest_util.js"></script>
+  <script src="../third_party/java/jsunit/jsunit2.2/app/jsUnitCore.js"></script>
+</head>
+<body>
+This is a javascript unittest for <code>keyboard_tr.js</code><br>
+To run the test, you have to open in your browser the following file:<br>
+<code>google3/third_party/java/jsunit/jsunit2.2/testRunner.html</code><br>
+and enter the location of this test file into the file name field,
+and click 'Run' button.
+<textarea rows="2" cols="50" id="testarea"></textarea>
+<script type="text/javascript">
+  var titleInactive =
+      '<abbr style="border-style: none;" title="Turkish keyboard"><b>' +
+      '&nbsp;&nbsp;&nbsp;T\u00fcrk\u00e7e Klavie</b></abbr>';
+
+  var titleActive =
+      '<abbr style="border-style: none;" title="Turkish keyboard"><b>' +
+      '&nbsp;&nbsp;&nbsp;T\u00fcrk\u00e7e Klavie</b></abbr>';
+
+  function setUp() {
+    var input = document.getElementById('testarea');
+    input.value = '';
+    input.focus();
+  }
+
+  function testSaveRestore() {
+    checkSaveRestore(titleInactive, 'KBD=0TR3');
+  }
+
+  function testTitleInactive() {
+    checkInactiveTitle(titleInactive);
+  }
+
+  function testTitleActive() {
+    checkActiveTitle(titleActive);
+  }
+
+  function testTypeTr() {
+    activateKeyboard();
+    var input = document.getElementById('testarea');
+    assertEquals('', input.value);
+    type('op\u00db\u00ddkl;m\u00bc\u00be');
+    var expected =
+        'op\u011f\u00fckl\u015fm\u00f6\u00e7';
+    assertEquals("Got " + show(input.value) + "\nvs " + show(expected),
+                 expected,
+                 input.value);
+  }
+</script>
+</body>
+</html>

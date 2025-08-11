@@ -1,0 +1,22 @@
+MODULE=CLOSURE
+ARCHIVE_ROOT=/home/build/prebuilt
+
+P4_CLIENT_ROOT=/usr/local/dev/prebuild/closure
+
+CHECKOUT_PACKAGES=" \
+ javatests/com/google/javascript/closure \
+"
+
+BUILD_TIMEOUT=1000
+TEST_TIMEOUT=1000
+
+STABLE_TESTS=" \
+ javatests/com/google/javascript/closure/DistributedJavascriptTest \
+"
+
+NOTIFY_EMAIL=ehieatt@google.com,closure-tech@google.com
+NOTIFICATION_POLICY=ON_STATUS_CHANGE
+
+export JCOMPSERVER=1
+
+ARCHIVE_JARS=true
