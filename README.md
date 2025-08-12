@@ -4,7 +4,7 @@
 
 Hello friends,
 
-This is myjavatools project, where I publish various general purpose Java Tools, for everyone to use.  
+This is myjavatools project, where I published various general purpose Java Tools, for everyone to use.  
 [Here is the license for the code published here.](license.txt)  
 I've been using these tools for years. Your input is always appreciated.  
 Compatibility: Versions of this library are compatible with appropriate versions of JDK: 1.3.1 up to 6.0.  
@@ -33,16 +33,4 @@ This forum: **[www.livejournal.com/community/myjavatools](http://www.livejournal
 - [Crash Course in Monads](http://www.patryshev.com/monad/m-intro.html)
 - [Categories for programmers Part I](http://www.patryshev.com/cat/doc/EasyCategoriesForProgrammers.pdf) *new!*
 
-My address is vlad@myjavatools.com; my livejournal.com account is ivan_ghandhi
-
 [this site's RSS](index.xml)  
-March 02, 2009
-How to Copy
-
-Select the Text: Click and drag over the content between the triple backticks (```markdown:disable-run
-Copy: Right-click and select "Copy" or press Ctrl+C (Windows/Linux) or Cmd+C (Mac).
-Paste: Open your text editor (e.g., Notepad, VS Code, or any Markdown editor) and paste the content using Ctrl+V or Cmd+V. You can save it as a .md file (e.g., index.md).
-
-Additional Tips
-
-If the content is still disappearing, try copying smaller sections at a time or viewing this in a different browser or device.
