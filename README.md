@@ -1,5 +1,7 @@
 # Myjavatools.com
 
+<font color="red">THIS FILE IS WORK IN PROGRESS</font>
+
 Hello friends,
 
 This is myjavatools project, where I publish various general purpose Java Tools, for everyone to use.  
