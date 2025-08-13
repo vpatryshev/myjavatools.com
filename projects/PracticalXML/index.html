@@ -1,0 +1,404 @@
+﻿<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <meta name="Author" content="Vlad Patryshev">
+   <title>Practical XML</title>
+</head>
+<body link="#0000FF" vlink="#800080">
+<i>Vlad Patryshev</i>
+<h3>
+Practical XML</h3>
+
+<h4>
+Introduction</h4>
+In this article I offer a practical approach to dealing with XML in Java
+programs.
+<p>It is a common opinion now that the true raison d'être for XML is to
+replace ASCII. Not so fast, though. While anyone can read an ASCII file
+and even write a "Hello, World!" into an ASCII file, trying to do the same
+with XML seems to take some efforts, and, even worse, you will have to
+learn a lot before you create your first
+<p><tt><font size=+2>&lt;?xml version="1.0" ?> &lt;hello>Hello, World!&lt;/hello></font></tt>
+<p>You will have to learn what are Entities, what are Elements, Attributes...
+probably the whole DOM concept. Why? Why nobody remembers, and nobody cares
+what is the ASCII code for '&amp;'? Probably because it is not as important.
+What is important is our ability to easily store our data into a file and
+to retrieve it from a file.
+<p>The same should be true for XML; the only difference is that now, in
+the end of 20th century, we work more with hierarchy, and we want to store
+our hierarchy into a file, and we do not want to flatten it like this:
+<p><tt>project=My First Project</tt>
+<br><tt>module.count=2</tt>
+<br><tt>module.1=Hammers</tt>
+<br><tt>module.1.file.count=3</tt>
+<br><tt>module.1.file.1=MyHammer.java</tt>
+<br><tt>module.1.file.2=MyMainHammer.java</tt>
+<br><tt>module.1.file.3=MyHammerHelper.java</tt>
+<br><tt>module.2=Nails</tt>
+<br><tt>module.2.file.count=2</tt>
+<br><tt>module.2.file.1=MyNail.java</tt>
+<br><tt>module.2.file.2=MyScrew.class</tt>
+<p>Instead, it is much more convenient to write the following:
+<p><tt>&lt;project id="My First Project"></tt>
+<br><tt>&nbsp;&lt;module id="Hammers"></tt>
+<br><tt>&nbsp; &lt;file id="MyHammer.java"/></tt>
+<br><tt>&nbsp; &lt;file id="MyMainHammer.java"/></tt>
+<br><tt>&nbsp; &lt;file id="MyHammerHelper.java"/></tt>
+<br><tt>&nbsp;&lt;/module></tt>
+<br><tt>&nbsp;&lt;module id="Nails"></tt>
+<br><tt>&nbsp; &lt;file id="MyNail.java" type="source"/></tt>
+<br><tt>&nbsp; &lt;file id="MyScrew.class" type="binary"/></tt>
+<br><tt>&nbsp;&lt;/module></tt>
+<br><tt>&lt;/project></tt>
+<p>Accordingly, I would like to have this somehow in my program, so that
+I could retrieve subelements of my document by their "type" and "id", or
+scan through them by their "type", retrieving their attributes in a similar
+way.
+<p>Before looking for a solution, though, let's talk about XML itself.
+<h4>
+XML</h4>
+<b><i>XML Exposed. </i></b>E<u>X</u>tensible <u>M</u>arkup <u>L</u>anguage
+(<a href="http://www.xml.com/axml/testaxml.htm">http://www.xml.com/axml/testaxml.htm</a>,
+<a href="http://www.w3.org/XML/">http://www.w3.org/XML/</a>)
+was invented by mad scientists to intimidate ordinary voters in Florida.
+People think of XML as of "HTML done right", while it has very little to
+do with HTML. XML is good for transferring hierarchically organized data
+between programs. XML documents are supposed to be self-explaining and
+platform-independent. And easy to read. But, generally speaking, XML documents
+can look like HTML files - that is, have <b>tags</b> interspersed with
+<b>text</b> and formatted as a text flow. A good XML editor, though, represents
+an XML document as a tree, left-tabbing nodes of lower level.
+<p>But since the true purpose of XML is to transfer data, let us take it
+for what it is - universal data representation format. Having this in mind,
+we will, first of all, throw away two scientific features that have nothing
+to do with real life. These features are <b>DTD</b> (Document Type Declaration)
+and <b>entities</b>. I do not want even to mention <b>Processing Instructions</b>,
+it is something from the other universe. We, programmers, keep our "processing
+instructions" in our programs.
+<p><b><i>Assertions not needed. </i>DTD</b> is supposed to define the document
+structure, so that we could validate it. My opinion is that, first, a <b>DTD</b>
+can contain not less errors than the document itself - and we can hardly
+"validate" the <b>DTD</b>; second, we ourselves can check whether we like
+the data supplied, either throwing away all the chads that we do not need
+or discarding the document if it does not contain the necessary data. Why?
+An XML document already has a grammar that it has to follow, and a parser
+will discard the document if the structure is broken or a wrong character
+is found. So that the reason why there should be a <b>DTD</b> is to check
+semantic integrity - whether this node has these attributes, whether this
+node is present etc. But this semantics is defined by the producing side,
+which has no clue what are the semantic demands on the receiving side.
+And it turns out that usually the receiving side does not care whether
+the producing side considers the file consistent (the other question is
+why the producing side would produce inconsistent data).
+<p><b><i>Macros considered harmful. </i>Entities</b> are like C macros
+- they are cool to use if you want to save your typing time, but those
+who come after you will have to pay a lot for your comfort. Entities do
+save some bytes, yes - but jar or zip does it much better, in case you
+want to save some bytes. Saving bytes is a hard job these days, when one
+$10 lunch is equivalent to 500 megabytes of hard drive space. And when
+these bytes are being produced by a program, introducing <b>entities</b>
+will make life harder on both ends, producing and receiving. There are
+only six entities that we are supposed always to respect:
+<br>&nbsp;
+<center><table BORDER WIDTH="624" >
+<tr>
+<td VALIGN=CENTER>
+<center><b><i>Entity</i></b></center>
+</td>
+
+<td VALIGN=CENTER>
+<center><b><tt>&amp;lt;</tt></b></center>
+</td>
+
+<td VALIGN=CENTER>
+<center><b><tt>&amp;gt;</tt></b></center>
+</td>
+
+<td VALIGN=CENTER>
+<center><b><tt>&amp;apos;</tt></b></center>
+</td>
+
+<td VALIGN=CENTER>
+<center><b><tt>&amp;quot;</tt></b></center>
+</td>
+
+<td VALIGN=CENTER>
+<center><b><tt>&amp;amp;</tt></b></center>
+</td>
+
+<td VALIGN=CENTER>
+<center><b><tt>&amp;#93;</tt></b></center>
+</td>
+</tr>
+
+<tr>
+<td VALIGN=CENTER>
+<center><b><i>Value</i></b></center>
+</td>
+
+<td VALIGN=CENTER>
+<center><tt>'&lt;'</tt></center>
+</td>
+
+<td VALIGN=CENTER>
+<center><tt>''</tt></center>
+</td>
+
+<td VALIGN=CENTER>
+<center><tt>'\''</tt></center>
+</td>
+
+<td VALIGN=CENTER>
+<center><tt>'\"'</tt></center>
+</td>
+
+<td VALIGN=CENTER>
+<center><tt>'&amp;'</tt></center>
+</td>
+
+<td VALIGN=CENTER>
+<center><tt>']'</tt></center>
+</td>
+</tr>
+</table></center>
+
+<center>
+<p>By the way, using these six entities, you will never need to produce
+any CDATA... but of course you can still read CDATA.</center>
+
+<p><b><i>Keep it simple.</i> </b>Okay, now we got rid of <b>DTD</b> and
+<b>entities</b>,
+and will use XML contents "as is", no need to refer to third parties. There
+is one more important feature that makes our life easier with XML. The
+feature is: <u>only leaves contain text</u>. That is, while by the law
+in the document tree any node (<b>element</b> in XML-ese) may contain plain
+text (<b>characters</b> in XML-ese), in real life this text is not used.
+More, while by the law plain text can be interspersed with nodes, in real
+life it never happens, and, unlike HTML, you would never bother to check
+the location of text fragments. All the text belonging to a node, if there
+is any text, can be gathered together in one fragment. And, in real life,
+a node contains either text value or other nodes.
+<p><b><i>Order does not matter. </i></b>Now, the subnodes of a node do
+not have any specific order. Yes, in the file they are of course follow
+each other, but semantically they are all created equal. Subnodes have
+types that are specified in their <b>start-tags</b> and <b>end-tags</b>.
+There can be more than one subnode of a given type, of course, so that
+all the subnodes of a given type make an unsorted collection. Each node,
+in addition to its text value and its set of subnodes, has a set of attributes,
+name-value pairs.
+<p>Taken together, these features make XML a convenient data container.
+<h4>
+Parsing XML files</h4>
+As if inventing XML was not enough, mad scientists have invented DOM (Document
+Object Model), to represent data obtained from XML files in an even more
+sophisticated form inside your program. If you look at an average XML file,
+it is not so difficult to understand. But if you parse the same file using
+a DOM parser, you will be awed by the grandeur of the construction you
+now get in your memory... Microsoft has developed a special "XLS pattern
+language (see <a href="http://msdn.microsoft.com/library/psdk/xmlsdk/xslr1mb7.htm">http://msdn.microsoft.com/library/psdk/xmlsdk/xslr1mb7.htm</a>)
+for "XML navigation"&nbsp; - using it, you can browse the data that you
+have just read into your memory; you will have to form something reminding
+SQL statements to extract the data you need. What's interesting, an SQL
+server can as well return data in XML format - so what, do I need one more
+SQL statement to understand the resultset from my SQL statement? Is not
+the result in XML format? No-no, it is not for Florida voters either.
+<p>The ordinary life is not as difficult to perceive as rocket scientists
+in Houston, TX might want us to think. We already know from the previous
+section that an XML document is a tree-like structure, with each node having
+the right to have attributes, with leaf nodes having text values. Subnodes
+of a node can be also grouped according to their type. In SAX, subnodes
+are known as <b>kids</b>.
+<br>Having all this in mind, the ideal "data query" could look like:
+<p><tt>XmlData project = new XmlData(new File("myProject.xml"));</tt>
+<br><tt>String moduleName = "Nails";</tt>
+<p><tt>int nFiles = project.getKid("module", moduleName).getKidCount("file");</tt>
+<p><tt>for (int i = 0; i &lt; nFiles; i++) {</tt>
+<br><tt>&nbsp; XmlData fileData = project.getKid("module", moduleName).getKid("file",
+i);</tt>
+<br><tt>&nbsp; System.out.println("Project " +&nbsp; project.getAttribute("id")
++ ", module " + moduleName +</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+" file "&nbsp;&nbsp; + fileData.getAttribute("id") + " is of type " + fileData.getAttribute("type");</tt>
+<br><tt>}</tt>
+<p>In this example, an XML file is parsed into an XML data container. Then
+we retrieve the number of kids of type "<tt>file</tt>" in the XML data
+container that is the kid of type "module" that has an attribute <tt>id="Nails"</tt>
+for the container <tt>project</tt>. After that we scan through the kids
+of type "<tt>file</tt>", retrieving them into our container <tt>fileData</tt>,
+and print some information obtained from these kids.
+<br>&nbsp;
+<h4>
+XmlData</h4>
+This is one of the three simple classes that handle XML data (two others
+are <tt>XMLReader</tt> and <tt>XMLWriter</tt>). Here is the source code
+for&nbsp; <a href="XmlData.html">XmlData.java</a>.
+<p>This class represents an XML element in your program. It has four members:
+<ul>
+<li>
+<tt>String type;</tt></li>
+
+<li>
+<tt>String value;</tt></li>
+
+<li>
+<tt>HashMap attr;</tt></li>
+
+<li>
+<tt>HashMap byType;</tt></li>
+</ul>
+You can get the element type using <tt>getType() </tt>and access its value
+using <tt>getValue() </tt>and <tt>setValue().</tt>
+<p>Attributes of the element are kept in <tt>attr</tt> hashmap; you can
+<tt>getAttribute(String
+name), setAttribute(String name, String value), setAttributes(String[]nameValuePairs).
+</tt>Two specific attributes are worth noting, "id" and "name" - methods
+<tt>getId()</tt> and <tt>getName()</tt> return their corresponding values.
+<p>Subelements, <b>kids</b>, are sorted by their type and stored in <tt>byType</tt>
+hashmap. You can <tt>getAllKids()</tt> into an <tt>ArrayList</tt>, <tt>getKids(String
+type)</tt> into an <tt>ArrayList</tt>, <tt>getKid(String type) </tt>- in
+this case any arbitrary kid of the specified type is returned. You can
+get a number of kids of a specified type, <tt>getKidCount(String type)</tt>,
+and then scan through them using <tt>getKid(String type, int i)</tt>. Or
+you can find a kid with a specific attribute value: <tt>getKid(String type,
+String attrName, String attrValue). getKid(String type, String id)</tt>
+is the same as <tt>getKid(String type, "id", String attrValue) </tt>- this
+is a kind of semantic sugar for the lazy ones.
+<p>You can also <tt>addKid(XmlData)</tt> and <tt>removeKid(XmlData)</tt>
+or <tt>removeKids(String type)</tt>.
+<p>Here is the list of constructors available, for all tastes:
+<p><tt>&nbsp; public XmlData(String type);</tt>
+<br><tt>&nbsp; public XmlData(String type, String value);</tt>
+<br><tt>&nbsp; public XmlData(String type, String value, ArrayList kids);</tt>
+<br><tt>&nbsp; public XmlData(String type, String value, XmlData[] kids);</tt>
+<br><tt>&nbsp; public XmlData(String type, String value, String[] attrs);</tt>
+<br><tt>&nbsp; public XmlData(String type, String value, String[] attrs,
+ArrayList kids);</tt>
+<br><tt>&nbsp; public XmlData(String type, String value, String[] attrs,
+XmlData []kids);</tt>
+<br><tt>&nbsp; public XmlData(String type, String value, AttributeList
+attrs);</tt>
+<br><tt>&nbsp; public XmlData(String type, String value, AttributeList
+attrs, ArrayList kids);</tt>
+<br><tt>&nbsp; public XmlData(String type, String value, AttributeList
+attrs, XmlData []kids);</tt>
+<br><tt>&nbsp; public XmlData(String type, String value, HashMap attrs,
+ArrayList kids);</tt>
+<br><tt>&nbsp; public XmlData(String type, String value, HashMap attrs,
+HashMap byType);</tt>
+<br><tt>&nbsp; public XmlData(XMLData org);</tt> //copy constructor
+<br><tt>&nbsp; public XmlData(InputStream in);</tt>
+<br><tt>&nbsp; public XmlData(File in);</tt>
+<p>&nbsp;<tt> public void setXmlContent(XmlData org); /* copies data from
+org to this */</tt><tt></tt>
+<p>And there are three, well, persistor:
+<p><tt>&nbsp; public void save(String filename);</tt>
+<p><tt>&nbsp; public void save(File file);</tt>
+<p><tt>public void save(OutputStream os);</tt>
+<p>One curious question arises - what if I inherit anything from XMLData?
+This issue is not explored in full yet, but here is what you can use:
+<p><tt>&nbsp; public boolean castKids(String type, Class clazz);</tt>
+<p>I use it in the following way:
+<p><tt>public class Project extends XMLData</tt>
+<br><tt>{</tt>
+<br><tt>&nbsp; private final static String POSTFIX = ".project.xml";</tt>
+<br><tt>&nbsp; private final&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+String filename;</tt>
+<p><tt>&nbsp; public Project(String name)</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; throws IOException,</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InstantiationException,</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ClassNotFoundException
+{</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; super(new File(name + POSTFIX));</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; filename = name + POSTFIX;</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; castKids("module", Class.forName("com.borland.catkit.Module"));</tt>
+<br><tt>&nbsp; }</tt>
+<br><tt>...</tt>
+<br>&nbsp;
+<p>As a result, all the kids of my project are actually of class <tt>Module,
+</tt>and
+I can call all my class methods on the data I've just read.
+<br>&nbsp;
+<h4>
+XmlReader</h4>
+<a href="XmlReader.html">XmlReader</a> uses SAX (Simple API to XML) to
+parse input into our element tree. It has two public static methods returning
+<tt>XmlData</tt>:
+<ul>
+<li>
+<tt>&nbsp; public static XMLData read(InputStream in);</tt></li>
+
+<li>
+<tt>&nbsp; public static XMLData read(File in);</tt></li>
+</ul>
+Or you can use a constructor, <tt>XmlReader(InputStream in)</tt>, and then
+<tt>read()</tt>
+your data using the object obtained.
+<br>&nbsp;
+<h4>
+XmlWriter</h4>
+This smart guy, <tt><a href="XmlWriter.html">public class XmlWriter extends
+Writer</a></tt>, has three obvious static write method:
+<ul>
+<li>
+<tt>&nbsp; public static void write(OutputStream out, Object o);</tt></li>
+
+<li>
+<tt>&nbsp; public static void write(File f, Object o);</tt></li>
+
+<li>
+<tt>&nbsp; public static void write(String filename, Object o);</tt></li>
+</ul>
+The object passed is supposed to be of <tt>XMLData</tt> class - but it
+can be anything else as well. The public <tt>XmlWriter</tt> method <tt>write(Object
+o)</tt> does this functionality - <tt>XmlData</tt> is stored as it is supposed
+to be stored. You can also manually build your sand XML data in your Java
+sandbox. You could create a hash containing the following:
+<ul>
+<li>
+a String hash entry for the key "type",</li>
+
+<li>
+a String hash entry for the key "value",</li>
+
+<li>
+a String array of attribute-value pairs as a hash entry for the key "attr",</li>
+
+<li>
+an ArrayList of kids (which are probably hashes as well) as a hash entry
+for the key "kids".</li>
+
+<li>
+This construction will be treated as equal to <tt>XMLData</tt> by <tt>XMLWriter</tt>.</li>
+</ul>
+In all other cases <tt>write(String s)</tt> is applied to <tt>o.toString()</tt>.
+<p>In real life though you will hardly ever need to use directly these
+two helper classes... Personally I never use them.
+<h4>
+Conclusion</h4>
+Probably a big XML professional would discard this as incomplete and not
+covering all the cases - similarly, say, what good is there in Java if
+you cannot override an operator or manipulate memory (or register) allocation?
+:) But for an everyday programmer there is a difference - whether to flood
+his code with complicated SAX callbacks and weird DOM structures or just
+write something like this:
+<p><tt>&nbsp;&nbsp;&nbsp; XmlData resourceProject;</tt>
+<br><tt>...............</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; int total = resourceProject.getKidCount("package");</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; sourceCandidates = new ArrayList(total);</tt>
+<p><tt>&nbsp;&nbsp;&nbsp; for (int i = 0; i &lt; total; i++) {</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; String pkgdir = sourcedir + File.separatorChar
++ resourceProject.getKid("package", i).getId().replace('.', File.separatorChar);</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; File f = new File( pkgdir + File.separatorChar
++ resourceFileName(locale));</tt>
+<p><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (f.exists()) {</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sourceCandidates.add(f.getAbsolutePath());</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } else {</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.out.println("Could
+not find file " + f);</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; }</tt>
+<p>This code seems to be self-explaining, does not it?
+<br>&nbsp;
+</body>
+</html>

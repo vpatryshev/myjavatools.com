@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head><!--
+   This is public domain; The right of people to use, distribute, copy or improve the contents of the following may not be restricted.</p> My Java Tools
+  All Rights Reserved.
+--></head>
+
+<body bgcolor="white">com.myjavatools.lib.foundation deals with very general notions: Function, Filter (Predicate), and their applications to Collections framework classes.
+
+<h2>Package Specification</h2>
+
+<a href="Function.html">Function&lt;X,Y></a> is a holder for a method mapping X to Y.
+A function can be easily build from a Map; a Map can be build
+from a function if you provide a Set of keys.<br>
+
+Having a function: X -> Y, you can create a List&lt;Y> view of function values on a List&lt;X><br>
+
+<a href="Filter.html">Filter&lt;T></a> is a Function&lt;T,Boolean>, and can be used
+for filtering (grepping) collections, iterables, etc.<br>
+
+<a href="Maps.html">Maps</a> contains a loose group of static methods
+that are responsible for standard operations on maps: composition,
+reverse, restriction to a collection, application of Maps to Lists, Iterables,
+factory methods that create maps from key/value pairs.<br>
+
+<a href="Iterators.html">Iterators</a> contains several methods for iterators: concatenation,
+applying a function to an iterator, grepping an iterator using a filter.<br>
+
+<h2>Related Documentation</h2>
+<!-- @todo: add a link to Collections on Sun's java site -->
+<ul>
+  <li><a href="">hyperlink</a>
+</ul>
+
+<!-- @since version 5.0. --></body>
+</html>

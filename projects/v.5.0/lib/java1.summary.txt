@@ -1,0 +1,122 @@
+Presentation outline
+
+1. Discussion of current basic Collections classes in Java 5. What is missing, what is impossible to enforce, what is dubious.
+
+Example 1.
+Map<String,String> a = new HashMap();
+Map<String,String> b = new HashMap();
+a.put("myKey", "myValue");
+b.put("myKey", "myValue");
+a.equals(b) returns true
+a.values().equals(b.values()) returns false
+
+Example 2.
+
+Comparator<Integer,Integer> c1 = new Comparator<Integer,Integer>() {
+  public int compare(Integer i1, Integer i2) {
+    return i2.compareTo(i1);
+  }
+}
+Comparator<Integer,Integer> c2 = new Comparator<Integer,Integer>() {
+  public int compare(Integer i1, Integer i2) {
+    int r1 = i1 % 10;
+    int r2 = i2 % 10;
+    return r1 < r2 ? -1 : r1 > r2 : 1 : 0;
+  }
+}
+
+SortedSet<Integer> a = new TreeSet(c1);
+SortedSet<Integer> b = new TreeSet(c2);
+Set<Integer> c = new HashSet();
+a.add(7);
+b.add(7);
+c.add(7);
+a.add(15);
+b.add(15);
+c.add(15);
+a.add(9);
+b.add(9);
+c.add(9);
+
+how come both a.equals(b) and a.equals(c) return true? Two of these objects are ordered sets and have different orders.
+
+There is a big problem with equals() - at least in Collections, if not in Java in general. Should we always preserve symmetry? This is not the only property of equality predicate in logic.
+
+Example 3.
+
+Collection.java and Set.java differ only in comments. However strong is the language of comments, it is unenforceable. Is there a way to redefine Set interface, and should we still "program to interface", if contract enforcement consist actually of having a specific equals() method? Or can we, generally speaking, enforce any of sets properties that we expect to maintain after learning set theory?
+
+2. my foundation classes: Function and Filter
+
+Function from Map, Map from Function; composition, reverse Maps.
+Applying Functions, Maps and Filters to Collections.
+
+3. foundation utility classes: Iterators and Maps.
+
+Concatenating Lists, Collections, Iterables, Iterators. Creational and functional methods of Maps utility class.
+
+4. Typical code example: getting rid of loops.
+
+
+package com.myjavatools.lib.foundation;
+
+import java.io.*;
+import java.util.*;
+
+public class Sample1 {
+
+  public static void main(String[] args) {
+    String folderName = args.length < 1 ? "." : args[0];
+
+    Map<String,String> fileToType =
+        Maps.toMap("gif",  "image",
+                   "jpg",  "image",
+                   "jpeg", "image",
+                   "png",  "image",
+                   "java", "source code",
+                   "cpp",  "source code",
+                   "hpp",  "source code",
+                   "class","binary",
+                   "obj",  "binary",
+                   "exe",  "binary",
+                   "dll",  "library",
+                   "lib",  "library",
+                   "so",   "library",
+                   "sl",   "library");
+
+    Function<File,String> extension = new Function<File,String>() {
+      public String apply(File file) {
+        String name = file.getName();
+        return name.substring(name.lastIndexOf('.') + 1);
+      }
+    };
+
+    // the function returns file type for a file
+    Function<File,String> fileType = Function.function(fileToType).compose(extension);
+
+    // the list of files in the folder
+    List<File> contents = Arrays.asList(new File(folderName).listFiles());
+
+    // the same files grouped by their file types
+    // only during this operation a new container is created.
+    Map<String, Set<File>> filesGroupedByType =
+        Maps.revert(fileType.toMap(contents));
+
+    for (String type : filesGroupedByType.keySet()) {
+      System.out.println(type + ":");
+      for (File file : filesGroupedByType.get(type)) {
+        System.out.println("  " + file);
+      }
+    }
+  }
+}
+
+5. Discussion items.
+
+a. Is there a way to enforce preconditions and postconditions, using any of Java techniques? Is there any way of code verification beyond interface specification?
+
+b. Does not it make sense to refactor java.io, java.util.String, java.util.CharSequence, to be able to use iterators? For instance, does not InputStream.read() look too Kernigan-Ritchie? Cannot we start writing something like:
+
+for(byte b : inputStream) {
+   ...
+}

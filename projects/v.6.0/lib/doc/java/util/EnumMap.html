@@ -1,0 +1,318 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><!--JBuilder QuickDoc-->
+<HEAD>
+<TITLE>Class java.util.EnumMap</TITLE><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+</HEAD>
+<BODY>
+
+<H2>
+<FONT SIZE="-1">java.util</FONT>
+<BR>Class EnumMap</H2>
+<DL>
+<DT>public class <B>EnumMap</B><DT>extends java.util.AbstractMap<DT>implements java.io.Serializable, java.lang.Cloneable
+</DL>
+<DL><DD>A specialized <A HREF="Map">Map</A> implementation for use with enum type keys. All of the keys in an enum map must come from a single enum type that is specified, explicitly or implicitly, when the map is created. Enum maps are represented internally as arrays. This representation is extremely compact and efficient. <p>Enum maps are maintained in the <i>natural order</i> of their keys (the order in which the enum constants are declared). This is reflected in the iterators returned by the collections views (<A HREF="#keySet()">#keySet()</A>, <A HREF="#entrySet()">#entrySet()</A>, and <A HREF="#values()">#values()</A>). <p>Iterators returned by the collection views are <i>weakly consistent</i>: they will never throw <A HREF="ConcurrentModificationException">ConcurrentModificationException</A> and they may or may not show the effects of any modifications to the map that occur while the iteration is in progress. <p>Null keys are not permitted. Attempts to insert a null key will throw <A HREF="NullPointerException">NullPointerException</A>. Attempts to test for the presence of a null key or to remove one will, however, function properly. Null values are permitted. <P>Like most collection implementations <tt>EnumMap</tt> is not synchronized. If multiple threads access an enum map concurrently, and at least one of the threads modifies the map, it should be synchronized externally. This is typically accomplished by synchronizing on some object that naturally encapsulates the enum map. If no such object exists, the map should be "wrapped" using the <A HREF="Collections#synchronizedMap">Collections#synchronizedMap</A> method. This is best done at creation time, to prevent accidental unsynchronized access: <pre>
+Map<EnumKey, V> m = Collections.synchronizedMap(new EnumMap(...));
+</pre> <p>Implementation note: All basic operations execute in constant time. They are likely (though not guaranteed) to be faster than their <A HREF="HashMap">HashMap</A> counterparts. <p>This class is a member of the <a href="{@docRoot}/../guide/collections/index.html"> Java Collections Framework</a>.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Version:</B><DD>1.5, 12/19/03</DD>
+<DT><B>Author:</B><DD>Josh Bloch</DD>
+<DT><B>Since:</B><DD>1.5</DD>
+<DT><B>See Also:</B><DD>EnumSet</DD>
+</DL>
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF"><TD COLSPAN=1><FONT SIZE="+2">
+<B>Field Detail</B>
+</FONT></TD></TR></TABLE>
+
+<A NAME="keyType"></A>
+
+<H3>keyType</H3>
+<PRE>
+private final java.lang.Class <B>keyType</B></PRE>
+<DL><DD>The class of all the keys of this map.<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<A NAME="keyUniverse"></A>
+
+<H3>keyUniverse</H3>
+<PRE>
+private transient K[] <B>keyUniverse</B></PRE>
+<DL><DD>All of the values comprising K. (Cached for performance.)<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<A NAME="vals"></A>
+
+<H3>vals</H3>
+<PRE>
+private transient java.lang.Object[] <B>vals</B></PRE>
+<DL><DD>Array representation of this map. The ith element is the value to which universe[i] is currently mapped, or null if it isn't mapped to anything, or NULL if it's mapped to null.<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<A NAME="size"></A>
+
+<H3>size</H3>
+<PRE>
+private transient int <B>size</B></PRE>
+<DL><DD>The number of mappings in this map.<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<A NAME="NULL"></A>
+
+<H3>NULL</H3>
+<PRE>
+private static final java.lang.Object <B>NULL</B></PRE>
+<DL><DD>Distinguished non-null value for representing null values.<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<A NAME="entrySet"></A>
+
+<H3>entrySet</H3>
+<PRE>
+private transient java.util.Set <B>entrySet</B></PRE>
+<DL><DD>This field is initialized to contain an instance of the entry set view the first time this view is requested. The view is stateless, so there's no reason to create more than one.<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF"><TD COLSPAN=1><FONT SIZE="+2">
+<B>Constructor Detail</B>
+</FONT></TD></TR></TABLE>
+
+<A NAME="EnumMap(java.lang.Class)"></A>
+
+<H3>EnumMap</H3>
+<PRE>
+public <B>EnumMap</B>(java.lang.Class&nbsp;keyType)</PRE>
+<DL><DD>Creates an empty enum map with the specified key type.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>keyType</CODE> - the class object of the key type for this enum map</DD>
+<DT><B>Throws:</B><DD><CODE>NullPointerException</CODE> - if <tt>keyType</tt> is null</DD>
+</DL>
+<HR>
+
+<A NAME="EnumMap(java.util.EnumMap)"></A>
+
+<H3>EnumMap</H3>
+<PRE>
+public <B>EnumMap</B>(java.util.EnumMap&nbsp;m)</PRE>
+<DL><DD>Creates an enum map with the same key type as the specified enum map, initially containing the same mappings (if any).<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>m</CODE> - the enum map from which to initialize this enum map</DD>
+<DT><B>Throws:</B><DD><CODE>NullPointerException</CODE> - if <tt>m</tt> is null</DD>
+</DL>
+<HR>
+
+<A NAME="EnumMap(java.util.Map)"></A>
+
+<H3>EnumMap</H3>
+<PRE>
+public <B>EnumMap</B>(java.util.Map&nbsp;m)</PRE>
+<DL><DD>Creates an enum map initialized from the specified map. If the specified map is an <tt>EnumMap</tt> instance, this constructor behaves identically to <A HREF="#EnumMap(EnumMap)">#EnumMap(EnumMap)</A>. Otherwise, the specified map must contain at least one mapping (in order to determine the new enum map's key type).<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>m</CODE> - the map from which to initialize this enum map</DD>
+<DT><B>Throws:</B><DD><CODE>IllegalArgumentException</CODE> - if <tt>m</tt> is not an <tt>EnumMap</tt> instance and contains no mappings</DD>
+<DD><CODE>NullPointerException</CODE> - if <tt>m</tt> is null</DD>
+</DL>
+<HR>
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF"><TD COLSPAN=1><FONT SIZE="+2">
+<B>Method Detail</B>
+</FONT></TD></TR></TABLE>
+
+<A NAME="size()"></A>
+
+<H3>size</H3>
+<PRE>
+public int <B>size</B>()</PRE>
+<DL><DD>Returns the number of key-value mappings in this map.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Returns:</B><DD>the number of key-value mappings in this map</DD>
+</DL>
+<HR>
+
+<A NAME="containsValue(java.lang.Object)"></A>
+
+<H3>containsValue</H3>
+<PRE>
+public boolean <B>containsValue</B>(java.lang.Object&nbsp;value)</PRE>
+<DL><DD>Returns <tt>true</tt> if this map maps one or more keys to the specified value.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>value</CODE> - the value whose presence in this map is to be tested</DD>
+<DT><B>Returns:</B><DD><tt>true</tt> if this map maps one or more keys to this value</DD>
+</DL>
+<HR>
+
+<A NAME="containsKey(java.lang.Object)"></A>
+
+<H3>containsKey</H3>
+<PRE>
+public boolean <B>containsKey</B>(java.lang.Object&nbsp;key)</PRE>
+<DL><DD>Returns <tt>true</tt> if this map contains a mapping for the specified key.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>key</CODE> - the key whose presence in this map is to be tested</DD>
+<DT><B>Returns:</B><DD><tt>true</tt> if this map contains a mapping for the specified key</DD>
+</DL>
+<HR>
+
+<A NAME="get(java.lang.Object)"></A>
+
+<H3>get</H3>
+<PRE>
+public V <B>get</B>(java.lang.Object&nbsp;key)</PRE>
+<DL><DD>Returns the value to which this map maps the specified key, or null if this map contains no mapping for the specified key.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>key</CODE> - the key whose associated value is to be returned</DD>
+<DT><B>Returns:</B><DD>the value to which this map maps the specified key, or null if this map contains no mapping for the specified key</DD>
+</DL>
+<HR>
+
+<A NAME="put(K, V)"></A>
+
+<H3>put</H3>
+<PRE>
+public V <B>put</B>(K&nbsp;key,
+             V&nbsp;value)</PRE>
+<DL><DD>Associates the specified value with the specified key in this map. If the map previously contained a mapping for this key, the old value is replaced.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>the</CODE> - key key with which the specified value is to be associated</DD>
+<DD><CODE>the</CODE> - value value to be associated with the specified key</DD>
+<DT><B>Returns:</B><DD>the previous value associated with specified key, or <tt>null</tt> if there was no mapping for key. (A <tt>null</tt> return can also indicate that the map previously associated <tt>null</tt> with the specified key.)</DD>
+<DT><B>Throws:</B><DD><CODE>NullPointerException</CODE> - if the specified key is null</DD>
+</DL>
+<HR>
+
+<A NAME="remove(java.lang.Object)"></A>
+
+<H3>remove</H3>
+<PRE>
+public V <B>remove</B>(java.lang.Object&nbsp;key)</PRE>
+<DL><DD>Removes the mapping for this key from this map if present.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>key</CODE> - the key whose mapping is to be removed from the map</DD>
+<DT><B>Returns:</B><DD>the previous value associated with specified key, or <tt>null</tt> if there was no entry for key. (A <tt>null</tt> return can also indicate that the map previously associated <tt>null</tt> with the specified key.)</DD>
+</DL>
+<HR>
+
+<A NAME="isValidKey(java.lang.Object)"></A>
+
+<H3>isValidKey</H3>
+<PRE>
+private boolean <B>isValidKey</B>(java.lang.Object&nbsp;key)</PRE>
+<DL><DD>Returns true if key is of the proper type to bey a key in this enum map.<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<A NAME="putAll(java.util.Map)"></A>
+
+<H3>putAll</H3>
+<PRE>
+public void <B>putAll</B>(java.util.Map&nbsp;m)</PRE>
+<DL><DD>Copies all of the mappings from the specified map to this map. These mappings will replace any mappings that this map had for any of the keys currently in the specified map.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>t</CODE> - the mappings to be stored in this map</DD>
+<DT><B>Throws:</B><DD><CODE>NullPointerException</CODE> - the specified map is null, or if one or more keys in the specified map are null</DD>
+</DL>
+<HR>
+
+<A NAME="clear()"></A>
+
+<H3>clear</H3>
+<PRE>
+public void <B>clear</B>()</PRE>
+<DL><DD>Removes all mappings from this map.<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<A NAME="keySet()"></A>
+
+<H3>keySet</H3>
+<PRE>
+public java.util.Set <B>keySet</B>()</PRE>
+<DL><DD>Returns a <A HREF="Set">Set</A> view of the keys contained in this map. The returned set obeys the general contract outlined in <A HREF="Map#keySet()">Map#keySet()</A>. The set's iterator will return the keys in their natural order (the order in which the enum constants are declared).<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Returns:</B><DD>a set view of the keys contained in this enum map</DD>
+</DL>
+<HR>
+
+<A NAME="values()"></A>
+
+<H3>values</H3>
+<PRE>
+public java.util.Collection <B>values</B>()</PRE>
+<DL><DD>Returns a <A HREF="Collection">Collection</A> view of the values contained in this map. The returned collection obeys the general contract outlined in <A HREF="Map#values()">Map#values()</A>. The collection's iterator will return the values in the order their corresponding keys appear in map, which is their natural order (the order in which the enum constants are declared).<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Returns:</B><DD>a collection view of the values contained in this map</DD>
+</DL>
+<HR>
+
+<A NAME="entrySet()"></A>
+
+<H3>entrySet</H3>
+<PRE>
+public java.util.Set <B>entrySet</B>()</PRE>
+<DL><DD>Returns a <A HREF="Set">Set</A> view of the mappings contained in this map. The returned set obeys the general contract outlined in <A HREF="Map#keySet()">Map#keySet()</A>. The set's iterator will return the mappings in the order their keys appear in map, which is their natural order (the order in which the enum constants are declared).<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Returns:</B><DD>a set view of the mappings contained in this enum map</DD>
+</DL>
+<HR>
+
+<A NAME="equals(java.lang.Object)"></A>
+
+<H3>equals</H3>
+<PRE>
+public boolean <B>equals</B>(java.lang.Object&nbsp;o)</PRE>
+<DL><DD>Compares the specified object with this map for equality. Returns <tt>true</tt> if the given object is also a map and the two maps represent the same mappings, as specified in the <A HREF="Map#equals(Object)">Map#equals(Object)</A> contract.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>o</CODE> - the object to be compared for equality with this map</DD>
+<DT><B>Returns:</B><DD><tt>true</tt> if the specified object is equal to this map</DD>
+</DL>
+<HR>
+
+<A NAME="clone()"></A>
+
+<H3>clone</H3>
+<PRE>
+public java.util.EnumMap <B>clone</B>()</PRE>
+<DL><DD>Returns a shallow copy of this enum map. (The values themselves are not cloned.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Returns:</B><DD>a shallow copy of this enum map</DD>
+</DL>
+<HR>
+
+<A NAME="writeObject(java.io.ObjectOutputStream)"></A>
+
+<H3>writeObject</H3>
+<PRE>
+private void <B>writeObject</B>(java.io.ObjectOutputStream&nbsp;s)</PRE>
+<DL><DD>Save the state of the <tt>EnumMap</tt> instance to a stream (i.e., serialize it).<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<A NAME="readObject(java.io.ObjectInputStream)"></A>
+
+<H3>readObject</H3>
+<PRE>
+private void <B>readObject</B>(java.io.ObjectInputStream&nbsp;s)</PRE>
+<DL><DD>Reconstitute the <tt>EnumMap</tt> instance from a stream (i.e., deserialize it).<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+</BODY>
+</HTML>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library>
+  <!--JBuilder Library Definition File-->
+  <fullname>MyJavaToolsLib</fullname>
+  <class>
+    <path>[../lib/mjlib.jar]</path>
+  </class>
+  <lastmodsaved>1147662444246</lastmodsaved>
+</library>

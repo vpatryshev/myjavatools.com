@@ -1,0 +1,10 @@
+Java has a rich library for dealing with abstract types like Set, List (a.k.a. tuple), Map; and there seems to be not much to add. But we probably do not need much. After Java generics went out of the closet, I have discovered that with generics one can make miracles... I mean, develop and start using really generic and mathematically sound classes. So I added a group of foundation classes that represent abstract notions to my library that I’ve been developing for years.
+
+With generics (and with foreach loop), more can be offered to effectively and efficiently write Java code using collections and avoiding 'for' loops and plain arrays, two legacy constructs that we inherited from Fortran and C. These two are like matrices and vectors with indexes, from XIX century, replaced in mid-XX century with operators and vector spaces.
+
+I’d like to present two foundation classes and several utility classes with a bunch of static methods for dealing with collections. The most fundamental notion in mathematics is a Function. Another class, Filter<T> is Function<T,Boolean>. Combining these with Maps and Collections, one can avoid most of loops in their programs.
+
+These classes are very versatile, and very non-intrusive if used correctly, that is, in a natural and simple way, Still, I have a feeling that this is only the beginning of a long way to switching from XIX century thinking style - "matrices with indexes" to the more advanced "operator" style.
+
+On the other hand, even with generics, one cannot expect too much from contractual requirements expressed as interface. For instance, the only difference between Set.java and Collection.java is in comments. Can these requirements be expressed in a programming language? For instance, can we fully define Set class so that all implementations could be automatically verified to comply with this definition? And do it efficiently?
+

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <description>XML.com features a rich mix of information and services for the XML community.</description>
+    <item>
+      <description>In this second and final look at applying relational normalization techniques to W3C XML Schema data modeling, Will Provost discusses when not to normalize, the scope of uniqueness and the fourth and fifth normal forms.</description>
+      <pubDate>2002-12-04</pubDate>
+      <link>http://www.xml.com/pub/a/2002/12/04/normalizing.html</link>
+      <title>Normalizing XML, Part 2</title>
+      <author>Will Provost</author>
+    </item>
+    <item>
+      <description>Priya Lakshminarayanan describes in detail the use of the .NET Schema Object Model for programmatic manipulation of W3C XML Schemas.</description>
+      <pubDate>2002-12-04</pubDate>
+      <link>http://www.xml.com/pub/a/2002/12/04/som.html</link>
+      <title>The .NET Schema Object Model</title>
+      <author>Priya Lakshminarayanan</author>
+    </item>
+    <item>
+      <description>In this month&apos;s SVG column, Antoine Quint looks back at SVG&apos;s journey through 2002 and looks forward to 2003.</description>
+      <pubDate>2002-12-04</pubDate>
+      <link>http://www.xml.com/pub/a/2002/12/04/svg.html</link>
+      <title>SVG&apos;s Past and Promising Future</title>
+      <author>Antoine Quint</author>
+    </item>
+    <link>http://www.xml.com/</link>
+    <title>XML.com</title>
+    <language>en-us</language>
+  </channel>
+</rss>

@@ -1,0 +1,298 @@
+<html><head><title>Fundamental Java Classes with Generics</title>
+  <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+    _uacct = "UA-81536-1";
+    urchinTracker();
+  </script>
+</head>
+<body>
+<h1>Fundamental Java Classes with Generics</h1>
+<i>Vlad Patryshev, 02/07/2005 (with an 2007 update for version 6)</i>
+<h2>Introduction</h2>
+Java already has a rich library that deals with abstract types like Set, List
+(aka tuple), Map; and it seems like there is not much need to add more.
+Nevertheless, for years I've been adding classes and methods to my private library.
+Then Java generics went out of the closet - and I have discovered that
+with generics one can make miracles... I mean, develop and start using
+really generic and mathematically sound classes. So I refactored my
+library to generics, and here it is. Below I will use Java features
+and classes from version 6.
+<h2>Collections Revisited</h2>
+Users, both beginners and those that are too busy to upgrade, often mix
+interfaces and abstract classes from Collections framework with their concrete
+implementations that combine abstract ideas with specific strategies: for
+instance, List has two implementation strategies, LinkedList and ArrayList.
+The fact that it is linked or array-ed, has nothing to do with its core
+functionality; implementations can vary, and what's important from the
+client point of view is that they are all Lists - and another thing is
+important: performance; but we definitely need to separate performance
+concerns from presentation.<br /><br />So, having this in mind, here's
+the current hierarchy of fundamental classes in Java:
+
+<h3>Iterable</h3>
+
+It is an abstraction of an enumerable entity; all it has is iterator() that
+returns an Iterator to scan through components. It does not mean that elements
+are in a certain order - there is a big conceptual difference between having
+a certain order and an existence of an order in which elements could be listed,
+with none of such orders being an attribute of the entity.
+<br />
+We cannot know the number of elements in an Iterable; in principle, we could
+define <code>boolean isEmpty()</code> as
+<br/>
+<code>{ return iterator().hasNext(); }</code>, but in many cases this definition
+can be costly. For instance, the Iterable can be a resource on the internet,
+each <code>next()</code> returning a byte - checking its emptiness would
+involve opening a connection. It would be interesting, on the other hand,
+to to have Iterable File and URL readers.<br />
+
+It would be interesting to find out whether there is an analog of Iterable
+in mathematics.<br /><br />
+
+<h3>Collection</h3>
+
+It is an Iterable that has knows its size, can have methods for adding and
+deleting elements, check whether an element is a member of the collection,
+and which can be converted to an array - using the fact that its size is
+known in advance. No exact match in mathematics; a bag, or a multiset,
+can be considered as a model if we could take Collections out of the
+hierarchy and treat them as a separate entity.<br /><br />
+
+<h3>List</h3>
+
+It is a Collection where elements have a linear order. List is known as
+Sequence in IDL, and as tuple in mathematics. It has the first element,
+the last element, and can have methods for inserting and deleting elements.
+Two lists are declared equal if they have the same size and all its consecutive
+elements are equal.<br /><br />
+
+<h3>Set</h3>
+
+It is a Collection where elements do not repeat. Sets are modeled after sets in
+Set Theory: two sets are equal if they contain the same elements (<i>Extensionality
+Axiom</i>). Sets do not have any additional operations; the only additional
+method <code>equals()</code> makes them distinct from other possible types
+of collections.<br /><br />
+
+<h3>SortedSet</h3>
+
+It is a special kind of Set that is linearly ordered. SortedSet
+in Java extends Set - which basically means that order is used only for storing
+data. While two SortedSets that have the same elements but a different comparator
+are <code>equal()</code>, it is impossible to <code>addAll()</code> from one
+SortedSet to another unless their comparators are equal().<br /><br />
+
+<h3>Map</h3>
+
+<b>Map</b> represents a function defined on a set and taking values of a
+certain type. Technically speaking, a Map is fully determined by a Set of
+its key-value pairs. A Map can return a value for a specified key, the whole
+set of its keys, keySet() and a collection of its values; this collection is
+neither a set (can have repeating values) nor a List (order does not matter).
+A Map can have methods for adding and removing key-value pairs.
+
+<h2>Foundation Classes</h2>
+
+The classes reviewed above were enough for Java Before Tiger. Now,
+with generics, more can be offered to effectively and efficiently write
+Java code using collections and avoiding 'for' loops and plain arrays,
+two legacy constructs that we inherited from Fortran and C. Below I'll
+talk about two foundation classes and three utility classes with a bunch
+of static methods for dealing with collections. The most fundamental notion
+in mathematics is a...<br /><br />
+
+<h3>Function</h3>
+
+In Java, we can define interface <code>Function&lt;X,Y&gt;</code>: it has
+just one method, <code>Y apply(X x)</code>. An objectivised function can be
+handled now as an entity: we can compose and invert functions, we can apply
+them to collections, we can instantiate functions from other objects. <br />
+
+There is a big difference between a Function and a Map: a Function is defined
+on a type, and a Map is defined on a Set. If we have a <code>Map m</code>,
+we can define a <code>Function function(m)</code>: it will return
+<code>m.get(x)</code> for any <code>X x</code>, but to get a Map
+from a Function, we will need a Set of keys. Also, <code>equals()</code>
+is defined for Maps, but for Functions it is very impractical to define
+<code>equals()</code>: we would need to scan through the whole range of
+type values to check whether two Functions are equal.<br /><br />
+
+Actually, in the package <code>com.myjavatools.lib.foundation</code>,
+Function.java is not an interface, but an abstract class with one abstract
+method, <code>apply()</code>. Other methods provide the functionality I
+wrote above: function factory
+<code>static Function&lt;X,Y&gt; function(Map&lt;X,Y&gt; map)</code>;
+<code>Map&lt;X,Y&gt; toMap(Set&lt;X&gt; keys)</code>
+- a Map view of the function, with Set&lt;X&gt; keys as keys;
+<code>Map&lt;X,Y&gt; toMap(Collection&lt;X&gt; keys)</code>. <br /><br />
+
+<code>List&lt;Y&gt; apply(List&lt;X&gt;) </code>
+- this one returns a List view of function values on the provided list.
+Notice, it is a view, and the user will want to use a copy constructor
+to avoid recalculating function values every time an element is retrieved;
+on the other hand, the user is free to deal with this List view, and avoid
+creating new objects. Saving memory does not seem to be a big issue these
+days, but memory management, creation and disposal of objects may take too
+many resources.<br/>
+
+Similar methods <code>Iterable&lt;Y&gt; apply(Iterable&lt;X&gt;)</code> and
+<code>Iterator&lt;Y&gt; apply(Iterator&lt;X&gt;)</code> apply a Function to
+an Iterable and an Iterator.<br /><br />Function has two methods for composition,
+one is static, to apply this function after the parameter function:
+<code>f.compose(g)</code> is a function that returns
+<code>f.apply(g.apply(arg))</code>; another one is a static method,
+which looks closer to classical mathematics: <br>
+<code> &lt;X,Y,Z&gt; Function &lt;X,Z&gt; compose(Function&lt;X,Y&gt; f, Function&lt;Y,Z&gt; g)</code>
+
+<h3>Filter</h3>
+
+A Filter, a.k.a. predicate, is a Function&lt;X,Boolean&gt;, that is, a function
+that returns logical values. One could argue regarding overusing "boolean",
+but Java does not give much of a choice.
+Filter has an alias for <code>apply()</code>: <code>accept()</code>.
+Two methods in this class do the actual data filtration, the same way grep
+function does: <code>Iterator&lt;T&gt; filter(Iterator&lt;T&gt;)</code> and
+<code>Iterable&lt;T&gt; filter(Iterable&lt;T&gt;)</code>. The latter is, of
+course, a view Iterable, not a new array or something; the user is free to
+create a "hard copy" of the filtered Iterable, when necessary.
+
+<h3>Pair</h3>
+
+This is an implementation of Map.Entry&lt;X,Y&gt; interface,
+only <code>key</code> and <code>value</code> are named <code>left</code>
+and <code>right</code> components; with the addition of <code>swap()</code>
+method. Theoretically, Pair&lt;X,Y&gt; could serve as an alternative to
+List&lt;X&gt; implementation of the notion of tuple from mathematics.
+
+<h2>Utility Foundation Classes</h2>
+
+<b>Iterators</b><br /><br />This class contains several static
+<code>cat()</code> methods that concatenate collections. Namely,
+<code>cat(Arrays.asList("abc", "def"), Arrays.asList("ghi", "jkl"))</code>
+will return a virtual Collection that contains the four strings. This method
+concatenates Collections; similarly one can concatenate Iterables or Iterators.
+
+<h3>Maps</h3>
+
+This class contains two groups of methods in this class: creational and functional. <br />
+Creational methods build maps from materials that the user supplies:
+<code>Map&lt;X,Y&gt; toMap(X key1, Y value1, X key2, Y key2)</code>
+and the like will create a map that contains just these two keys;
+you can pass an array with keys and values (odd elements are keys,
+even elements are values), and <code>toMap()</code> will create a
+Map based on this array. Another <code>toMap()</code> takes a vararg array
+of Map.Entry instances and creates a virtual Map based on this array.
+Neither of these methods cares to copy arrays; they are all just views.<br />
+
+There is a caveat regarding using these creational methods: it is your
+responsibility to guarantee that all keys are distinct; it is a contract
+of Map interface that keys in the map are all distinct, and can form a Set.
+None of the creational methods checks whether keys are distinct. Generally
+speaking, no existing implementation of Set or Map interface, except probably
+UnmodifiableMap and UnmodifiableCollection, can guarantee this distinction.
+When you add elements to a Set, they are all distinct - but what if you change
+the elements later? There are no observers to react to such changes.<br />
+
+The purpose of functional methods is to implement standard or almost standard
+operations on Maps. <code>Map&lt;X,Z&gt; compose(Map&lt;X,Y&gt;, Map&lt;Y,Z&gt;)</code>
+returns a virtual Map which is the two Maps' composition. Four <code>map()</code>
+methods apply a Map to a List, a Collection, an Iterable and an Iterator respectively.
+<code>Map&lt;X,Y&gt; restrict(Map&lt;X,Y&gt;, Collection&lt;X&gt;)</code> restricts a
+Map to a Collection.<br /><br />The following functional methods do create
+Set or Map instances. So far there is no factory method that would return
+the right Map or Set instance; I just use LinkedHashMap and HashSet as an
+ultimate container choice. This area definitely need some development.<br />
+
+<code>Set&lt;X&gt; resolve(Map&lt;X,Y&gt; map, Y y)</code> returns a Set of X
+such that map.get(x).equals(y).<br /><code>Map&lt;Y,X&gt; inverse(Map&lt;X,Y&gt;)</code>
+returns a new map that is inverse to the original map; if none exists,
+an exception is thrown. Another method, <code>revert(Map&lt;X,Y&gt;)</code>
+revert a Map even if it is not an one-to-one. It returns, for a
+<code>Map&lt;X,Y&gt; f</code> it returns a
+<code>Map&lt;Y,Set&lt;X&gt;&gt; g</code> such that for each Y y in
+<code>g.keySet() the value of </code>g.get(y)</code> is a
+<code>Set&lt;Y&gt;</code> of all those <code>X x</code> that
+<code>f.get(x).equals(y)</code>.
+
+<h2>Example of Usage</h2>
+
+In the following sample program the files in the specified directory are
+grouped by their types, as defined in the provided list.<br />
+
+<pre class="sourcecode"><code>
+
+<b>package</b> com.myjavatools.lib.foundation;
+
+<b>import</b> java.io.*;
+<b>import</b> java.util.*;
+
+<b>public</b> <b>class</b> Sample1 {
+
+  <b>public</b> <b>static</b> <b>void</b> main(String[] args) {
+    String folderName = args.length &lt; 1 ? <font color="#9933CC">&quot;.&quot;</font> : args[0];
+
+    Map&lt;String,String&gt; fileToType =
+        Maps.toMap(<font color="#9933CC">&quot;gif&quot;</font>,  <font color="#9933CC">&quot;image&quot;</font>,
+                   <font color="#9933CC">&quot;jpg&quot;</font>,  <font color="#9933CC">&quot;image&quot;</font>,
+                   <font color="#9933CC">&quot;jpeg&quot;</font>, <font color="#9933CC">&quot;image&quot;</font>,
+                   <font color="#9933CC">&quot;png&quot;</font>,  <font color="#9933CC">&quot;image&quot;</font>,
+                   <font color="#9933CC">&quot;java&quot;</font>, <font color="#9933CC">&quot;source code&quot;</font>,
+                   <font color="#9933CC">&quot;cpp&quot;</font>,  <font color="#9933CC">&quot;source code&quot;</font>,
+                   <font color="#9933CC">&quot;hpp&quot;</font>,  <font color="#9933CC">&quot;source code&quot;</font>,
+                   <font color="#9933CC">&quot;class&quot;</font>,<font color="#9933CC">&quot;binary&quot;</font>,
+                   <font color="#9933CC">&quot;obj&quot;</font>,  <font color="#9933CC">&quot;binary&quot;</font>,
+                   <font color="#9933CC">&quot;exe&quot;</font>,  <font color="#9933CC">&quot;binary&quot;</font>,
+                   <font color="#9933CC">&quot;dll&quot;</font>,  <font color="#9933CC">&quot;library&quot;</font>,
+                   <font color="#9933CC">&quot;lib&quot;</font>,  <font color="#9933CC">&quot;library&quot;</font>,
+                   <font color="#9933CC">&quot;so&quot;</font>,   <font color="#9933CC">&quot;library&quot;</font>,
+                   <font color="#9933CC">&quot;sl&quot;</font>,   <font color="#9933CC">&quot;library&quot;</font>);
+
+    Function&lt;File,String&gt; extension = <b>new</b> Function&lt;File,String&gt;() {
+      <b>public</b> String apply(File file) {
+        String name = file.getName();
+        <b>return</b> name.substring(name.lastIndexOf(<font color="#9933CC">'.'</font>) + 1);
+      }
+    };
+
+    <font color="#003399"><i>// the function returns file type for a file</i></font>
+
+    Function&lt;File,String&gt; fileType = Function.function(fileToType).compose(extension);
+
+    <font color="#003399"><i>// the list of files in the folder</i></font>
+    List&lt;File&gt; contents = Arrays.asList(<b>new</b> File(folderName).listFiles());
+
+    <font color="#003399"><i>// the same files grouped by their file types</i></font>
+
+    <font color="#003399"><i>// only during this operation a new container is created.</i></font>
+    Map&lt;String, Set&lt;File&gt;&gt; filesGroupedByType =
+        Maps.revert(fileType.toMap(contents));
+
+    <b>for</b> (String type : filesGroupedByType.keySet()) {
+      System.out.println(type + <font color="#9933CC">&quot;:&quot;</font>);
+      <b>for</b> (File file : filesGroupedByType.get(type)) {
+        System.out.println(<font color="#9933CC">&quot;  &quot;</font> + file);
+      }
+    }
+  }
+}
+
+</code></pre>
+
+<h2>Conclusion</h2>
+
+Although these simple classes are very versatile, and very non-intrusive
+if used correctly, that is, in a natural and simple way, I have a feeling
+that this is only the beginning of a long way to switching from XIX century
+programming style - "matrices with indexes" to the more advanced "operator" style.<br />
+
+Here are the links: <br />
+<a href="http://www.myjavatools.com/projects/v.6.0/lib/doc/index.html">documentation</a>, <br />
+<a href="http://www.myjavatools.com/projects/v.6.0/lib/mjlib-src.jar">source code jar</a>,  <br />
+<a href="http://www.myjavatools.com/projects/v.6.0/lib/mjlib.jar">binary jar</a>, <br />
+<a href="http://www.myjavatools.com/projects/v.6.0/lib/mjlib60.zip">the full archive: source, docs, tests, project file for JBuilder.</a> <br />
+<br />Everything is free, as in free thought.
+I am thankful to the great Borland's JBuilder team for creating the beautiful JBuilder 2005 that I've been using while developing this.
+Yes, I was a Borland employee for 7 years - but this seems to be the first time I thank my colleagues.<br />
+</body>
+</html>

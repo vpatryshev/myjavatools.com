@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><!--JBuilder QuickDoc-->
+<HEAD>
+<TITLE>Class java.lang.reflect.ParameterizedType</TITLE><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+</HEAD>
+<BODY>
+
+<H2>
+<FONT SIZE="-1">java.lang.reflect</FONT>
+<BR>Interface ParameterizedType</H2>
+<DL>
+<DT>public interface <B>ParameterizedType</B><DT>extends java.lang.reflect.Type
+</DL>
+<DL><DD>ParameterizedType represents a parameterized type such as Collection&lt;String&gt;. <p>A parameterized type is created the first time it is needed by a reflective method, as specified in this package. When a parameterized type p is created, the generic type declaration that p instantiates is resolved, and all type arguments of p are created recursively. See <A HREF="java.lang.reflect.TypeVariable TypeVariable">TypeVariable</A> for details on the creation process for type variables. Repeated creation of a parameterized type has no effect. <p>Instances of classes that implement this interface must implement an equals() method that equates any two instances that share the same generic type declaration and have equal type parameters.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Since:</B><DD>1.5</DD>
+</DL>
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF"><TD COLSPAN=1><FONT SIZE="+2">
+<B>Method Detail</B>
+</FONT></TD></TR></TABLE>
+
+<A NAME="getActualTypeArguments()"></A>
+
+<H3>getActualTypeArguments</H3>
+<PRE>
+java.lang.reflect.Type[] <B>getActualTypeArguments</B>()</PRE>
+<DL><DD>Returns an array of <tt>Type</tt> objects representing the actual type arguments to this type. <p>Note that in some cases, the returned array be empty. This can occur if this type represents a non-parameterized type nested within a parameterized type.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Returns:</B><DD>an array of <tt>Type</tt> objects representing the actual type arguments to this type</DD>
+<DT><B>Throws:</B><DD><CODE><tt>TypeNotPresentException</tt></CODE> - if any of the actual type arguments refers to a non-existent type declaration</DD>
+<DD><CODE><tt>MalformedParameterizedTypeException</tt></CODE> - if any of the actual type parameters refer to a parameterized type that cannot be instantiated for any reason</DD>
+<DT><B>Since:</B><DD>1.5</DD>
+</DL>
+<HR>
+
+<A NAME="getRawType()"></A>
+
+<H3>getRawType</H3>
+<PRE>
+java.lang.reflect.Type <B>getRawType</B>()</PRE>
+<DL><DD>Returns the <tt>Type</tt> object representing the class or interface that declared this type.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Returns:</B><DD>the <tt>Type</tt> object representing the class or interface that declared this type</DD>
+<DT><B>Since:</B><DD>1.5</DD>
+</DL>
+<HR>
+
+<A NAME="getOwnerType()"></A>
+
+<H3>getOwnerType</H3>
+<PRE>
+java.lang.reflect.Type <B>getOwnerType</B>()</PRE>
+<DL><DD>Returns a <tt>Type</tt> object representing the type that this type is a member of. For example, if this type is {@code O<T>.I<S>}, return a representation of {@code O<T>}. <p>If this type is a top-level type, <tt>null</tt> is returned.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Returns:</B><DD>a <tt>Type</tt> object representing the type that this type is a member of. If this type is a top-level type, <tt>null</tt> is returned</DD>
+<DT><B>Throws:</B><DD><CODE><tt>TypeNotPresentException</tt></CODE> - if the owner type refers to a non-existent type declaration</DD>
+<DD><CODE><tt>MalformedParameterizedTypeException</tt></CODE> - if the owner type refers to a parameterized type that cannot be instantiated for any reason</DD>
+<DT><B>Since:</B><DD>1.5</DD>
+</DL>
+<HR>
+
+</BODY>
+</HTML>

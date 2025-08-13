@@ -1,0 +1,273 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><!--JBuilder QuickDoc-->
+<HEAD>
+<TITLE>Class java.util.EnumSet</TITLE><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+</HEAD>
+<BODY>
+
+<H2>
+<FONT SIZE="-1">java.util</FONT>
+<BR>Class EnumSet</H2>
+<DL>
+<DT>public abstract class <B>EnumSet</B><DT>extends java.util.AbstractSet<DT>implements java.lang.Cloneable, java.io.Serializable
+</DL>
+<DL><DD>A specialized <A HREF="Set">Set</A> implementation for use with enum types. All of the elements in an enum set must come from a single enum type that is specified, explicitly or implicitly, when the set is created. Enum sets are represented internally as bit vectors. This representation is extremely compact and efficient. The space and time performance of this class should be good enough to allow its use as a high-quality, typesafe alternative to traditional <tt>int</tt>-based "bit flags." Even bulk operations (such as <tt>containsAll</tt> and <tt>retainAll</tt>) should run very quickly if the specified collection is also an enum set. <p>The iterator returned by the <tt>iterator</tt>method traverses the elements in their <i>natural order</i> (the order in which the enum constants are declared). The returned iterator is <i>weakly consistent</i>: it will never throw <A HREF="ConcurrentModificationException">ConcurrentModificationException</A> and it may or may not show the effects of any modifications to the set that occur while the iteration is in progress. <p>Null elements are not permitted. Attempts to insert a null element will throw <A HREF="NullPointerException">NullPointerException</A>. Attempts to test for the presence of a null element or to remove one will, however, function properly. <P>Like most collection implementations <tt>EnumSet</tt> is not synchronized. If multiple threads access an enum set concurrently, and at least one of the threads modifies the set, it should be synchronized externally. This is typically accomplished by synchronizing on some object that naturally encapsulates the enum set. If no such object exists, the set should be "wrapped" using the <A HREF="Collections#synchronizedSet">Collections#synchronizedSet</A> method. This is best done at creation time, to prevent accidental unsynchronized access: <pre>
+Set&lt;MyEnum&gt; s = Collections.synchronizedSet(EnumSet.noneOf(Foo.class));
+</pre> <p>Implementation note: All basic operations execute in constant time. They are likely (though not guaranteed) to be much faster than their <A HREF="HashSet">HashSet</A> counterparts. Even bulk operations, such as <A HREF="#addAll">#addAll</A> and <A HREF="#removeAll">#removeAll</A> execute in constant time if the parameter is another <tt>EnumSet</tt> instance. <p>This class is a member of the <a href="{@docRoot}/../guide/collections/index.html"> Java Collections Framework</a>.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Version:</B><DD>1.9, 04/15/04</DD>
+<DT><B>Author:</B><DD>Josh Bloch</DD>
+<DT><B>Since:</B><DD>1.5</DD>
+<DT><B>See Also:</B><DD>EnumMap</DD>
+</DL>
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF"><TD COLSPAN=1><FONT SIZE="+2">
+<B>Field Detail</B>
+</FONT></TD></TR></TABLE>
+
+<A NAME="elementType"></A>
+
+<H3>elementType</H3>
+<PRE>
+final java.lang.Class <B>elementType</B></PRE>
+<DL><DD>The class of all the elements of this set.<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<A NAME="universe"></A>
+
+<H3>universe</H3>
+<PRE>
+final java.lang.Enum[] <B>universe</B></PRE>
+<DL><DD>All of the values comprising T. (Cached for performance.)<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF"><TD COLSPAN=1><FONT SIZE="+2">
+<B>Method Detail</B>
+</FONT></TD></TR></TABLE>
+
+<A NAME="noneOf(java.lang.Class)"></A>
+
+<H3>noneOf</H3>
+<PRE>
+public static java.util.EnumSet <B>noneOf</B>(java.lang.Class&nbsp;elementType)</PRE>
+<DL><DD>Creates an empty enum set with the specified element type.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>elementType</CODE> - the class object of the element type for this enum set</DD>
+<DT><B>Throws:</B><DD><CODE>NullPointerException</CODE> - if <tt>elementType</tt> is null</DD>
+</DL>
+<HR>
+
+<A NAME="allOf(java.lang.Class)"></A>
+
+<H3>allOf</H3>
+<PRE>
+public static java.util.EnumSet <B>allOf</B>(java.lang.Class&nbsp;elementType)</PRE>
+<DL><DD>Creates an enum set containing all of the elements in the specified element type.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>elementType</CODE> - the class object of the element type for this enum set</DD>
+<DT><B>Throws:</B><DD><CODE>NullPointerException</CODE> - if <tt>elementType</tt> is null</DD>
+</DL>
+<HR>
+
+<A NAME="addAll()"></A>
+
+<H3>addAll</H3>
+<PRE>
+abstract void <B>addAll</B>()</PRE>
+<DL><DD>Adds all of the elements from the appropriate enum type to this enum set, which is empty prior to the call.<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<A NAME="copyOf(java.util.EnumSet)"></A>
+
+<H3>copyOf</H3>
+<PRE>
+public static java.util.EnumSet <B>copyOf</B>(java.util.EnumSet&nbsp;s)</PRE>
+<DL><DD>Creates an enum set with the same element type as the specified enum set, initially containing the same elements (if any).<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>s</CODE> - the enum set from which to initialize this enum set</DD>
+<DT><B>Throws:</B><DD><CODE>NullPointerException</CODE> - if <tt>s</tt> is null</DD>
+</DL>
+<HR>
+
+<A NAME="copyOf(java.util.Collection)"></A>
+
+<H3>copyOf</H3>
+<PRE>
+public static java.util.EnumSet <B>copyOf</B>(java.util.Collection&nbsp;c)</PRE>
+<DL><DD>Creates an enum set initialized from the specified collection. If the specified collection is an <tt>EnumSet</tt> instance, this static factory method behaves identically to <A HREF="#copyOf(EnumSet)">#copyOf(EnumSet)</A>. Otherwise, the specified collection must contain at least one element (in order to determine the new enum set's element type).<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>c</CODE> - the collection from which to initialize this enum set</DD>
+<DT><B>Throws:</B><DD><CODE>IllegalArgumentException</CODE> - if <tt>c</tt> is not an <tt>EnumSet</tt> instance and contains no elements</DD>
+<DD><CODE>NullPointerException</CODE> - if <tt>c</tt> is null</DD>
+</DL>
+<HR>
+
+<A NAME="complementOf(java.util.EnumSet)"></A>
+
+<H3>complementOf</H3>
+<PRE>
+public static java.util.EnumSet <B>complementOf</B>(java.util.EnumSet&nbsp;s)</PRE>
+<DL><DD>Creates an enum set with the same element type as the specified enum set, initially containing all the elements of this type that are <i>not</i> contained in the specified set.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>s</CODE> - the enum set from whose complement to initialize this enum set</DD>
+<DT><B>Throws:</B><DD><CODE>NullPointerException</CODE> - if <tt>s</tt> is null</DD>
+</DL>
+<HR>
+
+<A NAME="of(E)"></A>
+
+<H3>of</H3>
+<PRE>
+public static java.util.EnumSet <B>of</B>(E&nbsp;e)</PRE>
+<DL><DD>Creates an enum set initially containing the specified element. Overloadings of this method exist to initialize an enum set with one through five elements. A sixth overloading is provided that uses the varargs feature. This overloading may be used to create an an enum set initially containing an arbitrary number of elements, but is likely to run slower than the overloadings that do not use varargs.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>e</CODE> - the element that this set is to contain initially</DD>
+<DT><B>Returns:</B><DD>an enum set initially containing the specified element</DD>
+<DT><B>Throws:</B><DD><CODE>NullPointerException</CODE> - if <tt>e</tt> is null</DD>
+</DL>
+<HR>
+
+<A NAME="of(E, E)"></A>
+
+<H3>of</H3>
+<PRE>
+public static java.util.EnumSet <B>of</B>(E&nbsp;e1,
+                                   E&nbsp;e2)</PRE>
+<DL><DD>Creates an enum set initially containing the specified elements. Overloadings of this method exist to initialize an enum set with one through five elements. A sixth overloading is provided that uses the varargs feature. This overloading may be used to create an an enum set initially containing an arbitrary number of elements, but is likely to run slower than the overloadings that do not use varargs.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>e1</CODE> - an element that this set is to contain initially</DD>
+<DD><CODE>e2</CODE> - another element that this set is to contain initially</DD>
+<DT><B>Returns:</B><DD>an enum set initially containing the specified elements</DD>
+<DT><B>Throws:</B><DD><CODE>NullPointerException</CODE> - if any parameters are null</DD>
+</DL>
+<HR>
+
+<A NAME="of(E, E, E)"></A>
+
+<H3>of</H3>
+<PRE>
+public static java.util.EnumSet <B>of</B>(E&nbsp;e1,
+                                   E&nbsp;e2,
+                                   E&nbsp;e3)</PRE>
+<DL><DD>Creates an enum set initially containing the specified elements. Overloadings of this method exist to initialize an enum set with one through five elements. A sixth overloading is provided that uses the varargs feature. This overloading may be used to create an an enum set initially containing an arbitrary number of elements, but is likely to run slower than the overloadings that do not use varargs.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>e1</CODE> - an element that this set is to contain initially</DD>
+<DD><CODE>e2</CODE> - another element that this set is to contain initially</DD>
+<DD><CODE>e3</CODE> - another element that this set is to contain initially</DD>
+<DT><B>Returns:</B><DD>an enum set initially containing the specified elements</DD>
+<DT><B>Throws:</B><DD><CODE>NullPointerException</CODE> - if any parameters are null</DD>
+</DL>
+<HR>
+
+<A NAME="of(E, E, E, E)"></A>
+
+<H3>of</H3>
+<PRE>
+public static java.util.EnumSet <B>of</B>(E&nbsp;e1,
+                                   E&nbsp;e2,
+                                   E&nbsp;e3,
+                                   E&nbsp;e4)</PRE>
+<DL><DD>Creates an enum set initially containing the specified elements. Overloadings of this method exist to initialize an enum set with one through five elements. A sixth overloading is provided that uses the varargs feature. This overloading may be used to create an an enum set initially containing an arbitrary number of elements, but is likely to run slower than the overloadings that do not use varargs.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>e1</CODE> - an element that this set is to contain initially</DD>
+<DD><CODE>e2</CODE> - another element that this set is to contain initially</DD>
+<DD><CODE>e3</CODE> - another element that this set is to contain initially</DD>
+<DD><CODE>e4</CODE> - another element that this set is to contain initially</DD>
+<DT><B>Returns:</B><DD>an enum set initially containing the specified elements</DD>
+<DT><B>Throws:</B><DD><CODE>NullPointerException</CODE> - if any parameters are null</DD>
+</DL>
+<HR>
+
+<A NAME="of(E, E, E, E, E)"></A>
+
+<H3>of</H3>
+<PRE>
+public static java.util.EnumSet <B>of</B>(E&nbsp;e1,
+                                   E&nbsp;e2,
+                                   E&nbsp;e3,
+                                   E&nbsp;e4,
+                                   E&nbsp;e5)</PRE>
+<DL><DD>Creates an enum set initially containing the specified elements. Overloadings of this method exist to initialize an enum set with one through five elements. A sixth overloading is provided that uses the varargs feature. This overloading may be used to create an an enum set initially containing an arbitrary number of elements, but is likely to run slower than the overloadings that do not use varargs.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>e1</CODE> - an element that this set is to contain initially</DD>
+<DD><CODE>e2</CODE> - another element that this set is to contain initially</DD>
+<DD><CODE>e3</CODE> - another element that this set is to contain initially</DD>
+<DD><CODE>e4</CODE> - another element that this set is to contain initially</DD>
+<DD><CODE>e5</CODE> - another element that this set is to contain initially</DD>
+<DT><B>Returns:</B><DD>an enum set initially containing the specified elements</DD>
+<DT><B>Throws:</B><DD><CODE>NullPointerException</CODE> - if any parameters are null</DD>
+</DL>
+<HR>
+
+<A NAME="of(E, E[])"></A>
+
+<H3>of</H3>
+<PRE>
+public static java.util.EnumSet <B>of</B>(E&nbsp;first,
+                                   E[]&nbsp;rest)</PRE>
+<DL><DD>Creates an enum set initially containing the specified elements. This factory, whose parameter list uses the varargs feature, may be used to create an enum set initially containing an arbitrary number of elements, but it is likely to run slower than the overloadings that do not use varargs.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>first</CODE> - an element that the set is to contain initially</DD>
+<DD><CODE>rest</CODE> - the remaining elements the set is to contain initially</DD>
+<DT><B>Returns:</B><DD>an enum set initially containing the specified elements</DD>
+<DT><B>Throws:</B><DD><CODE>NullPointerException</CODE> - if any of the specified elements are null, or if <tt>rest</tt> is null</DD>
+</DL>
+<HR>
+
+<A NAME="range(E, E)"></A>
+
+<H3>range</H3>
+<PRE>
+public static java.util.EnumSet <B>range</B>(E&nbsp;from,
+                                      E&nbsp;to)</PRE>
+<DL><DD>Creates an enum set initially containing all of the elements in the range defined by the two specified endpoints. The returned set will contain the endpoints themselves, which may be identical but must not be out of order.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>from</CODE> - the first element in the range</DD>
+<DD><CODE>to</CODE> - the last element in the range</DD>
+<DT><B>Returns:</B><DD>an enum set initially containing all of the elements in the range defined by the two specified endpoints</DD>
+<DT><B>Throws:</B><DD><CODE>NullPointerException</CODE> - if <tt>first</tt> or <tt>last</tt> are null</DD>
+<DD><CODE>IllegalArgumentException</CODE> - if <tt>first.compareTo(last) &gt; 0</tt></DD>
+</DL>
+<HR>
+
+<A NAME="addRange(E, E)"></A>
+
+<H3>addRange</H3>
+<PRE>
+abstract void <B>addRange</B>(E&nbsp;from,
+                       E&nbsp;to)</PRE>
+<DL><DD>Adds the specified range to this enum set, which is empty prior to the call.<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<A NAME="clone()"></A>
+
+<H3>clone</H3>
+<PRE>
+public java.util.EnumSet <B>clone</B>()</PRE>
+<DL><DD>Returns a copy of this set.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Returns:</B><DD>a copy of this set.</DD>
+</DL>
+<HR>
+
+<A NAME="complement()"></A>
+
+<H3>complement</H3>
+<PRE>
+abstract void <B>complement</B>()</PRE>
+<DL><DD>Complements the contents of this enum set.<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+</BODY>
+</HTML>

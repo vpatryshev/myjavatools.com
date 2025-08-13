@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><!--JBuilder QuickDoc-->
+<HEAD>
+<TITLE>Class java.util.RegularEnumSet</TITLE><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+</HEAD>
+<BODY>
+
+<H2>
+<FONT SIZE="-1">java.util</FONT>
+<BR>Class RegularEnumSet</H2>
+<DL>
+<DT>class <B>RegularEnumSet</B><DT>extends java.util.EnumSet
+</DL>
+<DL><DD>Private implementation class for EnumSet, for "regular sized" enum types (i.e., those with 64 or fewer enum constants).<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Author:</B><DD>Josh Bloch</DD>
+<DT><B>Since:</B><DD>1.5</DD>
+</DL>
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF"><TD COLSPAN=1><FONT SIZE="+2">
+<B>Field Detail</B>
+</FONT></TD></TR></TABLE>
+
+<A NAME="elements"></A>
+
+<H3>elements</H3>
+<PRE>
+private long <B>elements</B></PRE>
+<DL><DD>Bit vector representation of this set. The 2^k bit indicates the presence of universe[k] in this set.<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF"><TD COLSPAN=1><FONT SIZE="+2">
+<B>Method Detail</B>
+</FONT></TD></TR></TABLE>
+
+<A NAME="iterator()"></A>
+
+<H3>iterator</H3>
+<PRE>
+public java.util.Iterator <B>iterator</B>()</PRE>
+<DL><DD>Returns an iterator over the elements contained in this set. The iterator traverses the elements in their <i>natural order</i> (which is the order in which the enum constants are declared). The returned Iterator is a "snapshot" iterator that will never throw <A HREF="ConcurrentModificationException">ConcurrentModificationException</A>; the elements are traversed as they existed when this call was invoked.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Returns:</B><DD>an iterator over the elements contained in this set</DD>
+</DL>
+<HR>
+
+<A NAME="size()"></A>
+
+<H3>size</H3>
+<PRE>
+public int <B>size</B>()</PRE>
+<DL><DD>Returns the number of elements in this set.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Returns:</B><DD>the number of elements in this set</DD>
+</DL>
+<HR>
+
+<A NAME="isEmpty()"></A>
+
+<H3>isEmpty</H3>
+<PRE>
+public boolean <B>isEmpty</B>()</PRE>
+<DL><DD>Returns <tt>true</tt> if this set contains no elements.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Returns:</B><DD><tt>true</tt> if this set contains no elements</DD>
+</DL>
+<HR>
+
+<A NAME="contains(java.lang.Object)"></A>
+
+<H3>contains</H3>
+<PRE>
+public boolean <B>contains</B>(java.lang.Object&nbsp;e)</PRE>
+<DL><DD>Returns <tt>true</tt> if this set contains the specified element.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>e</CODE> - element to be checked for containment in this collection</DD>
+<DT><B>Returns:</B><DD><tt>true</tt> if this set contains the specified element</DD>
+</DL>
+<HR>
+
+<A NAME="add(E)"></A>
+
+<H3>add</H3>
+<PRE>
+public boolean <B>add</B>(E&nbsp;e)</PRE>
+<DL><DD>Adds the specified element to this set if it is not already present.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>e</CODE> - element to be added to this set</DD>
+<DT><B>Returns:</B><DD><tt>true</tt> if the set changed as a result of the call</DD>
+<DT><B>Throws:</B><DD><CODE>NullPointerException</CODE> - if <tt>e</tt> is null</DD>
+</DL>
+<HR>
+
+<A NAME="remove(java.lang.Object)"></A>
+
+<H3>remove</H3>
+<PRE>
+public boolean <B>remove</B>(java.lang.Object&nbsp;e)</PRE>
+<DL><DD>Removes the specified element from this set if it is present.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>e</CODE> - element to be removed from this set, if present</DD>
+<DT><B>Returns:</B><DD><tt>true</tt> if the set contained the specified element</DD>
+</DL>
+<HR>
+
+<A NAME="containsAll(java.util.Collection)"></A>
+
+<H3>containsAll</H3>
+<PRE>
+public boolean <B>containsAll</B>(java.util.Collection&nbsp;c)</PRE>
+<DL><DD>Returns <tt>true</tt> if this set contains all of the elements in the specified collection.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>c</CODE> - collection to be checked for containment in this set</DD>
+<DT><B>Returns:</B><DD><tt>true</tt> if this set contains all of the elements in the specified collection</DD>
+<DT><B>Throws:</B><DD><CODE>NullPointerException</CODE> - if the specified collection is null</DD>
+</DL>
+<HR>
+
+<A NAME="addAll(java.util.Collection)"></A>
+
+<H3>addAll</H3>
+<PRE>
+public boolean <B>addAll</B>(java.util.Collection&nbsp;c)</PRE>
+<DL><DD>Adds all of the elements in the specified collection to this set.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>c</CODE> - collection whose elements are to be added to this set</DD>
+<DT><B>Returns:</B><DD><tt>true</tt> if this set changed as a result of the call</DD>
+<DT><B>Throws:</B><DD><CODE>NullPointerException</CODE> - if the specified collection or any of its elements.</DD>
+</DL>
+<HR>
+
+<A NAME="removeAll(java.util.Collection)"></A>
+
+<H3>removeAll</H3>
+<PRE>
+public boolean <B>removeAll</B>(java.util.Collection&nbsp;c)</PRE>
+<DL><DD>Removes from this set all of its elements that are contained in the specified collection.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>c</CODE> - elements to be removed from this set</DD>
+<DT><B>Returns:</B><DD><tt>true</tt> if this set changed as a result of the call</DD>
+<DT><B>Throws:</B><DD><CODE>NullPointerException</CODE> - if the specified collection is null</DD>
+</DL>
+<HR>
+
+<A NAME="retainAll(java.util.Collection)"></A>
+
+<H3>retainAll</H3>
+<PRE>
+public boolean <B>retainAll</B>(java.util.Collection&nbsp;c)</PRE>
+<DL><DD>Retains only the elements in this set that are contained in the specified collection.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>c</CODE> - elements to be retained in this set</DD>
+<DT><B>Returns:</B><DD><tt>true</tt> if this set changed as a result of the call</DD>
+<DT><B>Throws:</B><DD><CODE>NullPointerException</CODE> - if the specified collection is null</DD>
+</DL>
+<HR>
+
+<A NAME="clear()"></A>
+
+<H3>clear</H3>
+<PRE>
+public void <B>clear</B>()</PRE>
+<DL><DD>Removes all of the elements from this set.<DL><DD></DD></DL></DD>
+</DL>
+<DL></DL>
+<HR>
+
+<A NAME="equals(java.lang.Object)"></A>
+
+<H3>equals</H3>
+<PRE>
+public boolean <B>equals</B>(java.lang.Object&nbsp;o)</PRE>
+<DL><DD>Compares the specified object with this set for equality. Returns <tt>true</tt> if the given object is also a set, the two sets have the same size, and every member of the given set is contained in this set.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>e</CODE> - object to be compared for equality with this set</DD>
+<DT><B>Returns:</B><DD><tt>true</tt> if the specified object is equal to this set</DD>
+</DL>
+<HR>
+
+</BODY>
+</HTML>

@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--JBuilder XML Project-->
+<project>
+  <property category="UnitTestFixtures" name="AvailableFixture.0" value="com.myjavatools.util.ComparisonFixture1"/>
+  <property category="generalFormatting2" name="overrideBasicFormatting" value="1"/>
+  <property category="javaFormatting" name="packagePrefixGroups" value="java;javax;BLANK_LINE;java.awt;javax.swing;BLANK_LINE;org;(*)"/>
+  <property category="javadoc" name="custom.tags.1" value="todo;a;To Do:"/>
+  <property category="module" name="ProjectConvertedToEnsureModulesHaveSupportedFeatures" value="1"/>
+  <property category="module" name="ProjectConvertedToUseFilesAndDependenciesAsDefaultContent" value="1"/>
+  <property category="module" name="ProjectConvertedToUseProperModuleDefaults" value="1"/>
+  <property category="module" name="projectConvertedFromModuleExtensionsToModuleFileTypes" value="1"/>
+  <property category="optimize.4" name="OptimizableType" value="intuitive.ide.borland.jb10.ProfilerBootstrap"/>
+  <property category="optimize.4" name="oicc.FilterFile" value="D:\vlad\myjavatools.com\projects\v.1.4.2\lib\lib.oif"/>
+  <property category="optimize.4" name="oicc.VMCannotExit" value="1"/>
+  <property category="optimize.4" name="oipr.FilterFile" value="D:\vlad\myjavatools.com\projects\v.1.4.2\lib\lib.oif"/>
+  <property category="optimize.4" name="oipr.VMCannotExit" value="1"/>
+  <property category="optimize.4" name="oira.FilterFile" value="D:\vlad\myjavatools.com\projects\v.1.4.2\lib\lib.oif"/>
+  <property category="path" name="DefaultDiagram" value="diagrams"/>
+  <property category="path" name="Diagram" value="diagrams"/>
+  <property category="personality" name="personality" value="com.borland.jbuilder.personality.J2EEPersonality com.borland.jbuilder.personality.EJBPersonality com.borland.jbuilder.personality.WebAppPersonality com.borland.jbuilder.webservices.personality.WebServicesPersonality com.borland.jbuilder.personality.DatabasePersonality com.borland.jbuilder.personality.CorbaPersonality com.borland.jbuilder.personality.JBuilderUMLPersonality com.borland.jbuilder.personality.VisualDesignerPersonality com.borland.jbuilder.personality.J2MEPersonality "/>
+  <property category="runtime" name="ConfigurationCount" value="19"/>
+  <property category="runtime" name="DefaultConfiguration" value="9"/>
+  <property category="runtime.0" name="ConfigurationName" value="TestAbstractMap2"/>
+  <property category="runtime.0" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.0" name="test.class" value="com.myjavatools.lib.foundation.TestAbstractMap2"/>
+  <property category="runtime.0" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.1" name="ConfigurationName" value="TestIndexedMap2"/>
+  <property category="runtime.1" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.1" name="test.class" value="com.myjavatools.lib.foundation.TestIndexedMap2"/>
+  <property category="runtime.1" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.10" name="ConfigurationName" value="TestLogical"/>
+  <property category="runtime.10" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.10" name="test.class" value="com.myjavatools.lib.TestLogical"/>
+  <property category="runtime.10" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.11" name="ConfigurationName" value="TestIterators"/>
+  <property category="runtime.11" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.11" name="test.class" value="com.myjavatools.lib.foundation.TestIterators"/>
+  <property category="runtime.11" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.12" name="ConfigurationName" value="TestRestrictedFunctionEntrySet"/>
+  <property category="runtime.12" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.12" name="test.class" value="com.myjavatools.lib.foundation.TestRestrictedFunctionEntrySet"/>
+  <property category="runtime.12" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.13" name="ConfigurationName" value="TestCompoundCollection"/>
+  <property category="runtime.13" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.13" name="test.class" value="com.myjavatools.lib.foundation.TestCompoundCollection"/>
+  <property category="runtime.13" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.14" name="ConfigurationName" value="TestFilter"/>
+  <property category="runtime.14" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.14" name="test.class" value="com.myjavatools.lib.foundation.TestFilter"/>
+  <property category="runtime.14" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.15" name="ConfigurationName" value="TestFunction"/>
+  <property category="runtime.15" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.15" name="test.class" value="com.myjavatools.lib.foundation.TestFunction"/>
+  <property category="runtime.15" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.16" name="ConfigurationName" value="TestMaps"/>
+  <property category="runtime.16" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.16" name="test.class" value="com.myjavatools.lib.foundation.TestMaps"/>
+  <property category="runtime.16" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.17" name="ConfigurationName" value="AllTests in Foundations"/>
+  <property category="runtime.17" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.17" name="test.class" value="com.myjavatools.lib.foundation.AllTests"/>
+  <property category="runtime.17" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.18" name="ConfigurationName" value="TestObjects"/>
+  <property category="runtime.18" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.18" name="test.class" value="com.myjavatools.lib.foundation.TestObjects"/>
+  <property category="runtime.18" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.19" name="ConfigurationName" value="TestLazyPair"/>
+  <property category="runtime.19" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.19" name="test.class" value="com.myjavatools.lib.foundation.TestLazyPair"/>
+  <property category="runtime.19" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.2" name="BuildTargetOnRun" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
+  <property category="runtime.2" name="ConfigurationName" value="TestRestrictedMapEntrySet"/>
+  <property category="runtime.2" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.2" name="test.class" value="com.myjavatools.lib.foundation.TestRestrictedMapEntrySet"/>
+  <property category="runtime.2" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.3" name="BuildTargetOnRun" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
+  <property category="runtime.3" name="ConfigurationName" value="map example"/>
+  <property category="runtime.3" name="RunnableType" value="com.borland.jbuilder.runtime.ApplicationRunner"/>
+  <property category="runtime.3" name="application.class" value="com.myjavatools.lib.foundation.mapexample"/>
+  <property category="runtime.3" name="application.parameters" value="java code jpeg image jpg image jar archive zip archive jpx project"/>
+  <property category="runtime.4" name="BuildTargetOnRun" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
+  <property category="runtime.4" name="ConfigurationName" value="TestObjects"/>
+  <property category="runtime.4" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.4" name="test.class" value="com.myjavatools.lib.TestObjects"/>
+  <property category="runtime.4" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.5" name="BuildTargetOnRun" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
+  <property category="runtime.5" name="ConfigurationName" value="TestStrings"/>
+  <property category="runtime.5" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.5" name="test.class" value="com.myjavatools.lib.TestStrings"/>
+  <property category="runtime.5" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.6" name="BuildTargetOnRun" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
+  <property category="runtime.6" name="ConfigurationName" value="TestFiles"/>
+  <property category="runtime.6" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.6" name="test.class" value="com.myjavatools.lib.TestFiles"/>
+  <property category="runtime.6" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.7" name="BuildTargetOnRun" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
+  <property category="runtime.7" name="ConfigurationName" value="Test Web"/>
+  <property category="runtime.7" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.7" name="test.class" value="com.myjavatools.lib.TestWeb"/>
+  <property category="runtime.7" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.8" name="BuildTargetOnRun" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
+  <property category="runtime.8" name="ConfigurationName" value="TestTools"/>
+  <property category="runtime.8" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.8" name="test.class" value="com.myjavatools.lib.TestTools"/>
+  <property category="runtime.8" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.9" name="BuildTargetOnRun" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
+  <property category="runtime.9" name="ConfigurationName" value="AllTests"/>
+  <property category="runtime.9" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.9" name="test.class" value="com.myjavatools.lib.AllTests"/>
+  <property category="runtime.9" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="serverservices" name="disabled.services" value="connector;jdatastore;sqlj"/>
+  <property category="serverservices" name="single.server.name" value="Tomcat 4.1"/>
+  <property category="sys" name="AuthorLabel" value="@author"/>
+  <property category="sys" name="Autorefresh" value="1"/>
+  <property category="sys" name="BackupPath" value="bak"/>
+  <property category="sys" name="CheckStable" value="1"/>
+  <property category="sys" name="Company" value="My Java Tools"/>
+  <property category="sys" name="CompanyLabel" value="Company:"/>
+  <property category="sys" name="Copyright" value=" This is public domain; The right of people to use, distribute, copy or improve the contents of the following may not be restricted.&lt;/p&gt;"/>
+  <property category="sys" name="CopyrightLabel" value="Copyright:"/>
+  <property category="sys" name="DefaultPath" value="src"/>
+  <property category="sys" name="Description" value="This is a mixture of useful Java Tools"/>
+  <property category="sys" name="DescriptionLabel" value="Description:"/>
+  <property category="sys" name="DocPath" value="doc"/>
+  <property category="sys" name="ExcludeClassEnabled" value="0"/>
+  <property category="sys" name="ExistingPaths" value="1"/>
+  <property category="sys" name="FallThrougs" value="1"/>
+  <property category="sys" name="IncludeTestPath" value="1"/>
+  <property category="sys" name="InstanceVisibility" value="2"/>
+  <property category="sys" name="JDK" value="java version 1.5.0_04-b05"/>
+  <property category="sys" name="JvmVersion" value="1.5"/>
+  <property category="sys" name="LastTag" value="0"/>
+  <property category="sys" name="Libraries" value="JUnit"/>
+  <property category="sys" name="MakeStable" value="0"/>
+  <property category="sys" name="OutPath" value="classes"/>
+  <property category="sys" name="ReturnWithinFinally" value="1"/>
+  <property category="sys" name="Serial_UID" value="1"/>
+  <property category="sys" name="SourcePath" value="src;test"/>
+  <property category="sys" name="SourceVersion" value="1.5"/>
+  <property category="sys" name="TestPath" value="test"/>
+  <property category="sys" name="Title" value="My Java Tools Library"/>
+  <property category="sys" name="TitleLabel" value="Title:"/>
+  <property category="sys" name="UncheckedGenerics" value="1"/>
+  <property category="sys" name="Version" value="6.0"/>
+  <property category="sys" name="VersionLabel" value="@version"/>
+  <property category="sys" name="WorkingDirectory" value="."/>
+  <property category="sys" name="max.package.levels" value="4"/>
+  <node name="Binary" type="Archive">
+    <property category="archiving" name="contentRules.1" value="I:**/*.*"/>
+    <property category="archiving" name="obfuscator" value="RetroGuard for J2ME"/>
+    <property category="archiving" name="targetPath" value="mjlib.jar"/>
+    <property category="archiving" name="usingRules" value="1"/>
+  </node>
+  <node name="Documentation" type="Archive">
+    <property category="archiving" name="archiverClass" value="com.borland.jbuilder.wizard.archive.DocumentationArchiver"/>
+    <property category="archiving" name="targetPath" value="mjlib-doc.jar"/>
+  </node>
+  <node name="mjlib60" type="Archive">
+    <property category="archiving" name="contentRules.1" value="F:mjlib_doc.jar;mjlib-doc.jar"/>
+    <property category="archiving" name="contentRules.2" value="F:mjlib.jar;mjlib.jar"/>
+    <property category="archiving" name="contentRules.3" value="F:mjlib-src.jar;mjlib-src.jar"/>
+    <property category="archiving" name="contentRules.4" value="F:lib.jpx;lib.jpx"/>
+    <property category="archiving" name="contentRules.5" value="F:lib.jpx.local;lib.jpx.local"/>
+    <property category="archiving" name="includeManifest" value="0"/>
+    <property category="archiving" name="obfuscator" value="RetroGuard for J2ME"/>
+    <property category="archiving" name="targetCompressed" value="1"/>
+    <property category="archiving" name="targetPath" value="mjlib60.zip"/>
+    <property category="archiving" name="usingRules" value="1"/>
+  </node>
+  <node name="Source" type="Archive">
+    <property category="archiving" name="archiverClass" value="com.borland.jbuilder.wizard.archive.SourceArchiver"/>
+    <property category="archiving" name="targetPath" value="mjlib-src.jar"/>
+  </node>
+  <node name="Standard Doclet" type="Javadoc">
+    <property category="docletJavadoc" name="version" value="1"/>
+    <property category="javadoc" name="scope" value="protected"/>
+    <property category="nodeJavadoc" name="directory" value="doc"/>
+    <property category="nodeJavadoc" name="displayAllOutput" value="1"/>
+    <property category="nodeJavadoc" name="includeTestPath" value="0"/>
+    <property category="nodeJavadoc" name="useProjectJDK" value="1"/>
+  </node>
+  <file path="src/com/myjavatools/lib/Bytes.java"/>
+  <file path="src/com/myjavatools/lib/foundation/CompoundIterable.java"/>
+  <file path="src/com/myjavatools/lib/Files.java"/>
+  <file path="src/com/myjavatools/lib/FolderIterator.java"/>
+  <file path="src/com/myjavatools/lib/FormattedWriter.java"/>
+  <file path="../foundations.html"/>
+  <file path="src/com/myjavatools/lib/foundation/KeyValueArrayMap.java"/>
+  <file path="src/com/myjavatools/lib/foundation/KeyValuePairsMap.java"/>
+  <file path="src/com/myjavatools/lib/foundation/Objects.java"/>
+  <file path="src/com/myjavatools/lib/human/Predicate.java"/>
+  <file path="src/com/myjavatools/lib/foundation/RestrictedFunctionEntrySet.java"/>
+  <file path="test/com/myjavatools/lib/TestBytes.java"/>
+  <file path="todo.html"/>
+  <file path="src/com/myjavatools/lib/ZipInput.java"/>
+</project>

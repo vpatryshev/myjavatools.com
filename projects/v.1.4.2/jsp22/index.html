@@ -1,0 +1,200 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <meta name="Author" content="Vlad Patryshev">
+   <title>JSP As Macro Language</title>
+
+<script language="javascript">
+  function sidekick(url, width, height) {
+    open(url, url, "width=" + width + ", height=" + height + 
+                              ", directories=0, location=0, menubar=0, toolbar=0, titlebar=0, scrollbars=1, resizable=0");
+  }
+</script>
+
+</head>
+<body link="#0000FF" vlink="#800080">
+<i>Vlad Patryshev</i>
+<h3>
+JSP As Macro Language</h3>
+
+<h4>
+The Problem</h4>
+<p>JSP is a very good tool for manipulating texts - it is format-independent,
+and it contains the full and beautiful functionality of Java, and it is easily
+parameterized. It would be great to use these features for text generation
+in an "industrial environment". See how easy it could be: e.g. we want to
+produce a "year-dependent" copyrigh notice; the following code could do it:<p>
+<tt>
+<table border=1 bgcolor="fffff0"><tr><td><PRE CLASS="SourceCode">
+"Copyright (c) My Precious Company 1970-&lt;%= new java.util.Date().getYear() + 1900 %&gt;"
+</PRE></td></tr></table>
+</tt>
+<p>can produce something like 
+<p>
+<tt>
+<table border=1 bgcolor="fffff0"><tr><td><PRE CLASS="SourceCode">
+Copyright (c) My Precious Company 1970-2003
+</PRE></td></tr></table>
+</tt>
+
+<p>In real life, though, text generation, in most cases, depends on environment
+- typically, one has to specify target platform, code version, product name,
+and the like. These can be stored in a database, but, most frequently, are
+passed to other applications that process documents via environment variables.
+Now, how can one pass an environment variable to a JSP? The only conceivable
+way is to pass them through GET or POST parameters, so that the JSP could
+analyze them or just include into the generated text, e.g.:
+
+<p><tt><table border=1 bgcolor="fffff0"><tr><td><PRE CLASS="SourceCode">
+"Copyright (c) &lt;%= request.getParameter("COMPANY_NAME")%&gt; 
+    1970-&lt;%= new java.util.Date().getYear() + 1900 %&gt;. 
+    &lt;%= request.getParameter("WHAT_IS_RESERVED")%&gt; rights reserved."
+</PRE></td></tr></table>
+</tt>
+
+<p>This JSP would produce something like when the correct arguments are passed:
+
+<p><tt><table border=1 bgcolor="fffff0"><tr><td><PRE CLASS="SourceCode">
+Copyright (c) Evil Empire 1970-2003. All your base rights reserved.</PRE></td></tr></table>
+</tt>
+
+<p>There is one obstacle, though: JSP are supposed to work on the web servers,
+not on your desktop machine. What a pity, cannot we fix it? Yes, we can.
+To do this, we will have to launch a JSP server, Tomcat, for instance, on
+our local machine and pass it our JSP code for execution, together with parameters,
+intercepting the output.
+
+<p><h4>The Program</h4>
+
+<p>Let us assume that there is a program that does just that: passes a JSP
+to Tomcat for execution. Its can be called using the following command line:
+
+<p><tt><table border=1 bgcolor="fffff0"><tr><td><PRE CLASS="SourceCode">
+jsp.exe -. "// Copyright (c) My Precious Company 1970-&lt;%= new java.util.Date().getYear() + 1900 %&gt;"</tt><tt> &gt; MyFinalProgram.java</PRE></td></tr></table></tt>
+
+<p>On Linux the following command would probably make more sense:
+
+<p><tt><table border=1 bgcolor="fffff0"><tr><td><PRE CLASS="SourceCode">
+cat `jsp-linux -. "// Copyright (c) My Precious Company 1970-&lt;%= new java.util.Date().getYear() + 1900 %&gt;"` MyProgram.java
+&gt; MyFinalProgram.java</PRE></td></tr></table></tt>
+
+<p>This way we could have the copyright notice inserted into the code, not bugging
+developers with orders to refresh the date every Christhmas.
+
+<p>Parameters, say, the values of environment variables, can be passed in the command line as well, like this:
+
+<p><tt><table border=1 bgcolor="fffff0"><tr><td><PRE CLASS="SourceCode">
+cat `jsp-linux-. "//Copyright (c) &lt;%= request.getParameter("COMPANY_NAME")%&gt; 1970-&lt;%= new java.util.Date().getYear()
++ 1900 %&gt;. &lt;%request.getParameter("WHAT_IS_RESERVED")%&gt; rights reserved." -COMPANY_NAME "Evil Empire" -WHAT_IS_RESERVED
+"All your base"` MyEvilProgram.java.jsp &gt; MyEvilProgram.java</PRE></td></tr></table></tt>
+
+<p>As you see, the JSP contents is just a special parameter named <tt>'.'</tt>.
+
+<p>Above we saw a shortcut method of passing parameters. An official method to pass parameters is the following:
+
+<p><tt><table border=1 bgcolor="fffff0"><tr><td><PRE CLASS="SourceCode">
+--param <i>&lt;parameter name&gt;</i> --value <i>&lt;parameter value&gt;</i></PRE></td></tr></table></tt>
+
+<p>It is rarely convenient to pass the whole JSP contents in a command line; the contents is usually stored in a file. Other parameters may as well reside in a file - hence the third method of passing parameters:
+
+<p><tt><table border=1 bgcolor="fffff0"><tr><td><PRE CLASS="SourceCode">
+--param <i>&lt;parameter name&gt; </i>--file <i>&lt;file name&gt;</i></PRE></td></tr></table></tt>
+
+<p>For instance, instead of writing a three-four-line "command line", we could write the following:
+
+<p><tt><table border=1 bgcolor="fffff0"><tr><td><PRE CLASS="SourceCode">
+cat `jsp-linux -param . -file copyright.jsp -COMPANY_NAME $COMPANY_NAME -WHAT_IS_RESERVED "All your base"` MyEvilProgram.java &gt;MyFinalEvilProgram.java</PRE></td></tr></table></tt>
+
+<p>And, at last, the obvious solution to provide a JSP to execute is to pass it via standard input, like this:
+
+<p><tt><table border=1 bgcolor="fffff0"><tr><td><PRE CLASS="SourceCode">
+cat `cat copyright.jsp | jsp-linux -COMPANY_NAME $COMPANY_NAME -WHAT_IS_RESERVED "All your base"` MyEvilProgram.java &gt;MyFinalEvilProgram.java</PRE></td></tr></table></tt>
+
+<p>One more form of passing parameters could probably be added: <tt>--param <i>&lt;parameter
+name&gt; </i>--http &lt;<i>url&gt;</i></tt> - but I doubt whether it makes any practical sense.
+
+<p>Here is a real-world example of a real-world JSP being applied to the contents of another file:
+
+<a name="sampletable"><p>
+<tt><table border=1 bgcolor="fffff0"><tr><td><PRE CLASS="SourceCode">
+jsp --param . --file <a href=#sampletable onclick="sidekick('sampletable.jsp.txt', 600, 480)">sampletable.jsp</a> --param data --file <a href=#sampletable onclick="sidekick('sampledata.txt', 600, 480)">sampledata.txt</a> &gt; <a href=#sampletable onclick="sidekick('sampleresult.html', 600, 480)">sampleresult.html</a></PRE></td></tr></table></tt>
+
+<a name="dansavarese"><p>And here is one more example. 
+This time we show that this can be used for conditional compilation 
+(see <i>Dan Savarese</i>'s <a href="http://www.fawcette.com/javapro/2003_03/magazine/columns/proshop/"><b>"The Case for Conditional Compilation"</b></a>).
+The <a href=#dansavarese onclick="sidekick('http://www.fawcette.com/javapro/2003_03/magazine/columns/proshop/listing1.asp', 600, 480)">sample code</a> from that article can be rewritten, using JSP, like this:
+<p>
+<table border=1 bgcolor="fffff0"><tr><td class="tabletext" width="350"><PRE CLASS="SourceCode">
+import java.util.*;
+
+/***
+* Heap implements a binary heap stored as an array 
+* that can be used as a priority queue or for
+* performing a heap sort.
+*/
+public class Heap 
+<% if (request.getParameter("HAS_JAVA_IO_SERIALIZABLE") != null) {%>
+   implements java.io.Serializable
+<%}%>
+{
+<% if (request.getParameter("HAS_JAVA_UTIL_COMPARATOR") != null) {%>
+   public static interface Comparator {
+      public int compare(Object o1, Object o2);
+      public boolean equals(Object obj);
+   }
+<%}%>
+....
+</PRE>
+</td></tr></table>
+
+<p><h4>The Trick</h4>
+
+<p>Well, how does it work then? When jsp.exe starts, it retrieves a zip
+file with Tomcat from its resources and installs Tomcat in a working
+directory - unless it is already installed. Then it launches Tomcat on
+a special port (8079). Inside Tomcat's web directory there is a very
+simple but powerful JSP program - Universal JSP. Its code looks like
+this:
+
+<p>
+<table border=1 bgcolor="fffff0"><tr><td><PRE CLASS="SourceCode">
+&lt;%
+ <font color="#000099"><i>/**
+  *&nbsp;&nbsp; Universal JSP
+  */</i></font>
+
+ String value = (String)request.getParameter(<font color="#6600cc">"."</font>);
+      
+ <b>if</b> (value != null) {
+    <b>String </b>filename = session.getId() + <font color="#6600cc">".jsp"</font>;
+    java.io.File sourcefile = <b>new </b>java.io.File(<font
+ color="#6600cc">"webapps/ROOT"</font>, filename);
+
+    <b>try</b> {
+      java.io.PrintWriter pw = <b>new </b>java.io.PrintWriter(
+                               <b>new </b>java.io.FileOutputStream(sourcefile));
+
+      pw.write(value);
+      pw.close();
+%&gt;&lt;jsp:include page="&lt;%=filename%&gt;" flush="true"/&gt;&lt;%
+
+&nbsp; } <b>catch </b>(Exception e) {
+    out.print(<font color="#6600cc">"***** Error: problems with file permissions for this jsp&lt;br&gt;"</font> + 
+              e + <font color="#6600cc">"&lt;br&gt;"</font>);
+&nbsp;&nbsp;&nbsp; e.printStackTrace(new java.io.PrintWriter(out));
+
+&nbsp; }
+} <b>else </b>{
+&nbsp; %&gt;;)&lt;%
+}%&gt;
+</PRE></td></tr></table>
+<p>jsp.exe sends to Universal JSP a request that contains all the 
+parameters and the body of the JSP that has to be executed. The normal output from
+Universal JSP is that of the JSP that we had just passed - and it is
+caught by jsp.exe and redirected to the standard output.
+
+<p><h4>Download</h4>
+
+<p>Download <a href="jsp-src.zip">source</a>, <a href="jsp-win.zip">Windows</a>, <a href="jsp-linux.zip">Linux</a>, <a href="jsp-jar.zip">binary jar</a>. It is free.<br>
+<a href="jakarta-tomcat-4.1.27-LE-jdk14.zip">Tomcat libraries that were used in this project.</a>

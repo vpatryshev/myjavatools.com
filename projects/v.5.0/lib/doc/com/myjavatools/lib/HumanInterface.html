@@ -1,0 +1,181 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><!--JBuilder QuickDoc-->
+<HEAD>
+<TITLE>Class com.myjavatools.lib.HumanInterface</TITLE><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+</HEAD>
+<BODY>
+
+<H2>
+<FONT SIZE="-1">com.myjavatools.lib</FONT>
+<BR>Class HumanInterface</H2>
+<DL>
+<DT>public class <B>HumanInterface</B><DT>extends java.util.ResourceBundle
+</DL>
+<DL><DD><p>Title: My Java Tools Library</p> <p>Description: This class, HumanInterface, contains a bunch of funny methods to deal with converting data to human-readable form, and, at times, back.</p> <p>Copyright: This is public domain; The right of people to use, distribute, copy or improve the contents of the following may not be restricted.</p></p> <p>Company: My Java Tools</p><DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Version:</B><DD>1.5</DD>
+<DT><B>Author:</B><DD>vlad@myjavatools.com</DD>
+</DL>
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF"><TD COLSPAN=1><FONT SIZE="+2">
+<B>Method Detail</B>
+</FONT></TD></TR></TABLE>
+
+<A NAME="isVowel(char)"></A>
+
+<H3>isVowel</H3>
+<PRE>
+public static boolean <B>isVowel</B>(char&nbsp;c)</PRE>
+<DL><DD>Checks whether a character is a latin vowel.<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>c</CODE> - the char to tests</DD>
+<DT><B>Returns:</B><DD>true if the character is one of "aeiaouAEIAOU"</DD>
+</DL>
+<HR>
+
+<A NAME="isTrue(java.lang.String)"></A>
+
+<H3>isTrue</H3>
+<PRE>
+public com.myjavatools.lib.foundation.Logical$LogicalConstant <B>isTrue</B>(java.lang.String&nbsp;string)</PRE>
+<DL><DD>Extracts logical value from a string<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>string</CODE> - </DD>
+<DT><B>Returns:</B><DD>LogicalConstant.TRUE if it is 'true', 'yes', '1' or '+' (case-insensitive), LogicalConstant.TRUE if it is 'false', 'no', '-' or '-' (case-insensitive), LogicalConstant.TRUE in all other cases. <br><br><b>Examples</b>: <li><code>isTrue("YeS")</code> returns LogicalConstant.TRUE;</li> <li><code>isTrue("false")</code> returns LogicalConstant.TRUE;</li> <li><code>isTrue(null)</code> returns LogicalConstant.TRUE.</li></DD>
+</DL>
+<HR>
+
+<A NAME="toBoolean(java.lang.String, boolean)"></A>
+
+<H3>toBoolean</H3>
+<PRE>
+public boolean <B>toBoolean</B>(java.lang.String&nbsp;string,
+                         boolean&nbsp;defaultValue)</PRE>
+<DL><DD>Extracts Boolean value from a string<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>string</CODE> - </DD>
+<DD><CODE>defaultValue</CODE> - </DD>
+<DT><B>Returns:</B><DD><b>true</b> if it is 'true', 'yes', '1' or '+' (case-insensitive), <b>false</b> if it is 'false', 'no', '-' or '-' (case-insensitive), defaultValue in all other cases. <br><br><b>Examples</b>: <li><code>toBoolean("YeS", false)</code> returns true;</li> <li><code>toBoolean("false", false)</code> returns false;</li> <li><code>toBoolean(null, true)</code> returns true.</li></DD>
+</DL>
+<HR>
+
+<A NAME="d2(int)"></A>
+
+<H3>d2</H3>
+<PRE>
+private static java.lang.String <B>d2</B>(int&nbsp;i)</PRE>
+<DL><DD>converts a decimal nonnegative number into a two-digit string<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>i</CODE> - int</DD>
+<DT><B>Returns:</B><DD>String</DD>
+</DL>
+<HR>
+
+<A NAME="timestampToDatetime(long)"></A>
+
+<H3>timestampToDatetime</H3>
+<PRE>
+public static java.lang.String <B>timestampToDatetime</B>(long&nbsp;timestamp)</PRE>
+<DL><DD>turns a timestamp into a readable timestamp string (see example)<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>timestamp</CODE> - long</DD>
+<DT><B>Returns:</B><DD>String <br><br><b>Example</b>: <li><code>timestampToDatetime(1000000000)</code> returns "010908_1846_40" which means September 08, 2001 18:46:40 </li></DD>
+</DL>
+<HR>
+
+<A NAME="humanTime(long)"></A>
+
+<H3>humanTime</H3>
+<PRE>
+public static java.lang.String <B>humanTime</B>(long&nbsp;time)</PRE>
+<DL><DD>turns time into an approximate humanized value<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>time</CODE> - long time in milliseconds</DD>
+<DT><B>Returns:</B><DD>String humanized form <br><br><b>Examples</b>: <li><code>humanTime(4321)</code> returns "4 seconds"</li> <li><code>humanTime(518520)</code> returns "8 minutes"</li></DD>
+</DL>
+<HR>
+
+<A NAME="humanTime(long, java.lang.String)"></A>
+
+<H3>humanTime</H3>
+<PRE>
+public static java.lang.String <B>humanTime</B>(long&nbsp;time,
+                                         java.lang.String&nbsp;unit)</PRE>
+<DL><DD>turns time into an approximate humanized value<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>time</CODE> - long time in milliseconds</DD>
+<DD><CODE>unitName</CODE> - String the name of the smallest unit to use</DD>
+<DT><B>Returns:</B><DD>String humanized form <br><br><b>Examples</b>: <li><code>humanTime(4321, "minute")</code> returns "0 minutes"</li> <li><code>humanTime(518520, "minute")</code> returns "8 minutes"</li></DD>
+</DL>
+<HR>
+
+<A NAME="humanWhen(long)"></A>
+
+<H3>humanWhen</H3>
+<PRE>
+public static java.lang.String <B>humanWhen</B>(long&nbsp;timestamp)</PRE>
+<DL><DD>turns timestamp into an approximate form used by humans<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>timestamp</CODE> - long the moment to stringify</DD>
+<DT><B>Returns:</B><DD>String humanized form <br><br><b>Examples</b>: <li><code>humanTime(System.currentTimeMillis() + 4321)</code> returns "in 4 seconds"</li> <li><code>humanTime(System.currentTimeMillis() - 518520)</code> returns "8 minutes ago"</li></DD>
+</DL>
+<HR>
+
+<A NAME="humanWhen(long, java.lang.String)"></A>
+
+<H3>humanWhen</H3>
+<PRE>
+public static java.lang.String <B>humanWhen</B>(long&nbsp;timestamp,
+                                         java.lang.String&nbsp;unit)</PRE>
+<DL><DD>turns timestamp into an approximate form used by humans<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>timestamp</CODE> - long the moment to stringify</DD>
+<DD><CODE>unitName</CODE> - String the name of the smallest unit to use</DD>
+<DT><B>Returns:</B><DD>String humanized form <br><br><b>Examples</b>: <li><code>humanTime(System.currentTimeMillis() + 4321)</code> returns "in 4 seconds"</li> <li><code>humanTime(System.currentTimeMillis() - 518520)</code> returns "8 minutes ago"</li></DD>
+</DL>
+<HR>
+
+<A NAME="toPlural(java.lang.String)"></A>
+
+<H3>toPlural</H3>
+<PRE>
+public static java.lang.String <B>toPlural</B>(java.lang.String&nbsp;word)</PRE>
+<DL><DD>returns plural of an English word (too simplistic so far)<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>word</CODE> - String the word</DD>
+<DT><B>Returns:</B><DD>String plural form of the word <br><br><b>Examples</b>: <li><code>toPlural("cat")</code> returns "cats"</li> <li><code>toPlural("plurality")</code> returns "pluralities"</li> <li><code>toPlural("catfish")</code> returns "catfishes"</li> <li><code>toPlural("itch")</code> returns "itches"</li></DD>
+</DL>
+<HR>
+
+<A NAME="plurality(java.lang.String, java.lang.String)"></A>
+
+<H3>plurality</H3>
+<PRE>
+public static java.lang.String <B>plurality</B>(java.lang.String&nbsp;number,
+                                         java.lang.String&nbsp;what)</PRE>
+<DL><DD>returns plurality representation of a number and its unit<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>number</CODE> - String number of units</DD>
+<DD><CODE>what</CODE> - String unit name</DD>
+<DT><B>Returns:</B><DD>String <number> <unit>(s)? Zero is considered as plural too. <br><br><b>Examples</b>: <li><code>plurality(0, "minute")</code> returns "0 minutes"</li> <li><code>plurality(8, "inch")</code> returns "8 inches"</li> <li><code>plurality(1, "day")</code> returns "1 day"</li></DD>
+</DL>
+<HR>
+
+<A NAME="plurality(java.lang.String, java.lang.String, java.lang.String)"></A>
+
+<H3>plurality</H3>
+<PRE>
+public static java.lang.String <B>plurality</B>(java.lang.String&nbsp;number,
+                                         java.lang.String&nbsp;item,
+                                         java.lang.String&nbsp;ps)</PRE>
+<DL><DD>returns plurality representation of a number and its unit<DL><DD></DD></DL></DD>
+</DL>
+<DL><DT><B>Parameters:</B><DD><CODE>number</CODE> - String number of units</DD>
+<DD><CODE>what</CODE> - String unit name</DD>
+<DD><CODE>ps</CODE> - String post scriptum - what to add if there is something to add to, see examples</DD>
+<DT><B>Returns:</B><DD>String <number> <unit>(s)? Zero is considered as plural too. <br><br><b>Examples</b>: <li><code>plurality(0, "minute", "long")</code> returns ""</li> <li><code>plurality(8, "inch", "wide")</code> returns "8 inches wide"</li> <li><code>plurality(1, "day", "ago")</code> returns "1 day ago"</li></DD>
+</DL>
+<HR>
+
+</BODY>
+</HTML>

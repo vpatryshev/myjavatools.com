@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--JBuilder XML Project-->
+<project>
+  <property category="generalFormatting2" name="overrideBasicFormatting" value="1"/>
+  <property category="idl" name="ProcessIDL" value="false"/>
+  <property category="javaFormatting" name="packagePrefixGroups" value="java;javax;BLANK_LINE;java.awt;javax.swing;BLANK_LINE;org;(*)"/>
+  <property category="javadoc" name="custom.tags.1" value="todo;a;To Do:"/>
+  <property category="module" name="ProjectConvertedToEnsureModulesHaveSupportedFeatures" value="1"/>
+  <property category="module" name="ProjectConvertedToUseFilesAndDependenciesAsDefaultContent" value="1"/>
+  <property category="module" name="ProjectConvertedToUseProperModuleDefaults" value="1"/>
+  <property category="module" name="last.wizard.module.name" value="RssTest"/>
+  <property category="module" name="projectConvertedFromModuleExtensionsToModuleFileTypes" value="1"/>
+  <property category="personality" name="personality" value="com.borland.jbuilder.personality.JBuilderUMLPersonality "/>
+  <property category="runtime" name="ConfigurationCount" value="13"/>
+  <property category="runtime.0" name="ConfigurationName" value="AllTests"/>
+  <property category="runtime.0" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.0" name="test.class" value="com.myjavatools.xml.AllTests"/>
+  <property category="runtime.0" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.1" name="ConfigurationName" value="TestXmlData"/>
+  <property category="runtime.1" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.1" name="test.class" value="com.myjavatools.xml.TestXmlData"/>
+  <property category="runtime.1" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.10" name="BuildTargetOnRun" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
+  <property category="runtime.10" name="ConfigurationName" value="TestRss_Slashdot"/>
+  <property category="runtime.10" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.10" name="test.class" value="com.myjavatools.xml.TestRss_Slashdot"/>
+  <property category="runtime.10" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.11" name="BuildTargetOnRun" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
+  <property category="runtime.11" name="ConfigurationName" value="TestAtom_0_8"/>
+  <property category="runtime.11" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.11" name="test.class" value="com.myjavatools.xml.TestAtom_0_8"/>
+  <property category="runtime.11" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.12" name="ConfigurationName" value="rsstest"/>
+  <property category="runtime.12" name="RunnableType" value="com.borland.jbuilder.runtime.ServerRunner"/>
+  <property category="runtime.12" name="appserver.parameters" value=""/>
+  <property category="runtime.12" name="appserver.servername" value=""/>
+  <property category="runtime.12" name="appserver.vmparameters" value=""/>
+  <property category="runtime.12" name="jsp.launchuri" value="/RssTest/rsstest.jsp"/>
+  <property category="runtime.12" name="jsprunner.launchuri" value="/RssTest/rsstest.jsp"/>
+  <property category="runtime.12" name="server.arguments" value=""/>
+  <property category="runtime.12" name="server.instance.name" value=""/>
+  <property category="runtime.12" name="server.vmparameters" value=""/>
+  <property category="runtime.13" name="BuildTargetOnRun" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
+  <property category="runtime.13" name="ConfigurationName" value="U2"/>
+  <property category="runtime.13" name="RunnableType" value="com.borland.jbuilder.runtime.ApplicationRunner"/>
+  <property category="runtime.13" name="application.class" value="com.myjavatools.xml.Untitled2"/>
+  <property category="runtime.2" name="BuildTargetOnRun" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
+  <property category="runtime.2" name="ConfigurationName" value="TestRss_0_90"/>
+  <property category="runtime.2" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.2" name="test.class" value="com.myjavatools.xml.TestRss_0_90"/>
+  <property category="runtime.2" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.3" name="BuildTargetOnRun" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
+  <property category="runtime.3" name="ConfigurationName" value="TestRss_0_91"/>
+  <property category="runtime.3" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.3" name="test.class" value="com.myjavatools.xml.TestRss_0_91"/>
+  <property category="runtime.3" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.4" name="BuildTargetOnRun" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
+  <property category="runtime.4" name="ConfigurationName" value="TestRss_0_91_intl"/>
+  <property category="runtime.4" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.4" name="test.class" value="com.myjavatools.xml.TestRss_0_91_intl"/>
+  <property category="runtime.4" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.5" name="BuildTargetOnRun" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
+  <property category="runtime.5" name="ConfigurationName" value="TestRss_0_92"/>
+  <property category="runtime.5" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.5" name="test.class" value="com.myjavatools.xml.TestRss_0_92"/>
+  <property category="runtime.5" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.6" name="BuildTargetOnRun" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
+  <property category="runtime.6" name="ConfigurationName" value="TestRss_0_93"/>
+  <property category="runtime.6" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.6" name="test.class" value="com.myjavatools.xml.TestRss_0_93"/>
+  <property category="runtime.6" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.7" name="BuildTargetOnRun" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
+  <property category="runtime.7" name="ConfigurationName" value="TestRss_0_94"/>
+  <property category="runtime.7" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.7" name="test.class" value="com.myjavatools.xml.TestRss_0_94"/>
+  <property category="runtime.7" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.8" name="BuildTargetOnRun" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
+  <property category="runtime.8" name="ConfigurationName" value="TestRss_1_0"/>
+  <property category="runtime.8" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.8" name="test.class" value="com.myjavatools.xml.TestRss_1_0"/>
+  <property category="runtime.8" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.9" name="BuildTargetOnRun" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
+  <property category="runtime.9" name="ConfigurationName" value="TestRss_2_0"/>
+  <property category="runtime.9" name="RunnableType" value="com.borland.jbuilder.runtime.TestRunner"/>
+  <property category="runtime.9" name="test.class" value="com.myjavatools.xml.TestRss_2_0"/>
+  <property category="runtime.9" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="serverservices" name="disabled.services" value="connector;jdatastore"/>
+  <property category="serverservices" name="single.server.name" value="Tomcat 4.0"/>
+  <property category="sys" name="AuthorLabel" value="@author"/>
+  <property category="sys" name="Autorefresh" value="1"/>
+  <property category="sys" name="BackupPath" value="bak"/>
+  <property category="sys" name="CheckStable" value="1"/>
+  <property category="sys" name="Company" value=""/>
+  <property category="sys" name="CompanyLabel" value="Company:"/>
+  <property category="sys" name="Copyright" value="Copyright (c) 2003"/>
+  <property category="sys" name="CopyrightLabel" value="Copyright:"/>
+  <property category="sys" name="DefaultPath" value="src"/>
+  <property category="sys" name="Description" value="Simple XML-handling package"/>
+  <property category="sys" name="DescriptionLabel" value="Description:"/>
+  <property category="sys" name="DocPath" value="doc"/>
+  <property category="sys" name="ExcludeClassEnabled" value="0"/>
+  <property category="sys" name="ExistingPaths" value="1"/>
+  <property category="sys" name="FallThrougs" value="1"/>
+  <property category="sys" name="IncludeTestPath" value="1"/>
+  <property category="sys" name="InstanceVisibility" value="2"/>
+  <property category="sys" name="JDK" value="java version 1.5.0_02-b09"/>
+  <property category="sys" name="JvmVersion" value="1.5"/>
+  <property category="sys" name="LastTag" value="0"/>
+  <property category="sys" name="Libraries" value="JUnit;MJLib5"/>
+  <property category="sys" name="MakeStable" value="0"/>
+  <property category="sys" name="OutPath" value="classes"/>
+  <property category="sys" name="ReturnWithinFinally" value="1"/>
+  <property category="sys" name="Serial_UID" value="1"/>
+  <property category="sys" name="SourcePath" value="src;test"/>
+  <property category="sys" name="SourceVersion" value="1.5"/>
+  <property category="sys" name="TestPath" value="test"/>
+  <property category="sys" name="Title" value="MyJavaTools XML"/>
+  <property category="sys" name="TitleLabel" value="Title:"/>
+  <property category="sys" name="UncheckedGenerics" value="1"/>
+  <property category="sys" name="Version" value="1.0"/>
+  <property category="sys" name="VersionLabel" value="@version"/>
+  <property category="sys" name="WorkingDirectory" value="."/>
+  <property category="team" name="ignorePath.0" value="Tomcat"/>
+  <property category="webModule" name="last.wizard.module.name" value="RssTest"/>
+  <node name="Documentation" type="Archive">
+    <property category="archiving" name="archiverClass" value="com.borland.jbuilder.wizard.archive.DocumentationArchiver"/>
+    <property category="archiving" name="targetPath" value="mjxml-doc.jar"/>
+  </node>
+  <node name="mjxml" type="Archive">
+    <property category="archiving" name="libraryStates.1" value="3:My Java Tools"/>
+    <property category="archiving" name="targetPath" value="mjxml.jar"/>
+  </node>
+  <node name="source" type="Archive">
+    <property category="archiving" name="archiverClass" value="com.borland.jbuilder.wizard.archive.SourceArchiver"/>
+    <property category="archiving" name="targetCompressed" value="1"/>
+    <property category="archiving" name="targetPath" value="mjxml-source.jar"/>
+  </node>
+  <node name="Standard Doclet" type="Javadoc">
+    <property category="javadoc" name="scope" value="public"/>
+    <property category="nodeJavadoc" name="directory" value="doc"/>
+    <property category="nodeJavadoc" name="displayAllOutput" value="1"/>
+  </node>
+  <file path="rss.v.0.90.xml.xml"/>
+  <file path="test/com/myjavatools/xml/TestRss_0_91_intl.java"/>
+  <file path="src/com/myjavatools/xml/XmlData.java"/>
+</project>

@@ -1,0 +1,94 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<!-- Sources:
+     http://www.raditha.com/java/javascript.php,
+     http://java.sun.com/j2se/1.5.0/docs/guide/plugin/developer_guide/using_tags.html
+-->
+	 <title>Tools Applet Test</title>
+</head><body>
+<script>
+  var JS_TOOLS = function() {
+    var JSTOOLS_ID = "JSTOOLS_ID";
+    var userAgent = navigator.userAgent.toLowerCase();
+    var isIE = userAgent.indexOf('msie') != -1 &&
+                userAgent.indexOf('opera') < 0;
+
+    function _(var_args) {
+      for (var i = 0; i < arguments.length; i++) {
+        document.write(arguments[i]);
+      }
+    };
+
+    function openElement(name, attributes) {
+      _('<', name);
+      for (var id in attributes) {
+        _(' ', id, '="', attributes[id], '"');
+      }
+      _('>');
+    }
+
+    function closeElement(name) {
+      _('</', name, '>');
+    }
+
+    function addParameters(parameters) {
+      for (var name in parameters) {
+        openElement('param', {name: name, value: parameters[name]});
+      }
+    }
+
+    openElement('object',
+      isIE ?
+        {
+          classid: "clsid:8AD9C840-044E-11D1-B3E9-00805F499D93",
+          style: "border-width:0;",
+          codebase: "http://java.sun.com/products/plugin/autodl/jinstall-1_4_1-windows-i586.cab#version=1,4,1",
+          name: JSTOOLS_ID,
+          id: JSTOOLS_ID
+        } :
+        {
+          type: "application/x-java-applet;version=1.4.1",
+          name: JSTOOLS_ID,
+          id: JSTOOLS_ID
+        });
+
+    addParameters({
+      archive: "jstools.jar",
+      code: "com.google.javascript.keyboard.JsTools",
+      mayscript: "yes",
+      scriptable: "true",
+      name: "jsapplet"});
+
+      closeElement('object');
+    return {
+      sleep: function sleep(n) {
+               document[JSTOOLS_ID].sleep(n);
+             }
+    };
+  }();
+
+  function testSleep(n) {
+    try {
+      document.getElementById('log').value = '' + new Date() + ': Will sleep for ' + n + ' ms.';
+      if (n > 10000 || n < 100) throw "Wait time is wrong: " + n;
+      JS_TOOLS.sleep(n);
+      document.getElementById('log').value += '\n' + new Date() + ': Done sleeping.';
+    } catch (e) {
+      document.getElementById('log').value += '\nOops, ' +e.message;
+    }
+  }
+
+
+  </script>
+...
+  <form>
+
+    time to wait: <input type="text" id="ttw"/>
+    click to wait: <input type="button" value="clickme"
+                          onclick="testSleep(1000 * document.getElementById('ttw').value);"
+      />
+    <br/>
+    <textarea id="log" rows="10" cols="55"></textarea>
+    </form>
+</body></html>

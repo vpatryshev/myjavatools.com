@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1252">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.1.0  (Win32)">
+	<META NAME="CREATED" CONTENT="20040305;15374562">
+	<META NAME="CHANGEDBY" CONTENT="Vlad Patryshev">
+	<META NAME="CHANGED" CONTENT="20040305;16101297">
+	<STYLE>
+	<!--
+		@page { size: 8.5in 11in; margin-left: 1.25in; margin-right: 1.25in; margin-top: 1in; margin-bottom: 1in }
+		P { margin-bottom: 0.08in }
+	-->
+	</STYLE>
+  <TITLE>HttpClientRequest Test Readme</TITLE>
+</HEAD>
+<BODY LANG="en-US" DIR="LTR">
+<H3>Running the tests for HttpClientRequest
+and ServerRequest</H3>
+
+<p>You will need to launch Tomcat, so that HttpClientTest/test1.jsp, HttpClientTest/test2.jsp, and  HttpClientTest/test3.jsp are accessible from a browser.</p> 
+
+<p>The three test jsps contain easy instructions on how to run them &ndash; it is basically just clicking &ldquo;commit&rdquo; button. The test jsp then receives the form data and verifies it; in case of success it returns just one word, &ldquo;Success&rdquo;, otherwise there is some diagnostics there.</p>
+
+<p>To run HttpClientRequest test suite, make sure that you are on the same port. Default port is 80; if your instance of Tomcat uses a different port number, you'll need either to change the number in AllTests.java, or, in case you are interested in tracing the actual data exchange, use TcpMonitor in proxy mode, sending requests to port 80 and redirecting them to whatever port you have your Tomcat running on.</p>
+</BODY>
+</HTML>

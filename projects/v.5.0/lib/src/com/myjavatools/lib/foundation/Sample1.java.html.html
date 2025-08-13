@@ -1,0 +1,54 @@
+<pre class="sourcecode"><code>
+<b>package</b> com.myjavatools.lib.foundation;
+
+<b>import</b> java.io.*;
+<b>import</b> java.util.*;
+
+<b>public</b> <b>class</b> Sample1 {
+
+  <b>public</b> <b>static</b> <b>void</b> main(String[] args) {
+    String folderName = args.length &lt; 1 ? <font color="#9933CC">&quot;.&quot;</font> : args[0];
+
+    Map&lt;String,String&gt; fileToType =
+        Maps.toMap(<font color="#9933CC">&quot;gif&quot;</font>,  <font color="#9933CC">&quot;image&quot;</font>,
+                   <font color="#9933CC">&quot;jpg&quot;</font>,  <font color="#9933CC">&quot;image&quot;</font>,
+                   <font color="#9933CC">&quot;jpeg&quot;</font>, <font color="#9933CC">&quot;image&quot;</font>,
+                   <font color="#9933CC">&quot;png&quot;</font>,  <font color="#9933CC">&quot;image&quot;</font>,
+                   <font color="#9933CC">&quot;java&quot;</font>, <font color="#9933CC">&quot;source code&quot;</font>,
+                   <font color="#9933CC">&quot;cpp&quot;</font>,  <font color="#9933CC">&quot;source code&quot;</font>,
+                   <font color="#9933CC">&quot;hpp&quot;</font>,  <font color="#9933CC">&quot;source code&quot;</font>,
+                   <font color="#9933CC">&quot;class&quot;</font>,<font color="#9933CC">&quot;binary&quot;</font>,
+                   <font color="#9933CC">&quot;obj&quot;</font>,  <font color="#9933CC">&quot;binary&quot;</font>,
+                   <font color="#9933CC">&quot;exe&quot;</font>,  <font color="#9933CC">&quot;binary&quot;</font>,
+                   <font color="#9933CC">&quot;dll&quot;</font>,  <font color="#9933CC">&quot;library&quot;</font>,
+                   <font color="#9933CC">&quot;lib&quot;</font>,  <font color="#9933CC">&quot;library&quot;</font>,
+                   <font color="#9933CC">&quot;so&quot;</font>,   <font color="#9933CC">&quot;library&quot;</font>,
+                   <font color="#9933CC">&quot;sl&quot;</font>,   <font color="#9933CC">&quot;library&quot;</font>);
+
+    Function&lt;File,String&gt; extension = <b>new</b> Function&lt;File,String&gt;() {
+      <b>public</b> String apply(File file) {
+        String name = file.getName();
+        <b>return</b> name.substring(name.lastIndexOf(<font color="#9933CC">'.'</font>) + 1);
+      }
+    };
+
+    <font color="#003399"><i>// the function returns file type for a file</i></font>
+    Function&lt;File,String&gt; fileType = Function.function(fileToType).compose(extension);
+
+    <font color="#003399"><i>// the list of files in the folder</i></font>
+    List&lt;File&gt; contents = Arrays.asList(<b>new</b> File(folderName).listFiles());
+
+    <font color="#003399"><i>// the same files grouped by their file types</i></font>
+    <font color="#003399"><i>// only during this operation a new container is created.</i></font>
+    Map&lt;String, Set&lt;File&gt;&gt; filesGroupedByType =
+        Maps.revert(fileType.toMap(contents));
+
+    <b>for</b> (String type : filesGroupedByType.keySet()) {
+      System.out.println(type + <font color="#9933CC">&quot;:&quot;</font>);
+      <b>for</b> (File file : filesGroupedByType.get(type)) {
+        System.out.println(<font color="#9933CC">&quot;  &quot;</font> + file);
+      }
+    }
+  }
+}
+</code></pre>
