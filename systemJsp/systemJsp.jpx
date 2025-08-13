@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--JBuilder XML Project-->
+<project>
+  <property category="applicationModule" name="last.wizard.module.name" value="system"/>
+  <property category="javadoc" name="custom.tags.1" value="todo;a;To Do:"/>
+  <property category="module" name="last.wizard.module.name" value="web"/>
+  <property category="module" name="projectConvertedFromModuleExtensionsToModuleFileTypes" value="1"/>
+  <property category="personality" name="personality" value="com.borland.jbuilder.personality.JBuilderUMLPersonality "/>
+  <property category="runtime" name="ConfigurationCount" value="1"/>
+  <property category="runtime.0" name="BuildTargetOnRun" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
+  <property category="runtime.0" name="ConfigurationName" value="Deploy"/>
+  <property category="runtime.0" name="RunnableType" value="com.borland.jbuilder.runtime.ApplicationRunner"/>
+  <property category="runtime.0" name="application.class" value="com.myjavatools.web.jboss.Deploy"/>
+  <property category="runtime.0" name="application.parameters" value="-host marvin -file system.ear"/>
+  <property category="runtime.1" name="BuildTargetOnRun" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
+  <property category="runtime.1" name="ConfigurationName" value="monitored debugged Deploy"/>
+  <property category="runtime.1" name="RunnableType" value="com.borland.jbuilder.runtime.ApplicationRunner"/>
+  <property category="runtime.1" name="application.class" value="com.myjavatools.web.jboss.Deploy"/>
+  <property category="runtime.1" name="application.parameters" value="-debug -host localhost -port 8080 -file system1.ear"/>
+  <property category="serverservices" name="BuildTargetOnDeploy" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
+  <property category="serverservices" name="deployment.Client JARs.service.server" value="JBoss 3.x+"/>
+  <property category="serverservices" name="deployment.EARs.service.server" value="JBoss 3.x+"/>
+  <property category="serverservices" name="deployment.EJBs.service.server" value="JBoss 3.x+"/>
+  <property category="serverservices" name="deployment.JBoss Service Archives.service.server" value="JBoss 3.x+"/>
+  <property category="serverservices" name="deployment.RARs.service.server" value="JBoss 3.x+"/>
+  <property category="serverservices" name="deployment.WARs.service.server" value="JBoss 3.x+"/>
+  <property category="serverservices" name="deployment.service.server" value="JBoss 3.x+"/>
+  <property category="serverservices" name="disabled.services" value="jdatastore;sqlj;connector;deployment.EJBs;deployment.RARs;deployment.Client JARs;deployment.JBoss Service Archives;ejb;jms;transaction;clientjar;naming;session"/>
+  <property category="serverservices" name="is.single.server" value="0"/>
+  <property category="serverservices" name="jsp.service.server" value="Tomcat 4.1"/>
+  <property category="serverservices" name="single.server.name" value=""/>
+  <property category="sys" name="AuthorLabel" value="@author"/>
+  <property category="sys" name="BackupPath" value="bak"/>
+  <property category="sys" name="CheckStable" value="1"/>
+  <property category="sys" name="Company" value=""/>
+  <property category="sys" name="CompanyLabel" value="Company:"/>
+  <property category="sys" name="Copyright" value="Copyright (c) 2004"/>
+  <property category="sys" name="CopyrightLabel" value="Copyright:"/>
+  <property category="sys" name="DefaultPath" value="src"/>
+  <property category="sys" name="Description" value=""/>
+  <property category="sys" name="DescriptionLabel" value="Description:"/>
+  <property category="sys" name="DocPath" value="doc"/>
+  <property category="sys" name="ExcludeClassEnabled" value="0"/>
+  <property category="sys" name="IncludeTestPath" value="1"/>
+  <property category="sys" name="InstanceVisibility" value="2"/>
+  <property category="sys" name="JDK" value="java version 1.4.2_01-b06"/>
+  <property category="sys" name="JvmVersion" value="1.2"/>
+  <property category="sys" name="LastTag" value="0"/>
+  <property category="sys" name="Libraries" value="JBoss 3.x+ Client;Servlet;MyJavaToolsLib;MyJavaToolsXml;MyJavaToolsWeb"/>
+  <property category="sys" name="MakeStable" value="0"/>
+  <property category="sys" name="OutPath" value="classes"/>
+  <property category="sys" name="SourcePath" value="src;test"/>
+  <property category="sys" name="TestPath" value="test"/>
+  <property category="sys" name="Title" value=""/>
+  <property category="sys" name="TitleLabel" value="Title:"/>
+  <property category="sys" name="Version" value="1.0"/>
+  <property category="sys" name="VersionLabel" value="@version"/>
+  <property category="sys" name="WorkingDirectory" value="."/>
+  <property category="webModule" name="last.wizard.module.name" value="web"/>
+  <node name="system" type="ApplicationModuleNode">
+    <property category="application.module" name="webModules.1" value="web;web.war;system"/>
+    <property category="archiving" name="archiverClass" value="com.borland.jbuilder.enterprise.module.application.ApplicationModuleArchiver"/>
+    <property category="archiving" name="contentRules.1" value="i:sar"/>
+    <property category="archiving" name="contentRules.10" value="i:opentools"/>
+    <property category="archiving" name="contentRules.11" value="i:png"/>
+    <property category="archiving" name="contentRules.12" value="i:au"/>
+    <property category="archiving" name="contentRules.13" value="i:txt"/>
+    <property category="archiving" name="contentRules.14" value="i:ram"/>
+    <property category="archiving" name="contentRules.15" value="i:css"/>
+    <property category="archiving" name="contentRules.16" value="i:wml"/>
+    <property category="archiving" name="contentRules.17" value="i:xml"/>
+    <property category="archiving" name="contentRules.2" value="i:gif"/>
+    <property category="archiving" name="contentRules.3" value="i:html"/>
+    <property category="archiving" name="contentRules.4" value="i:class"/>
+    <property category="archiving" name="contentRules.5" value="i:jnlp"/>
+    <property category="archiving" name="contentRules.6" value="i:js"/>
+    <property category="archiving" name="contentRules.7" value="i:jpeg"/>
+    <property category="archiving" name="contentRules.8" value="i:jsp"/>
+    <property category="archiving" name="contentRules.9" value="i:tld"/>
+    <property category="archiving" name="outPathState" value="4"/>
+    <property category="archiving" name="targetPath" value="system.ear"/>
+    <property category="archiving" name="usingRules" value="1"/>
+    <property category="module" name="build.exploded.archive" value="1"/>
+    <property category="module" name="buildModuleExplodedArchiveWithModuleNode" value="1"/>
+    <property category="module" name="buildModuleExplodedArchiveWithProject" value="1"/>
+    <property category="module" name="cleanRules.1" value="X:/META-INF/*.xml"/>
+    <property category="module" name="cleanRules.10" value="X:**/Root/*.*"/>
+    <property category="module" name="cleanRules.11" value="X:**/Tag/*.*"/>
+    <property category="module" name="cleanRules.12" value="X:**/Checkin.prog/*.*"/>
+    <property category="module" name="cleanRules.13" value="X:**/Update.prog/*.*"/>
+    <property category="module" name="cleanRules.14" value="X:**/Notify/*.*"/>
+    <property category="module" name="cleanRules.15" value="X:**/Notify.tmp/*.*"/>
+    <property category="module" name="cleanRules.16" value="X:**/Base/*.*"/>
+    <property category="module" name="cleanRules.17" value="X:**/Baserev/*.*"/>
+    <property category="module" name="cleanRules.18" value="X:**/Baserev.tmp/*.*"/>
+    <property category="module" name="cleanRules.19" value="X:**/Template/*.*"/>
+    <property category="module" name="cleanRules.2" value="X:/META-INF/*.xmi"/>
+    <property category="module" name="cleanRules.20" value="X:**/.sbas/*.*"/>
+    <property category="module" name="cleanRules.21" value="X:**/.cvsignore/*.*"/>
+    <property category="module" name="cleanRules.22" value="X:**/*.java"/>
+    <property category="module" name="cleanRules.23" value="X:**/*.html"/>
+    <property category="module" name="cleanRules.24" value="X:**/*.css"/>
+    <property category="module" name="cleanRules.25" value="X:**/*.js"/>
+    <property category="module" name="cleanRules.26" value="X:**/*.tld"/>
+    <property category="module" name="cleanRules.27" value="X:**/*.gif"/>
+    <property category="module" name="cleanRules.28" value="X:**/*.jpg"/>
+    <property category="module" name="cleanRules.29" value="X:**/*.png"/>
+    <property category="module" name="cleanRules.3" value="X:**/CVS/*.*"/>
+    <property category="module" name="cleanRules.30" value="X:**/*.au"/>
+    <property category="module" name="cleanRules.31" value="X:**/*.ram"/>
+    <property category="module" name="cleanRules.32" value="X:**/*.wml"/>
+    <property category="module" name="cleanRules.33" value="X:**/*.jnlp"/>
+    <property category="module" name="cleanRules.34" value="I:**/*.*"/>
+    <property category="module" name="cleanRules.35" value="X:/web.war"/>
+    <property category="module" name="cleanRules.4" value="X:**/vssver.scc/*.*"/>
+    <property category="module" name="cleanRules.5" value="X:**/Entries/*.*"/>
+    <property category="module" name="cleanRules.6" value="X:**/Entries.Log/*.*"/>
+    <property category="module" name="cleanRules.7" value="X:**/Entries.Backup/*.*"/>
+    <property category="module" name="cleanRules.8" value="X:**/Entries.Static/*.*"/>
+    <property category="module" name="cleanRules.9" value="X:**/Repository/*.*"/>
+    <property category="module" name="directory" value="system"/>
+    <property category="module" name="extensions.exclude" value="xmi"/>
+    <property category="module" name="extraDefaultDirectoriesToKeepOnClean.1" value="CVS"/>
+    <property category="module" name="extraDefaultDirectoriesToKeepOnClean.2" value=".cvsignore"/>
+    <property category="module" name="extraDefaultDirectoriesToKeepOnClean.3" value="vssver.scc"/>
+    <property category="module" name="lastServer" value="JBoss 3.x+"/>
+    <property category="module" name="supported.features.1" value="Application 1.2"/>
+  </node>
+  <node name="web" type="WebModuleNode">
+    <property category="archiving" name="archiverClass" value="com.borland.jbuilder.enterprise.module.web.WebModuleArchiver"/>
+    <property category="archiving" name="defaultLibraryState" value="3"/>
+    <property category="archiving" name="libraryStates.1" value="0:JBoss 3.x+ Client"/>
+    <property category="archiving" name="libraryStates.2" value="0:Servlet"/>
+    <property category="archiving" name="libraryStates.3" value="0:Tomcat 4.1 Servlet"/>
+    <property category="archiving" name="libraryStates.4" value="1:MyJavaToolsLib"/>
+    <property category="archiving" name="libraryStates.5" value="0:MyJavaToolsXml"/>
+    <property category="archiving" name="libraryStates.6" value="0:MyJavaToolsWeb"/>
+    <property category="archiving" name="outPathState" value="4"/>
+    <property category="archiving" name="targetPath" value="system/web.war"/>
+    <property category="archiving" name="usingRules" value="1"/>
+    <property category="module" name="build.exploded.archive" value="1"/>
+    <property category="module" name="cleanRules.1" value="I:/WEB-INF/classes/**"/>
+    <property category="module" name="cleanRules.2" value="I:/WEB-INF/lib/**"/>
+    <property category="module" name="cleanRules.3" value="X:/WEB-INF/**/*.ds"/>
+    <property category="module" name="cleanRules.4" value="X:/WEB-INF/**/*.wsdd"/>
+    <property category="module" name="cleanRules.5" value="X:/WEB-INF/**/cocoon.xconf"/>
+    <property category="module" name="cleanRules.6" value="X:/WEB-INF/**/logkit.xconf"/>
+    <property category="module" name="cleanRules.7" value="X:/WEB-INF/*.xml"/>
+    <property category="module" name="cleanRules.8" value="X:/WEB-INF/*.xmi"/>
+    <property category="module" name="directory" value="web"/>
+    <property category="module" name="extensions.exclude" value="xmi"/>
+    <property category="module" name="extraDefaultDirectoriesToKeepOnClean.1" value="CVS"/>
+    <property category="module" name="extraDefaultDirectoriesToKeepOnClean.2" value=".cvsignore"/>
+    <property category="module" name="extraDefaultDirectoriesToKeepOnClean.3" value="vssver.scc"/>
+    <property category="module" name="lastServer" value="JBoss 3.x+"/>
+    <property category="module" name="supported.features.1" value="Servlet 2.3"/>
+    <property category="module" name="supported.features.2" value="JSP 1.2"/>
+    <property category="web" name="context-root" value="system1"/>
+  </node>
+  <node name="deploy" type="Archive">
+    <property category="archiving" name="archiverClass" value="com.borland.jbuilder.wizard.archive.ApplicationArchiver"/>
+    <property category="archiving" name="contentRules.1" value="I:**/*.*"/>
+    <property category="archiving" name="includeDeps" value="1"/>
+    <property category="archiving" name="libraryStates.1" value="1:MyJavaToolsLib"/>
+    <property category="archiving" name="libraryStates.2" value="1:MyJavaToolsXml"/>
+    <property category="archiving" name="libraryStates.3" value="1:MyJavaToolsWeb"/>
+    <property category="archiving" name="manifestConfigFile" value="0"/>
+    <property category="archiving" name="targetPath" value="jbdeploy.jar"/>
+    <property category="archiving" name="usingRules" value="1"/>
+  </node>
+  <node name="JBDeploy Executable" type="Archive">
+    <property category="archiving" name="archiverClass" value="com.borland.jbuilder.wizard.archive.ExecutableJarArchiver"/>
+    <property category="archiving" name="configurationPath" value="jbdeploy.config"/>
+    <property category="archiving" name="executableEnabled.1" value="0"/>
+    <property category="archiving" name="executableEnabled.2" value="1"/>
+    <property category="archiving" name="executableEnabled.3" value="0"/>
+    <property category="archiving" name="executableEnabled.4" value="0"/>
+    <property category="archiving" name="executableEnabled.5" value="0"/>
+    <property category="archiving" name="executableFiles.1" value="systemJspW.exe"/>
+    <property category="archiving" name="executableFiles.2" value=""/>
+    <property category="archiving" name="executableFiles.3" value="systemJsp-linux"/>
+    <property category="archiving" name="executableFiles.4" value="systemJsp-solaris"/>
+    <property category="archiving" name="executableFiles.5" value="systemJsp-mac"/>
+    <property category="archiving" name="manifestMainClass" value="com.myjavatools.web.jboss.Deploy"/>
+    <property category="archiving" name="sourceJar" value="jbdeploy.jar"/>
+    <property category="archiving" name="targetPath" value="systemJsp.jar"/>
+  </node>
+  <file path="jbdeploy.config"/>
+  <file path="web/jboss-deploy-form.jsp"/>
+  <file path="readme.html"/>
+</project>

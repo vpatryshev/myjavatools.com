@@ -1,0 +1,47 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Forth Dictionary</title>
+<script src="ai.js" type="text/javascript"></script>
+  </head>
+  <body>
+    <table border=1>
+      <tr>
+        <script type="text/javascript">
+          function print() {
+            for (var i = 0; i < arguments.length; i++) {
+              document.write(arguments[i]);
+            }
+          }
+          try {
+            var ai = new JS4_AI();
+            var ids = [];
+            for (var id in ai.d2c) ids.push(id);
+            var colSize = Math.round(Math.sqrt(ids.length));
+            if (colSize * colSize < ids.length) colSize++;
+
+            for (var i = 0; i < ids.length; i+= colSize) {
+              if (i > 0) print("<th>&nbsp;</th>");
+              print("<th>Name</th><th>Code</th>");
+            }
+            print("</tr>");
+
+            for (var i = 0; i < colSize; i ++) {
+              print("<tr>");
+
+              for (var j = i; j < ids.length; j += colSize) {
+                if (j > i) print("<td>&nbsp;</td>");
+                var id = ids[j];
+                print("<td>", id.replace("<", "&lt;"),
+                      "</td><td>", ai.d2c[id].replace("<", "&lt;"),
+                      "</td>");
+              }
+            }
+          } catch (e) {
+            alert("Error: " + e);
+          }
+        </script>
+      </tr>
+     </table>
+  </body>
+</html>

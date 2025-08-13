@@ -1,0 +1,262 @@
+<pre class="sourcecode"><code>
+&lt;%@ page buffer=<font color="#9933CC">&quot;none&quot;</font> %&gt;&lt;%@ page <b>import</b>=<font color="#9933CC">&quot;java.util.*&quot;</font> %&gt;&lt;%@ page <b>import</b>=<font color="#9933CC">&quot;java.io.*&quot;</font> %&gt;&lt;%
+%&gt;&lt;?xml version=<font color="#9933CC">&quot;1.0&quot;</font> encoding=<font color="#9933CC">&quot;UTF-8&quot;</font>?&gt;
+&lt;deploy&gt;
+&lt;%
+  <b>class</b> MultipartRequest { <font color="#003399"><i>// does not implement anything ;)</i></font>
+    <b>private</b> HttpServletRequest org;
+    <b>private</b> <b>boolean</b> DEBUG = <b>false</b>;
+    <b>public</b> StringBuffer debugInfo = <b>new</b> StringBuffer();
+    <b>private</b> <b>int</b> MAX_LOG_SIZE = 50000;
+    <b>private</b> Map parameters = <b>new</b> HashMap();
+    <b>private</b> Map fileSize = <b>new</b> HashMap();
+    BufferedReader reader;
+    String boundary;
+    String nlBoundary;
+    <b>public</b> String line;
+    <b>public</b> <b>int</b> position;
+    <b>private</b> String contentType;
+
+    <b>private</b> <b>void</b> print(String s) {
+      <b>if</b> (!DEBUG) {
+        <b>return</b>;
+      }
+      <b>if</b> (debugInfo.length() + s.length() &lt; MAX_LOG_SIZE) {
+        debugInfo.append(s);
+      } <b>else</b> <b>if</b> (debugInfo.length() &lt; MAX_LOG_SIZE) {
+        debugInfo.append(<font color="#9933CC">&quot; ... &quot;</font>);
+      }
+    }
+
+    <b>private</b> <b>void</b> println(String s) {
+      print(s);
+      print(<font color="#9933CC">&quot;&lt;br&gt;&#92;r&#92;n&quot;</font>);
+    }
+
+    <b>public</b> String readLine() <b>throws</b> IOException {
+      <b>if</b> (line == <b>null</b>) <b>return</b> <b>null</b>;
+      <b>if</b> (DEBUG) print(<font color="#9933CC">&quot;[&quot;</font> + position + <font color="#9933CC">&quot;/&quot;</font> + line.length() + <font color="#9933CC">&quot;]&quot;</font>);
+      <b>if</b> (position &gt;= line.length()) {
+        print(<font color="#9933CC">&quot;:&quot;</font>);
+        line     = reader.readLine();
+        <b>if</b> (DEBUG) print(<font color="#9933CC">&quot;&lt;br&gt;&quot;</font> + line + <font color="#9933CC">&quot;||&gt;&quot;</font>);
+        position = 0;
+      }
+      <b>if</b> (line == <b>null</b>) {
+        position = 0;
+        <b>return</b> <b>null</b>;
+      } <b>else</b> {
+        position = line.length();
+        <b>return</b> line.substring(position);
+      }
+    }
+
+    <b>public</b> <b>boolean</b> isBoundary()    { <b>return</b> line != <b>null</b> &amp;&amp; line.startsWith(boundary); }
+    <b>public</b> <b>boolean</b> isEndBoundary() { <b>return</b> line != <b>null</b> &amp;&amp; line.equals(boundary + <font color="#9933CC">&quot;--&quot;</font>); }
+
+    <b>public</b> <b>int</b> copyTillBoundary(OutputStream output) <b>throws</b> IOException {
+      <b>int</b> counter = 0;
+
+      <b>for</b> (<b>int</b> boundaryIndex = 0; boundaryIndex &lt; nlBoundary.length();) {
+        <b>int</b> read = reader.read();
+        <b>if</b> (read &lt; 0) <b>break</b>;
+        <b>char</b> c = (<b>char</b>)read;
+
+        <b>if</b> (DEBUG) {
+          print(<font color="#9933CC">&quot;[&quot;</font> + Integer.toHexString(c) + <font color="#9933CC">&quot;:&quot;</font> +
+                         ((c &lt; <font color="#9933CC">'z'</font> &amp;&amp; c &gt; <font color="#9933CC">' '</font>) ? c : <font color="#9933CC">'.'</font>) + <font color="#9933CC">&quot;]&quot;</font>);
+        }
+        <b>char</b> expected = nlBoundary.charAt(boundaryIndex++);
+
+        <b>if</b> (boundaryIndex &gt; 1) {
+          <b>if</b> (DEBUG) print(<font color="#9933CC">&quot;vs [&quot;</font> + Integer.toHexString(expected) + <font color="#9933CC">&quot;:&quot;</font> +
+                           ((expected &lt; <font color="#9933CC">'z'</font> &amp;&amp; expected &gt; <font color="#9933CC">' '</font>) ? expected : <font color="#9933CC">'.'</font>) + <font color="#9933CC">&quot;]&quot;</font>);
+          <b>if</b> (c != expected) {
+            <b>if</b> (DEBUG) print(<font color="#9933CC">&quot;&gt;&quot;</font> + (boundaryIndex-1) + <font color="#9933CC">&quot;.&quot;</font>);
+            <b>for</b> (<b>int</b> i = 0; i &lt; boundaryIndex - 1; i++) {
+              output.write((<b>byte</b>) nlBoundary.charAt(i));
+            }
+            counter += boundaryIndex - 1;
+            boundaryIndex = 1;
+            expected = nlBoundary.charAt(0);
+          }
+        }
+
+        <b>if</b> (DEBUG) print(<font color="#9933CC">&quot;vs [&quot;</font> + Integer.toHexString(expected) + <font color="#9933CC">&quot;:&quot;</font> +
+                         ((expected &lt; <font color="#9933CC">'z'</font> &amp;&amp; expected &gt; <font color="#9933CC">' '</font>) ? expected : <font color="#9933CC">'.'</font>) + <font color="#9933CC">&quot;]&quot;</font>);
+
+        <b>if</b> (c != expected) {
+          boundaryIndex = 0;
+          output.write((<b>byte</b>)c);
+          counter++;
+        }
+      }
+      <b>return</b> counter;
+    }
+
+    <b>public</b> MultipartRequest(HttpServletRequest originalRequest) {
+      <b>this</b>(originalRequest, <b>false</b>);
+    }
+
+    <b>public</b> MultipartRequest(HttpServletRequest originalRequest, <b>boolean</b> wantDebug)
+    {
+      DEBUG = wantDebug;
+      println(<font color="#9933CC">&quot;com.borland.servlet.Request debug info&quot;</font>);
+      org = originalRequest;
+      position    = 0;
+      line        = <font color="#9933CC">&quot;&quot;</font>;
+      contentType = org.getContentType();
+      println(<font color="#9933CC">&quot;content-type=&quot;</font> + contentType);
+    }
+
+    <b>public</b> Map parse(Collection requestedParameters, File tmpFolder, File fileLocation) {
+
+      retrieveParameters(requestedParameters);
+
+      <b>if</b> (contentType == <b>null</b> || !contentType.startsWith(<font color="#9933CC">&quot;multipart/form-data&quot;</font>)) {
+        print(<font color="#9933CC">&quot; content type is not multipart: &quot;</font> + contentType + <font color="#9933CC">&quot;... &quot;</font>);
+        <b>return</b> parameters;
+      }
+
+      print(<font color="#9933CC">&quot;Will read it...&quot;</font>);
+
+      <b>try</b> {
+        boundary = <font color="#9933CC">&quot;--&quot;</font> + contentType.substring(
+                          contentType.indexOf(<font color="#9933CC">&quot;boundary=&quot;</font>) +
+                          <font color="#9933CC">&quot;boundary=&quot;</font>.length());
+        nlBoundary = <font color="#9933CC">&quot;&#92;r&#92;n&quot;</font> + boundary;
+        print(<font color="#9933CC">&quot; got boundary... &quot;</font>);
+
+        reader = org.getReader();
+
+        print(<font color="#9933CC">&quot; ...looking for the first boundary... &quot;</font>);
+        <b>for</b> (<b>boolean</b> gotBoundary = <b>false</b>;
+             !gotBoundary &amp;&amp; !isEndBoundary() &amp;&amp; readLine() != <b>null</b>;
+             gotBoundary = isBoundary()) {
+          print(<font color="#9933CC">&quot;,&quot;</font>);
+        }
+
+        print(<font color="#9933CC">&quot; ...past the first boundary!... &quot;</font>);
+
+        <b>while</b> (!isEndBoundary() &amp;&amp; readLine() != <b>null</b>) {
+          print(<font color="#9933CC">&quot;.&quot;</font>);
+
+          <font color="#003399"><i>// okay now, have some data...</i></font>
+<font color="#003399"><i>//            readLine();</i></font>
+          <b>if</b> (DEBUG) print(<font color="#9933CC">&quot;:&quot;</font> + line);
+
+          <b>if</b> (!line.startsWith(<font color="#9933CC">&quot;Content-Disposition: form-data;&quot;</font>)) {
+            print(<font color="#9933CC">&quot;(-)&quot;</font>);
+            <b>continue</b>;
+          }
+
+          String name = extractValue(line, <font color="#9933CC">&quot;name&quot;</font>);
+          <b>if</b> (<font color="#9933CC">&quot;debug&quot;</font>.equals(name)) {
+            DEBUG = <b>true</b>;
+            <b>continue</b>;
+          }
+          <b>if</b> (name == <b>null</b> || !requestedParameters.contains(name)) {
+            print(<font color="#9933CC">&quot;(the name &quot;</font> + name + <font color="#9933CC">&quot; not in the list)&quot;</font>);
+            <b>continue</b>;
+          }
+
+          print(<font color="#9933CC">&quot;(+)&quot;</font>);
+          String filename = extractValue(line, <font color="#9933CC">&quot;filename&quot;</font>);
+          print(<font color="#9933CC">&quot;filename is &quot;</font> + filename + <font color="#9933CC">&quot;&lt;br&gt;&#92;n&quot;</font>);
+          File file = <b>new</b> File(fileLocation, filename);
+          File tmpFile = File.createTempFile(filename, <b>null</b>, tmpFolder);
+
+          OutputStream output = <b>new</b> FileOutputStream(tmpFile);
+          skipAttributes();
+          print(<font color="#9933CC">&quot; will read value... &quot;</font>);
+          readLine(); <font color="#003399"><i>// skipping empty line</i></font>
+          <b>int</b> size = copyTillBoundary(output);
+          output.close();
+          tmpFile.renameTo(file);
+          parameters.put(name, file);
+          fileSize.put(name, <font color="#9933CC">&quot;&quot;</font> + size);
+        }
+      } <b>catch</b> (Exception e) {
+        print(e.toString());
+      }
+      <b>return</b> parameters;
+    }
+
+    <b>public</b> <b>void</b> skipAttributes() <b>throws</b> IOException {
+      <font color="#003399"><i>// skipping attributes...</i></font>
+      <b>while</b> (readLine().length() &gt; 0) {
+        print(<font color="#9933CC">&quot;;&quot;</font> + line);
+
+        <b>int</b> seppos = line.indexOf(<font color="#9933CC">':'</font>);
+        String attrName  = line.substring(0, seppos);
+        String attrValue = line.substring(seppos+2);
+        print(<font color="#9933CC">&quot;attr &quot;</font> + attrName + <font color="#9933CC">&quot; = &quot;</font> + attrValue);
+      }
+    }
+
+    <b>public</b> <b>void</b> retrieveParameters(Collection requestedParameters) {
+      print(<font color="#9933CC">&quot;... Parameters: &quot;</font>);
+      Enumeration keys = org.getParameterNames();
+
+      <b>while</b> (keys.hasMoreElements()) {
+        String key = (String)keys.nextElement();
+        print(<font color="#9933CC">&quot; [&quot;</font> + key + <font color="#9933CC">&quot;] &quot;</font>);
+        <b>if</b> (requestedParameters.contains(key)) {
+          parameters.put(key, org.getParameterValues(key));
+          print(<font color="#9933CC">&quot; - accepted &quot;</font>);
+        } <b>else</b> {
+          print(<font color="#9933CC">&quot; - ignored &quot;</font>);
+        }
+      }
+      println(<font color="#9933CC">&quot;(end of parameters)&quot;</font>);
+    }
+
+    <b>public</b> <b>final</b> String extractValue(String input, String name) {
+      <b>int</b> iname = input.indexOf(name + <font color="#9933CC">&quot;=&#92;&quot;</font><font color="#9933CC">&quot;);</font>
+      <b>if</b> (iname &lt; 0) <b>return</b> <b>null</b>;
+
+      <b>int</b> ivalue = iname + name.length() + 2;
+      <b>int</b> ievalu = input.indexOf(<font color="#9933CC">'&quot;'</font>, ivalue);
+      <b>if</b> (ievalu &lt; 0) <b>return</b> <b>null</b>;
+
+      <b>return</b> input.substring(ivalue, ievalu);
+    }
+
+    <b>public</b> Collection getParameterNames() {
+      <b>return</b> parameters.keySet();
+    }
+
+    <b>public</b> Object getParameter(String key) {
+      <b>return</b> parameters.get(key);
+    }
+
+    <b>public</b> String getFileSize(String name) {
+      <b>return</b> (String)fileSize.get(name);
+    }
+  }
+  <b>for</b> (Enumeration e = request.getParameterNames(); e.hasMoreElements();) {
+    out.println(<font color="#9933CC">&quot;..&quot;</font> + e.nextElement());
+  }
+
+  MultipartRequest rq = <b>new</b> MultipartRequest(request, <font color="#9933CC">&quot;true&quot;</font>.equals(request.getParameter(<font color="#9933CC">&quot;debug&quot;</font>)));
+
+  <b>try</b> {
+    String tmpdirname = getServletContext().getAttribute(<font color="#9933CC">&quot;javax.servlet.context.tempdir&quot;</font>).toString();
+    File tmpFolder = <b>new</b> File(tmpdirname);
+    java.io.File deployFolder = <b>new</b> java.io.File(tmpdirname.substring(0, tmpdirname.indexOf(<font color="#9933CC">&quot;work&quot;</font>) - 1), <font color="#9933CC">&quot;deploy&quot;</font>);
+    rq.parse(Arrays.asList(<b>new</b> String[] {<font color="#9933CC">&quot;file&quot;</font>}), tmpFolder, deployFolder);
+    <b>if</b> (rq.debugInfo.length() &gt; 0) {
+      %&gt;&lt;debug-info&gt;&lt;%=rq.debugInfo%&gt;&lt;/debug-info&gt;&lt;%
+    }
+
+    %&gt;&lt;received file=<font color="#9933CC">&quot;&lt;%=rq.getParameter(&quot;</font>file<font color="#9933CC">&quot;)%&gt;&quot;</font> size=<font color="#9933CC">&quot;&lt;%=rq.getFileSize(&quot;</font>file<font color="#9933CC">&quot;)%&gt;&quot;</font>/&gt;&lt;%
+
+  } <b>catch</b> (Exception e) {
+    %&gt;&lt;error&gt;
+        &lt;stacktrace&gt;&lt;% e.printStackTrace(<b>new</b> java.io.PrintWriter(out));%&gt;
+        &lt;/stacktrace&gt;
+     &lt;/error&gt;
+     &lt;debug-info&gt;&lt;%=rq.debugInfo%&gt;&lt;/debug-info&gt;&lt;%
+  }%&gt;
+&lt;/deploy&gt;
+</code></pre>

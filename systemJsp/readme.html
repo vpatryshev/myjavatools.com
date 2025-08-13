@@ -1,0 +1,41 @@
+<html>
+<head>
+<title>System JSP Project</title>
+</head>
+<body>
+<h2>System JSP Project
+</h2>
+<p>This project currently contains two JSPs; one, jboss-deploy-form.jsp, is the form that helps deploy an application
+(EAR file) to JBoss, the other, <a href="jboss-deploy.jsp.html">jboss-deploy.jsp</a>, is the JSP that does the actual deployment.
+You can use the latter to directly POST your application from your tool.
+</p>
+<p>A command line tool that remotely deploys an EAR file using jboss-deploy.jsp will be added
+to this project later this week (second week of June 2004).
+</p>
+<p>To make this application work, you will need to manually deploy system.ear in
+your JBoss installation. Deploying an application consists of copying an EAR file
+to <code>deploy</code> folder in your JBoss installation - JBoss discovers it in a second.
+</p>
+<p>This application was tested with JBoss 3.2; I'll be happy if you report problems
+or issues with using it with other versions of JBoss.
+</p>
+<p>Some people say that all this could be done using JMX and JBoss's MBeans - it
+is always good to know some theory, but I'd appreciate a practical solution. This one
+<u>is</u> a practical solution.
+</p>
+<p>
+Now, this web application is asking for a command-line utility, right? Here it is,
+deploy.java, aka jbdeploy.jar, aka jbdeploy.exe. It has the following command line arguments:
+</p>
+<ul>
+  <li>host - the name of the host, default is <tt>localhost</tt>
+  </li>
+  <li>port - port number, default is 8080 for <tt>localhost</tt>, 80 for a remote host
+  </li>
+  <li>file - the name of ear file to deploy
+  </li>
+</ul>
+<p><a href="systemJsp.zip">Download</a> it and enjoy, it is free - like everything on this site.
+</p>
+</body>
+</html>

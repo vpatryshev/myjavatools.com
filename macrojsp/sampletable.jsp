@@ -1,0 +1,79 @@
+<html>
+<head>
+<title>
+Attitudes
+</title>
+</head>
+<body bgcolor="#ffffff">
+<h2>Percentage of population that assesses positively...</h2>
+<table border=1>
+<th>
+  <td bgcolor="green"><b><font color="white">Own Life</font></b></td>
+  <td bgcolor="red"  ><b><font color="white">Nation</font></b></td>
+  <td bgcolor="blue" ><b><font color="white">World</font></b></td>
+</th>
+<%
+
+  class Tools {
+    public java.util.List split(String source, String separator) {
+
+      java.util.ArrayList stringList = new java.util.ArrayList();
+
+      for (int pos = 0;
+           source != null && separator != null && pos < source.length();) {
+        int last = source.indexOf(separator, pos);
+        if (last < 0) last = source.length();
+        stringList.add(source.substring(pos, last));
+        pos = last + separator.length();
+      }
+      return stringList;
+    }
+
+    public String level2color(String p) {
+      try {
+        String hex = Integer.toHexString(255 * (Integer.parseInt(p)) / 100);
+        return "00".substring(hex.length()) + hex;
+      } catch (Exception e) {
+        return "00";
+      }
+    }
+  }
+  Tools hammer = new Tools();
+  try {
+    java.io.LineNumberReader r = new java.io.LineNumberReader(
+                                 new java.io.StringReader(
+                                 request.getParameter("data")));
+    while (r.ready()) {
+      %><tr><%
+      String input = r.readLine();
+      if (input == null) break;
+      if (input.indexOf('\t') > 0) {
+        java.util.List contents = hammer.split(input, "\t");
+        String color = "";
+        String c[] = new String[] {"", "", ""};
+        int idx[] = new int[] {2,1,3};
+        for (int i = 0; i < 3; i++) {
+          String hex = hex = hammer.level2color(contents.get(idx[i]).toString());
+	  color += hex;
+
+	  for (int j = 0; j < 3; j++) {
+            c[j] += (j+1 == idx[i]) ? hex : "00";
+	  }
+	}
+        %><td bgcolor="#<%=color%>"><font color="white"><%=contents.get(0)%></font></td><%
+
+        for (int i = 0; i < 3; i++) {
+          %><td bgcolor="#<%=c[i]%>" align="right"><font color="white"><%=contents.get(i+1)%></td><%
+	}
+      } else {
+        %><td><b><%=input%></b></td><%
+      }
+      %></tr><%
+    }
+  } catch (Exception e) {
+    %><%=e%><%
+  }
+%></font>
+</table>
+</body>
+</html>

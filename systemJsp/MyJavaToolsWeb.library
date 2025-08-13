@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library>
+  <!--JBuilder Library Definition File-->
+  <fullname>MyJavaToolsWeb</fullname>
+  <class>
+    <path>[../v.1.4.2/web/web.jar]</path>
+  </class>
+  <lastmodsaved>1086821945360</lastmodsaved>
+</library>
