@@ -528,10 +528,9 @@ public class TestStrings
   }
 
   public void testZip8bit() throws IOException, UnsupportedEncodingException {
-    String expectedReturn = "x\u00da\u00f3H\u00cd\u00c9\u00c9W\b\u00cf/\u00caI\u0001\u0000\u0018\u000b\u0004\u001d\u0000";
-    String actualReturn = zip8bit("Hello World");
+    String expectedReturn = "007800DA00F3004800CD00C900C90057000800CF002F00CA0049000100000018000B0004001D0000";
+    String actualReturn = Strings.toHex(zip8bit("Hello World"), true);
     assertEquals("return value", expectedReturn, actualReturn);
-    /**@todo fill in the test code*/
   }
 /*
   public void testIsVowel() {

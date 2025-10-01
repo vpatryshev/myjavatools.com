@@ -51,7 +51,7 @@ public abstract class Objects
    * @return boolean x == y || x != null &amp;&amp; x.equals(y)
    */
   public static boolean equal(Object x, Object y) {
-    return x == y || x != null && x.equals(y);
+    return java.util.Objects.equals(x, y);
   }
 
   /**
@@ -102,8 +102,7 @@ public abstract class Objects
   public static <T> int indexOf(T what, List<T> list, int fromIndex) {
     for (int i = fromIndex; i < list.size(); i++) {
       Object current = list.get(i);
-      if ((what == current) ||
-          (what != null && what.equals(current))) return i;
+      if (java.util.Objects.equals(what, current)) return i;
     }
     return -1;
   }
@@ -120,8 +119,9 @@ public abstract class Objects
    * <li><code>toSet(3, 1, 4, 1, 5, 9, 2, 6, 5).size()</code> returns 7.</li>
    * @deprecated since 5.0; the usefulness of this method is doubtful
    */
+  @SafeVarargs
   public static <T> Set<T> toSet(T... elements) {
-    return new LinkedHashSet<T>(Arrays.asList(elements));
+    return new LinkedHashSet<>(Arrays.asList(elements));
   }
 
   /**
@@ -143,29 +143,28 @@ public abstract class Objects
 
     // attempt 2: isEmpty
     try {
-      Method isEmpty = data.getClass().getMethod("isEmpty");
-      if (isEmpty != null) {
-        return ((Boolean)isEmpty.invoke(data)).booleanValue();
-      }
-    } catch (Exception e) {}
+      Method isEmptyMethod = data.getClass().getMethod("isEmpty");
+      return ((Boolean)isEmptyMethod.invoke(data));
+    } catch (Exception e) {
+      // NP
+    }
 
     // attempt 3: size
     try {
-      Method size = data.getClass().getMethod("size");
-      if (size != null) {
-        return ((Integer)size.invoke(data)).intValue() == 0;
-      }
-    } catch (Exception e) {}
+      Method sizeMethod = data.getClass().getMethod("size");
+      return ((Integer)sizeMethod.invoke(data)) == 0;
+    } catch (Exception e) {
+      // N
+    }
 
-    // attempt 4: check whether the string representation is empty or "null"
-    return (data.toString().length() == 0) ||
-           "null".equals(data.toString());
+    // attempt 4: check whether the string representation is empty (we don't check for string "null" anymore)
+    return data.toString().isEmpty();
   }
 
   /**
    * Chooses the first non-empty object out of objects in parameter list.
    *
-   * @param arglist the first candidate ...
+   * @param argList the first candidate ...
    * @return the first one of the list of candidates that is not empty, converted to String
    *
    * <br><br><b>Examples</b>:
@@ -178,9 +177,10 @@ public abstract class Objects
    * <li><code>oneOf("abc", null, "pqr", "xyz")</code> returns "abc";</li>
    * <li><code>oneOf("", "def", null, "xyz")</code> returns "def";</li>
    */
-  public static <T> T oneOf(T ... arglist) {
+  @SafeVarargs
+  public static <T> T oneOf(T ... argList) {
     T candidate = null;
-    for (T o : arglist) {
+    for (T o : argList) {
       if (!isEmpty(o)) return o;
       if (o != null) candidate = o;
     }

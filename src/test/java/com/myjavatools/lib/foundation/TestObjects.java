@@ -186,13 +186,6 @@ public class TestObjects extends TestCase {
     assertEquals("return value", expectedReturn, actualReturn);
   }
 
-  public void testIsEmptyN5() {
-    String data = "null";
-    boolean expectedReturn = true;
-    boolean actualReturn = Objects.isEmpty(data);
-    assertEquals("return value", expectedReturn, actualReturn);
-  }
-
   public void testOneOf() {
     String[] arglist = {null, null, "x", null, "y"};
     String expectedReturn = "x";

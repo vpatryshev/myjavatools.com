@@ -128,8 +128,10 @@ public class TestFiles
 
   public void testFind() {
     try {
-      List expectedReturn = Arrays.asList(new String[] {new File("src/com/myjavatools/lib/Files.java").getCanonicalPath()});
-      List actualReturn = find(getcwd(), Pattern.compile("src.*les/.java$"));
+      List expectedReturn = Arrays.asList(new String[] {
+              new File(makePath("src", "main", "java", "com", "myjavatools", "lib", "Files.java")).getCanonicalPath()
+      });
+      List actualReturn = find(getcwd(), Pattern.compile("src.*main.*Files\\.java$"));
       assertEquals("return value found in " + getcwd(), expectedReturn, actualReturn);
     } catch (Exception ex) {
       fail("problems: " + ex);
@@ -139,11 +141,11 @@ public class TestFiles
   public void testFind1() {
     try {
       List expectedReturn = Arrays.asList(new String[] {
-              new File(makePath("src", "main", "com", "myjavatools", "lib", "Files.java")).getCanonicalPath()
+              new File(makePath("src", "main", "java", "com", "myjavatools", "lib", "Files.java")).getCanonicalPath()
       });
-//      List actualReturn = find(new File("."), Pattern.compile(makePath("main", "src.*les", ".java$")));
-      List actualReturn = find(new File("."), Pattern.compile(makePath("main", ".*es", ".*java$")));
-      assertEquals("return value", expectedReturn, actualReturn);
+      String pattern = "main.*Files\\.java$";
+      List actualReturn = find(new File("."), Pattern.compile(pattern));
+      assertEquals("return value for " + pattern, expectedReturn, actualReturn);
     }
     catch (Exception ex) {
       fail("problems: " + ex);
@@ -152,9 +154,9 @@ public class TestFiles
 
   public void testFind2() {
     List expectedReturn = Arrays.asList(new String[] {
-            new File(makePath("main","src","com", "myjavatools", "lib", "Files.java")).getAbsolutePath()
+            new File(makePath("src", "main", "java", "com", "myjavatools", "lib", "Files.java")).getAbsolutePath()
     });
-    List actualReturn = find(".", "src.*les/.java$");
+    List actualReturn = find(".", "main.*Files\\.java$");
     assertEquals("return value", expectedReturn, actualReturn);
   }
 
@@ -191,13 +193,17 @@ public class TestFiles
   }
 
   public void testGetPackage() {
-    String basePath = null;
-    String currentPath = null;
-    String expectedReturn = "com.myjavatools.util";
-    String actualReturn = getPackageName(makePath("myjavatools", "main", "src"), makePath("myjavatools", "src", "com", "myjavatools", "util"));
+    String sourceRoot = makePath("src", "main", "java");
+    String packagePath = makePath("src", "main", "java", "com", "myjavatools", "lib");
+    String expectedReturn = "com.myjavatools.lib";
+    String actualReturn = getPackageName(sourceRoot, packagePath);
     assertEquals("return value", expectedReturn, actualReturn);
-    actualReturn = getPackageName(makePath("myjavatools", "main", "src"), makePath("myjavatools", "main", "src", "myjavatools", "src", "util"));
-    assertNull("must be null", actualReturn);
+
+    // Test when packagePath is not under sourceRoot
+    sourceRoot = makePath("src", "test", "java");
+    packagePath = makePath("src", "main", "java", "com", "myjavatools", "lib");
+    actualReturn = getPackageName(sourceRoot, packagePath);
+    assertNull("must be null when paths don't match", actualReturn);
   }
 
   public void testPipe() {

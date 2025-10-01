@@ -12,11 +12,11 @@
 
 package com.myjavatools.lib;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.text.*;
 import java.util.*;
 import java.util.regex.*;
 import java.util.zip.*;
-import static com.myjavatools.lib.human.Logical.*;
 import static com.myjavatools.lib.foundation.Objects.*;
 
 public abstract class Strings
@@ -117,7 +117,7 @@ public abstract class Strings
    * @param subsequence CharSequence
    * @return boolean
    *
-   * see String.starstWith(String) for description
+   * see String.startsWith(String) for description
    */
   public static boolean startsWith(CharSequence sequence, CharSequence subsequence) {
 
@@ -139,7 +139,7 @@ public abstract class Strings
    *
    * @param writer Writer
    * @param cs CharSequence
-   * @throws IOException
+   * @throws IOException on any write error
    */
   public static void write(Writer writer, CharSequence cs)
   throws IOException {
@@ -274,7 +274,7 @@ public abstract class Strings
   /**
    * Counts leading spaces in a char sequence
    *
-   * @param s
+   * @param s the sequence
    * @return number of leading spaces
    *
    * <br><br><b>Example</b>:
@@ -289,7 +289,7 @@ public abstract class Strings
 
   /**
    * Counts trailing spaces in a char sequence
-   * @param s
+   * @param s the sequence
    * @return number of trailing spaces
    *
    * <br><br><b>Example</b>:
@@ -305,8 +305,8 @@ public abstract class Strings
   /**
    * Fills a string with a character
    *
-   * @param c
-   * @param n
+   * @param c the character
+   * @param n number of repetitions
    * @return a new string consisting of character c repeated n times
    *
    * <br><br><b>Example</b>:
@@ -350,8 +350,7 @@ public abstract class Strings
    * <li><code>toHex(155)</code> returns "9b".</li>
    */
   public static String toHex(byte b) {
-    int i = b;
-    return HEX[(i&255)];
+    return HEX[(b&255)];
   }
 
   /**
@@ -409,7 +408,7 @@ public abstract class Strings
    * <li><code>toHex("kl\u005cu12bc", true)</code> returns "006b006c12bc".</li>
    */
   public static String toHex(CharSequence s, boolean up) {
-    StringBuffer b = new StringBuffer();
+    StringBuilder b = new StringBuilder();
     for (int i = 0; i < s.length(); i++) {
       b.append(toHex(s.charAt(i), up));
     }
@@ -489,13 +488,11 @@ public abstract class Strings
 
   /**
    * Characters that should be escaped in Java or C code
-   *
    * {@value}
    */
-  public static final String ESCAPEE = "\\\"\'\n\r\t\f\b";
+  public static final String ESCAPEE = "\\\"'\n\r\t\f\b";
   /**
    * Characters used in escapes
-   *
    * {@value}
    */
   public static final String ESCAPED = "\\\"'nrtfb";
@@ -626,7 +623,7 @@ public abstract class Strings
   public static String toJavaEncoding(CharSequence s, boolean up, boolean escape) {
     if (!needsEncoding(s)) return s.toString();
 
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
 
     for (int i = 0; i < s.length(); i++) {
       buf.append(toJavaEncoding(s.charAt(i), up, escape));
@@ -677,7 +674,7 @@ public abstract class Strings
   public static String toCEncoding(CharSequence s) {
     if (!needsEncoding(s)) return s.toString();
 
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
 
     for (int i = 0; i < s.length(); i++) {
       buf.append(toCEncoding(s.charAt(i)));
@@ -722,7 +719,7 @@ public abstract class Strings
            c == '\"' ? "&quot;" :
            c == '&'  ? "&amp;" :
            c == ']'  ? "&#93;" :
-           (c < '\u0020' && c != '\n' && c != '\r' && c != '\t') || c > '\u0080' ?
+           (c < ' ' && c != '\n' && c != '\r' && c != '\t') || c > '\u0080' ?
               toSgmlEncoding(c) :
            null;
   }
@@ -740,7 +737,7 @@ public abstract class Strings
   public static String toSgmlEncoding(CharSequence s) {
     if (isEmpty(s)) return s.toString();
 
-    StringBuffer buffer = new StringBuffer(s.length() * 2);
+    StringBuilder buffer = new StringBuilder(s.length() * 2);
 
     for (int i = 0; i < s.length(); i++) {
       char c = s.charAt(i);
@@ -762,7 +759,6 @@ public abstract class Strings
     *
     * @param s CharSequence original CharSequence
     * @return String encoded string
-    *
     * All non-ascii characters are replaced with their &amp;# representation; other
     * characters are left intact.
     *
@@ -773,12 +769,11 @@ public abstract class Strings
    public static String htmlEncode(CharSequence s) {
     if (isEmpty(s)) return "";
 
-    StringBuffer out = new StringBuffer();
+    StringBuilder out = new StringBuilder();
     for (int i = 0; i < s.length(); i++) {
       char c = s.charAt(i);
-      int k = c;
       if (c > 0x100) {
-        out.append("&#" + k + ";");
+        out.append("&#").append((int) c).append(";");
       } else {
         out.append(c);
       }
@@ -789,7 +784,7 @@ public abstract class Strings
 
   /**
    * Converts a char array to a readable string.
-   * (By Replacing potentially unreadables characters with '.')
+   * (By Replacing potentially unreadable characters with '.')
    *
    * @param data original char array
    * @param beginIndex where to start
@@ -801,7 +796,7 @@ public abstract class Strings
    * will return "..Hola se.or!.".</li>
    */
   public static String toReadable(char[] data, int beginIndex, int endIndex) {
-    StringBuffer buf = new StringBuffer(data.length);
+    StringBuilder buf = new StringBuilder(data.length);
     for (int i = beginIndex; i < data.length && i < endIndex; i++) {
       char c = data[i];
       if (c < ' ' || c > 127) c = '.';
@@ -812,7 +807,7 @@ public abstract class Strings
 
     /**
      * Converts a CharSequence to a readable string.
-     * (By Replacing potentially unreadables characters with '.')
+     * (By Replacing potentially unreadable characters with '.')
      *
      * @param s original CharSequence
      * @return the string with unreadable chars replaced
@@ -838,7 +833,7 @@ public abstract class Strings
    */
   public static String hexDump(byte[] data) {
     if (data == null || data.length == 0) return "";
-    StringBuffer out = new StringBuffer();
+    StringBuilder out = new StringBuilder();
 
     for (int i = 0; i < data.length; i+= 16) {
       out.append("\r\n");
@@ -877,7 +872,7 @@ public abstract class Strings
    */
   public static String hexDump(char[] data) {
     if (data == null || data.length == 0) return "";
-    StringBuffer out = new StringBuffer();
+    StringBuilder out = new StringBuilder();
 
     for (int i = 0; i < data.length; i+= 16) {
       out.append("\r\n");
@@ -925,7 +920,7 @@ public abstract class Strings
    */
   public static String toHexReadable(char[] data) {
     if (data == null || data.length == 0) return "";
-    StringBuffer out = new StringBuffer();
+    StringBuilder out = new StringBuilder();
 
     for (int i = 0; i < data.length; i++) {
       out.append(toHex(data[i]));
@@ -952,7 +947,7 @@ public abstract class Strings
    */
   public static String toHexReadable(byte[] data, int from, int to) {
     if (data == null || data.length == 0) return "";
-    StringBuffer out = new StringBuffer();
+    StringBuilder out = new StringBuilder();
     int limit = Math.min(to, data.length);
 
     for (int i = from; i < limit; i++) {
@@ -992,7 +987,7 @@ public abstract class Strings
    */
   public static String toHexReadable(CharSequence s) {
     if (isEmpty(s)) return "";
-    StringBuffer out = new StringBuffer();
+    StringBuilder out = new StringBuilder();
 
     for (int i = 0; i < s.length(); i++) {
       out.append(toHex(s.charAt(i)));
@@ -1023,7 +1018,7 @@ public abstract class Strings
   public static String join(CharSequence separator, Collection collection) {
     if (separator == null || collection == null) return "";
 
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     for (Object element : collection) {
       if (buf.length() > 0) buf.append(separator);
       buf.append(element);
@@ -1047,17 +1042,18 @@ public abstract class Strings
    * <li><code>join(" and ", new String[] {"Here", "there", "everywhere"})</code>
    * returns "Here and there and everywhere".</li>
    */
+  @SafeVarargs
   public static <T> String join(CharSequence separator, T... what) {
     if (separator == null || what == null) return "";
 
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
 
     for (T object : what) {
       if (object != null) {
         if (buf.length() > 0) {
           buf.append(separator);
         }
-        buf.append(object.toString());
+        buf.append(object);
       }
     }
 
@@ -1138,7 +1134,7 @@ public abstract class Strings
   * returns a list containing two elements: "good", "ugly".</li>
   */
  public static <T extends CharSequence> List<T> grep(T[] source, Pattern regexp) {
-   ArrayList<T> result = new ArrayList<T>();
+   ArrayList<T> result = new ArrayList<>();
    for (T element : source) {
      Matcher matcher = regexp.matcher(element);
      if (matcher.find()) {
@@ -1160,7 +1156,6 @@ public abstract class Strings
    * @return resulting string
    *
    * @deprecated since 5.0; use replace() without boolean argument, or replaceAll()
-   *
    * see java.lang.String.replaceAll(String,String) and java.lang.String.replaceFirst(String, String)
    *
    * <br><br><b>Examples</b>:
@@ -1178,7 +1173,7 @@ public abstract class Strings
     if (oldSubstring == null || newSubstring == null)
       return where.toString();
 
-    StringBuffer out = new StringBuffer();
+    StringBuilder out = new StringBuilder();
     int pos = 0;
     do {
       int newPos = indexOf(where, oldSubstring, pos);
@@ -1201,7 +1196,6 @@ public abstract class Strings
    * @param oldSubstring what to replace
    * @param newSubstring with what to replace
    * @return resulting string
-   *
    * see java.lang.String.replaceAll(String,String) and java.lang.String.replaceFirst(String, String)
    *
    * <br><br><b>Example</b>:
@@ -1221,7 +1215,6 @@ public abstract class Strings
    * @param oldSubstring what to replace
    * @param newSubstring with what to replace
    * @return resulting string
-   *
    * see java.lang.String.replaceAll(String,String) and java.lang.String.replaceFirst(String, String)
    *
    * <br><br><b>Example</b>:
@@ -1240,7 +1233,7 @@ public abstract class Strings
    * @param input sequence of the aforementioned format
    * @param name the name on the left side of '='
    * @return the string value inside the quotes (quotes omitted) if the string
-   *         has the specified format; null utherwise
+   *         has the specified format; null otherwise
    *
    * <br><br><b>Examples</b>:
    * <li><code>extractValue("java.home=\"c:\\java\\jdk1.4.1\"\nx=\"abcd\"", "x")</code>
@@ -1249,14 +1242,14 @@ public abstract class Strings
    * returns "c:\\java\\jdk1.4.1".</li>
    */
   public static String extractValue(CharSequence input, CharSequence name) {
-    int iname = indexOf(input, name + "=\"");
-    if (iname < 0) return null;
+    int iName = indexOf(input, name + "=\"");
+    if (iName < 0) return null;
 
-    int ivalue = iname + name.length() + 2;
-    int ievalu = indexOf(input, '"', ivalue);
-    if (ievalu < 0) return null;
+    int iValue = iName + name.length() + 2;
+    int index = indexOf(input, '"', iValue);
+    if (index < 0) return null;
 
-    return input.subSequence(ivalue, ievalu).toString();
+    return input.subSequence(iValue, index).toString();
   }
 
   /**
@@ -1267,11 +1260,10 @@ public abstract class Strings
    *
    * <br><br><b>Example</b>:
    * <li><code>pack(new byte[] {0x23, 0x67, (byte)0xab, (byte)0xef})</code>
-   * returns "\u2367\uabef".</li>
+   * returns "⍧\uabef".</li>
    */
   public static String pack(byte[] from) {
-    StringBuffer buffer = new StringBuffer((from.length + 1) / 2);
-    char hibyte = 0;
+    StringBuilder buffer = new StringBuilder((from.length + 1) / 2);
 
     for (int i = 0; i < from.length / 2 * 2; i+=2) {
       buffer.append((char)((0xff00 & (from[i] << 8)) +
@@ -1292,7 +1284,7 @@ public abstract class Strings
    * @return the unpacked data
    *
    * <br><br><b>Example</b>:
-   * <li><code>unpack("\u2367\uabef")</code>
+   * <li><code>unpack("⍧\uabef")</code>
    * returns new byte[] {0x23, 0x67, (byte)0xab, (byte)0xef}.</li>
    */
   public static byte [] unpack(CharSequence data) {
@@ -1321,7 +1313,7 @@ public abstract class Strings
    * returns "\nFeliz Año Nuevo\n".</li>
    */
   public static String decodeJavaString(CharSequence string) {
-    StringBuffer output = new StringBuffer(string.length() * 2);
+    StringBuilder output = new StringBuilder(string.length() * 2);
 
     if (indexOf(string, '\\') < 0) {
       return string.toString();
@@ -1391,7 +1383,7 @@ public abstract class Strings
   public static String decode(InputStream is, String encoding)
                throws IOException, UnsupportedEncodingException {
     Reader isr               = new InputStreamReader(is, encoding);
-    StringBuffer result      = new StringBuffer();
+    StringBuilder result     = new StringBuilder();
     char[] readBuffer        = new char[4096];
 
     while (isr.ready()) {
@@ -1430,26 +1422,20 @@ public abstract class Strings
    * @param source the string to zip
    * @return bytes representing zipped data
    * @throws IOException when something goes wrong with streams
-   * @throws UnsupportedEncodingException when JDK forgets that it knows UTF8
-   *
-   * <br><br><b>Example</b>:
-   * <li><code>zip2bytes("Hello World")</code>
-   * returns new byte[] {0x78, (byte)0xda, (byte)0xf3, 0x48, (byte)0xcd, (byte)0xc9, (byte)0xc9, 0x57, (byte)0x08, (byte)0xcf, 0x2f, (byte)0xca, 0x49, 0x01, 0x00, 0x18, 0x0b, 0x04, 0x1d, 0x00}.</li>
    */
   public static byte[] zip2bytes(CharSequence source)
-               throws IOException, UnsupportedEncodingException {
+               throws IOException {
     if (source == null) return null;
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     DeflaterOutputStream dos  = new DeflaterOutputStream(bos,
                                 new Deflater(Deflater.BEST_COMPRESSION));
-    Writer osw                = new OutputStreamWriter(dos, "UTF-8");
+    Writer osw                = new OutputStreamWriter(dos, StandardCharsets.UTF_8);
     write(osw, source);
     osw.flush();
     dos.finish();
     bos.write(0); // Just to pad in case of, you know, odd number of bytes.
     osw.close();
-    byte[] result = bos.toByteArray();
-    return result;
+    return bos.toByteArray();
   }
 
   /**
@@ -1458,16 +1444,11 @@ public abstract class Strings
    * @param source char sequence to zip
    * @return string with zipped data
    * @throws IOException when something goes wrong with streams
-   * @throws UnsupportedEncodingException when JDK forgets that it knows UTF8
-   *
-   * <br><br><b>Example</b>:
-   * <li><code>zip8bit("Hello World")</code>
-   * returns "x\u00da\u00f3H\u00cd\u00c9\u00c9W\b\u00cf/\u00caI\u0001\u0000\u0018\u000b\u0004\u001d\u0000".</li>
    */
-
    public static String zip8bit(CharSequence source)
-               throws IOException, UnsupportedEncodingException {
-    return new String(zip2bytes(source));
+               throws IOException {
+    byte[] bytes = zip2bytes(source);
+    return new String(bytes, StandardCharsets.ISO_8859_1);
   }
 
   /**
@@ -1543,15 +1524,13 @@ public abstract class Strings
    * Calculates crc32 on a char sequence
    * @param data source char sequence
    * @return its crc32
-   * @throws IOException when something goes wrong with streams
    * @throws UnsupportedEncodingException when JDK forgets that it knows UTF8
    *
    * <br><br><b>Example</b>:
    * <li><code>crc32("Hello World")</code>
    * returns 2178450716l.</li>
    */
-  public static long crc32(CharSequence data)
-      throws IOException, UnsupportedEncodingException {
+  public static long crc32(CharSequence data) {
     return com.myjavatools.lib.Bytes.crc32(unpack(data));
   }
 
@@ -1693,8 +1672,8 @@ public abstract class Strings
   /**
    * Formats string with parameter(s)
    *
-   * @param fmtString
-   * @param parameters ...
+   * @param fmtString format string
+   * @param parameters parameters to format
    * @return formatted string
    *
    * @deprecated use MessageFormat.format(String, Object...)
@@ -1758,7 +1737,7 @@ public abstract class Strings
       public Iterator<CharSequence> iterator() {
         return new Iterator<CharSequence>() {
 
-          Matcher m = pattern.matcher(source);
+          final Matcher m = pattern.matcher(source);
           boolean done  = false;
           int position = 0;
 
