@@ -1,10 +1,8 @@
 # Myjavatools.com
 
-<font color="red">THIS FILE IS WORK IN PROGRESS</font>
-
 Hello friends,
 
-This is myjavatools project, where I published various general purpose Java Tools, for everyone to use.  
+This is old (since year 2000) myjavatools project, where I published various general purpose Java Tools, for everyone to use.  
 [Here is the license for the code published here.](license.txt)  
 I've been using these tools for years. Your input is always appreciated.  
 Compatibility: Versions of this library are compatible with appropriate versions of JDK: 1.3.1 up to 6.0.  
