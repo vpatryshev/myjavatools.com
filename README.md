@@ -2,12 +2,30 @@
 
 Hello friends,
 
-This is old (since year 2000) myjavatools project, where I published various general purpose Java Tools, for everyone to use.  
-[Here is the license for the code published here.](license.txt)  
-I've been using these tools for years. Your input is always appreciated.  
-Compatibility: Versions of this library are compatible with appropriate versions of JDK: 1.3.1 up to 6.0.  
-This forum: **[www.livejournal.com/community/myjavatools](http://www.livejournal.com/community/myjavatools)** is dedicated to myjavatools news and discussions.  
+This is old (since year 2000) myjavatools project, where I published various general purpose Java Tools, for everyone to use.
+[Here is the license for the code published here.](license.txt)
+I've been using these tools for years. Your input is always appreciated.
+Compatibility: Current version (6.0) requires Java 8 or later. Legacy versions supported JDK 1.3.1 through 6.0.
+This forum: **[www.livejournal.com/community/myjavatools](http://www.livejournal.com/community/myjavatools)** is dedicated to myjavatools news and discussions.
 [java.net Member Button](http://www.java.net)
+
+## Building
+
+The project uses Maven. To build:
+
+```bash
+# Using Maven wrapper (recommended)
+./mvnw clean install
+
+# Or with system Maven
+mvn clean install
+```
+
+This will compile the code, run all 764 tests, and generate:
+- `target/myjavatools-6.0.jar` - Main library
+- `target/myjavatools-6.0-sources.jar` - Source code
+- `target/myjavatools-6.0-javadoc.jar` - Javadoc
+- `target/site/jacoco/index.html` - Code coverage report
 
 ## What we currently have here:
 
