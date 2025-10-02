@@ -4,28 +4,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This is the myjavatools.com project - a collection of general-purpose Java tools and utilities published under public domain license. The codebase contains multiple versioned libraries (1.3.1 through 6.0) and specialized projects.
+This is the myjavatools.com project - a collection of general-purpose Java tools and utilities published under public domain license.
 
 ## Project Structure
 
-The repository is organized into versioned releases in the `projects/` directory:
+The project uses standard Maven directory structure:
 
-- **v.6.0/lib** - Latest version of the core utilities library (Foundation, Strings, Files, Web, Tools, etc.)
-- **v.5.0/** - Contains lib and xml packages with comprehensive test suites
-- **v.1.4.2/** - Earlier version with lib, web, xml, and jsp components
-- **v.1.3.1/** - Legacy version
-- **PracticalXML/** - Standalone XML interface implementation
-- **Topos/** - Category theory implementation (Categories, Functors)
-- **run/** - Java application for running code from URLs
-- **macrojsp/** - Universal JSP macro system
-- **systemJsp/** - Remote deployment JSP for JBoss
-- **k/** - Appears to be a keyboard/UI testing project
-
-Each versioned lib has a standard structure:
-- `src/com/myjavatools/lib/` - Source files
-- `test/com/myjavatools/lib/` - JUnit test files
-- `doc/` - Javadoc documentation
-- Pre-built JARs (mjlib.jar, mjlib-src.jar, mjlib-doc.jar)
+- **src/main/java/** - Source code
+- **src/test/java/** - JUnit test files
+- **target/** - Maven build output (JAR files, test reports)
+- **projects/** - Legacy code and specialized tools
+  - **PracticalXML/** - Standalone XML interface implementation
+  - **Topos/** - Category theory implementation (Categories, Functors)
+  - **run/** - Java application for running code from URLs
+  - **macrojsp/** - Universal JSP macro system
+  - **systemJsp/** - Remote deployment JSP for JBoss
 
 ## Key Components
 
@@ -56,32 +49,45 @@ Located in versioned libs under `com.myjavatools.lib.foundation`:
 
 ## Building and Testing
 
-This is a legacy Java project without modern build tools (no Maven pom.xml or Gradle files). Each versioned library is distributed as pre-built JARs.
+The project uses Maven for building and dependency management.
 
-### Running Tests
-Tests use JUnit framework. To run tests for a specific version:
+### Maven Commands
 ```bash
-# Compile and run test suite
-javac -cp <junit-jar>:projects/v.5.0/lib/src projects/v.5.0/lib/test/com/myjavatools/lib/AllTests.java
-java -cp <junit-jar>:projects/v.5.0/lib/src:projects/v.5.0/lib/test junit.textui.TestRunner com.myjavatools.lib.AllTests
+# Compile the code
+mvn compile
+
+# Run all tests (763 tests)
+mvn test
+
+# Run specific test
+mvn test -Dtest=TestFiles#testFind
+
+# Build JAR files (main, sources, javadoc)
+mvn package
+
+# Clean and full rebuild
+mvn clean install
+
+# Skip tests during build
+mvn package -DskipTests
 ```
 
-Test classes follow naming convention: `Test<ClassName>.java` (e.g., TestStrings, TestFiles, TestObjects)
+### Test Structure
+- Tests extend `Fixtures` base class which provides OS detection (`isWindows`, `isMac`, `isLinux`)
+- Use `makePath()` helper for platform-independent path construction
+- Test classes follow naming convention: `Test<ClassName>.java` (e.g., TestStrings, TestFiles, TestObjects)
+- All 763 tests pass on macOS, Windows, and Linux
 
-### Working with JARs
-Pre-built artifacts are available in each version directory:
-- `mjlib.jar` - Compiled library
-- `mjlib-src.jar` - Source code archive
-- `mjlib-doc.jar` - Javadoc
-- `mjlib<version>.zip` - Complete distribution
+### Build Artifacts
+Maven generates artifacts in `target/`:
+- `myjavatools-6.0.jar` - Compiled library (Java 8)
+- `myjavatools-6.0-sources.jar` - Source code archive
+- `myjavatools-6.0-javadoc.jar` - Javadoc
+- `surefire-reports/` - Test results
 
 ## Compatibility
 
-Different versions target different JDK versions:
-- v.1.3.1: JDK 1.3.1
-- v.1.4.2: JDK 1.4.2
-- v.5.0: JDK 5.0 (introduces generics in Foundation package)
-- v.6.0: JDK 6.0
+The project is built with Java 8 (source/target 1.8), providing broad compatibility while supporting modern Java features including generics and enhanced for-each loops.
 
 ## Architecture Notes
 
@@ -89,11 +95,12 @@ Different versions target different JDK versions:
 The XML interface uses unidirectional hierarchy - children have no knowledge of parent containers. This differs from DOM and simplifies handling by avoiding parent references.
 
 ### Foundation Package Design
-Provides functional programming patterns for Java 5+:
+Provides functional programming patterns:
 - Functions as first-class values via Function interface
 - Map-to-function and function-to-map conversions
 - Composition of functions
 - Iterable/Iterator enhancements with functional operations
+- Uses generics for type safety
 
 ### For-each Support
 The Files utility provides enhanced for-each iteration:
